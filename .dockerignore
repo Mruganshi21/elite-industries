@@ -1,0 +1,9 @@
+.git
+.gitignore
+.vs
+bin
+obj
+docs
+*.user
+*.suo
+just a prompt.txt

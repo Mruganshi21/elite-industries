@@ -1,0 +1,12 @@
+# Render Blueprint — lets Render configure the service from the repo instead of
+# from form fields in the dashboard. See the deploy notes in README.md.
+services:
+  - type: web
+    name: elite-industries
+    runtime: docker
+    plan: free
+    region: oregon
+    healthCheckPath: /
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production

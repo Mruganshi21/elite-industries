@@ -155,6 +155,33 @@ docs/homepage.md                the homepage: sections, generator, motion policy
    is hand-written CSS. jQuery is still used, but only by the contact form's
    client-side validation.
 
+## Deploying to Render
+
+Render has no native .NET runtime, so the service is built from the `Dockerfile`
+in the repo root — SDK image to compile, ASP.NET runtime image to ship.
+
+1. Push to GitHub (already done — `Mruganshi21/elite-industries`).
+2. On [render.com](https://render.com): **New → Web Service**, connect the repo.
+3. Render reads `render.yaml` and picks Docker automatically. Nothing to fill in.
+4. Deploy. First build takes a few minutes; after that the URL is
+   `https://elite-industries.onrender.com` and is public.
+
+Two things about the container the app cannot see from inside:
+
+- **The port is not fixed.** Render injects `$PORT` at start-up, so the
+  `ENTRYPOINT` expands it into `ASPNETCORE_URLS` in a shell rather than baking a
+  port into an `ENV`.
+- **TLS terminates at Render's proxy**, so requests reach Kestrel over plain
+  HTTP. `app.UseHttpsRedirection()` finds no HTTPS port, logs
+  `Failed to determine the https port for redirect` once, and does nothing —
+  which is correct here. Render already redirects HTTP to HTTPS at the edge.
+  Do **not** set `ASPNETCORE_HTTPS_PORTS` to silence that warning; it produces a
+  redirect loop.
+
+On the free plan the service sleeps after 15 minutes of no traffic and the next
+visitor waits roughly a minute for it to wake. Fine for sharing a link, not for
+a launch — the paid instance stays warm.
+
 ## Adding a page
 
 Read `docs/build-contract.md`. It documents the CSS class contract, the ViewData
