@@ -1,0 +1,84 @@
+@model IReadOnlyList<EliteIndustries.Models.Product>
+@using EliteIndustries.Models
+@using EliteIndustries.Services
+@*
+    Homepage products overview band.
+
+    A curated grid, not the catalogue. The cards themselves are the shared
+    component in Views/Shared/_ProductCard.cshtml — this file owns only the
+    band: its head, the grid it lays the cards out in, and the way out to the
+    full listing.
+
+    WHERE THE SIX COME FROM
+    -----------------------
+    HomeController passes ProductCatalog.Featured(6) — the products flagged
+    IsFeatured, in catalogue order, capped at six. The count is the
+    controller's decision and is NOT re-sliced here: a view that quietly took
+    a different number than it was handed would make the controller a lie.
+
+    Six because the grid is three across, so six is two clean rows. Seven
+    products carry the flag; the seventh is one row short of a third row and
+    would leave a gap the eye reads as a missing card.
+
+    THE HEAD COUNTS ITSELF
+    ----------------------
+    The lede states how much of the range is on screen, and both figures are
+    read — @Model.Count from what was actually passed in, and the catalogue
+    total from ProductCatalog.All. Change Featured(6) to Featured(9) and the
+    sentence follows on its own rather than going quietly stale.
+
+    THE ENTRANCE
+    ------------
+    .ei-reveal is on the grid cells, not on the card. The card is shared and
+    has no business deciding how it arrives on a page it does not own; the band
+    laying it out does. reveal.js drives it and unobserves each cell as it
+    lands, so there is no observer here — theme.css says in as many words that
+    a section must not write a second one.
+
+    The step is 70ms. Six cards at the 150ms the split bands use would leave
+    the last card arriving nearly a second after the first, which stops reading
+    as a stagger and starts reading as the page being slow.
+*@
+
+<section class="ei-band ei-band--shell ei-feat" aria-labelledby="ei-feat-title">
+    <div class="ei-shell">
+
+        <div class="ei-band-head ei-reveal">
+            <p class="ei-eyebrow">What we make</p>
+
+            <h2 id="ei-feat-title">Stocked, specified, ready to ship</h2>
+
+            <p class="ei-lede">
+                @Model.Count of the @ProductCatalog.All.Count lines we manufacture and hold in
+                @CompanyProfile.City. Each one is specified against the leg it has to survive —
+                the hold, the stack, and the handling at the far end.
+            </p>
+        </div>
+
+        @*  A list, because that is what it is: a set of products of equal
+            standing, in a deliberate order. The <li> carries the entrance and
+            the card fills it.  *@
+        <ul class="ei-feat-grid">
+            @{ var step = 0; }
+            @foreach (var product in Model)
+            {
+                <li class="ei-feat-cell ei-reveal" style="--d:@(step * 70)ms">
+                    <partial name="_ProductCard" model="product" />
+                </li>
+
+                step++;
+            }
+        </ul>
+
+        <div class="ei-feat-more ei-reveal">
+            @*  Sentence case, matching "Explore products" in the hero and the
+                "View all products" row already in the masthead's Products
+                dropdown. The same destination should not be spelled two ways
+                on one page.  *@
+            <a class="ei-btn ei-btn--outline" asp-controller="Products" asp-action="Index">
+                View all products
+                <svg aria-hidden="true" focusable="false"><use href="#i-arrow-right" /></svg>
+            </a>
+        </div>
+    </div>
+</section>

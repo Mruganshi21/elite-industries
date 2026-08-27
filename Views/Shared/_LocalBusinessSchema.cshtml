@@ -1,0 +1,96 @@
+﻿@using System.Text.Json
+@using System.Text.Encodings.Web
+@using EliteIndustries.Models
+@using EliteIndustries.Services
+@*
+    schema.org LocalBusiness markup, rendered into <head> by _Layout so every
+    page carries the structured contact data.
+
+    The payload is built as an object graph and serialised, rather than written
+    as literal JSON in the template. Several product names contain "&", which
+    Razor would HTML-encode into "&amp;" and thereby produce invalid JSON.
+*@
+@{
+    const string siteUrl = "https://www.eliteindustries.example";
+
+    var schema = new Dictionary<string, object?>
+    {
+        ["@context"] = "https://schema.org",
+        ["@type"] = "LocalBusiness",
+        ["@id"] = $"{siteUrl}/#organization",
+        ["name"] = CompanyProfile.Name,
+        ["legalName"] = CompanyProfile.LegalName,
+        ["description"] = "Manufacturer and wholesaler of export packaging and material handling products for container and cargo shipping.",
+        ["foundingDate"] = CompanyProfile.FoundedYear.ToString(),
+        ["url"] = siteUrl + "/",
+        // Was /img/hero/slide-1.svg. That directory went with the old hero and
+        // no longer exists, so this was advertising a 404 to every crawler on
+        // every page. Repointed at an illustration that is actually on disk.
+        // TODO: swap for a real photograph of the works once the client supplies
+        // one — search engines want a raster image here, not an SVG.
+        ["image"] = $"{siteUrl}/img/about-facility.svg",
+        ["priceRange"] = "$$",
+        ["address"] = new Dictionary<string, object?>
+        {
+            ["@type"] = "PostalAddress",
+            ["streetAddress"] = CompanyProfile.StreetAddress,
+            ["addressLocality"] = CompanyProfile.City,
+            ["addressRegion"] = CompanyProfile.Region,
+            ["postalCode"] = CompanyProfile.PostalCode,
+            ["addressCountry"] = CompanyProfile.CountryCode
+        },
+        ["geo"] = new Dictionary<string, object?>
+        {
+            ["@type"] = "GeoCoordinates",
+            ["latitude"] = CompanyProfile.Latitude,
+            ["longitude"] = CompanyProfile.Longitude
+        },
+        ["telephone"] = new[] { CompanyProfile.PhonePrimary, CompanyProfile.PhoneSecondary },
+        ["email"] = CompanyProfile.Email,
+        ["openingHoursSpecification"] = new[]
+        {
+            new Dictionary<string, object?>
+            {
+                ["@type"] = "OpeningHoursSpecification",
+                ["dayOfWeek"] = new[] { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" },
+                ["opens"] = "09:00",
+                ["closes"] = "18:00"
+            }
+        },
+        ["sameAs"] = new[]
+        {
+            CompanyProfile.LinkedIn,
+            CompanyProfile.Facebook,
+            CompanyProfile.Twitter,
+            CompanyProfile.YouTube
+        },
+        ["hasOfferCatalog"] = new Dictionary<string, object?>
+        {
+            ["@type"] = "OfferCatalog",
+            ["name"] = CompanyProfile.ProductCategory,
+            ["itemListElement"] = ProductCatalog.All.Select(p => new Dictionary<string, object?>
+            {
+                ["@type"] = "Offer",
+                ["itemOffered"] = new Dictionary<string, object?>
+                {
+                    ["@type"] = "Product",
+                    ["name"] = p.Name,
+                    ["category"] = p.Category,
+                    ["url"] = $"{siteUrl}/Products/Detail/{p.Slug}"
+                }
+            }).ToArray()
+        }
+    };
+
+    // UnsafeRelaxedJsonEscaping keeps "&" and non-ASCII readable; the output is
+    // written with Html.Raw into a <script> block, so it must not be HTML-encoded.
+    var json = JsonSerializer.Serialize(schema, new JsonSerializerOptions
+    {
+        WriteIndented = false,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    });
+
+    // Defence in depth: "</script>" inside a JSON string would close the block early.
+    json = json.Replace("</", @"<\/");
+}
+<script type="application/ld+json">@Html.Raw(json)</script>

@@ -1,0 +1,82 @@
+@model EliteIndustries.Models.Product
+@*
+    Product card — SHARED COMPONENT.
+
+    Renders exactly one product. It is in Views/Shared and not in Views/Home
+    because the Products listing page renders the same card, and a card that
+    lives next to the homepage would have to be copied to get there. Its styles
+    are in wwwroot/css/product-card.css for the same reason: any page that
+    renders this partial links that one stylesheet and gets the card whole.
+
+    THE CONTRACT
+    ------------
+    In:   a Product. Nothing else. No ViewData, no ambient state, no assumption
+          about what band or grid it is sitting in.
+    Out:  a self-contained <article class="ei-pcard"> that fills its container.
+          It sets height:100%, so a grid cell of any height gets a card that
+          reaches the bottom of it and the row keeps a common baseline.
+
+    The caller owns placement and entrance. The scroll reveal is deliberately
+    NOT on this element — .ei-reveal and its --d stagger belong to whatever is
+    laying the cards out, so a page that wants them arriving in a different
+    order, or not animating at all, does not have to fight the component.
+    See Views/Home/_Products.cshtml for how the homepage does it.
+
+    THE WHOLE CARD IS CLICKABLE, WITH ONE LINK
+    ------------------------------------------
+    There is a single <a>, around the product name, and product-card.css gives
+    it an ::after that covers the card. That is the whole hit area.
+
+    The alternatives are both worse. Wrapping the <article> in an anchor puts a
+    heading and a paragraph inside a link, which a screen reader reads as one
+    long run-on link label. Adding a second "Read more" link gives the card two
+    tab stops and announces the same destination twice. One link, stretched, is
+    the accessible version of "the card is clickable".
+*@
+
+<article class="ei-pcard">
+
+    @*  alt="" — deliberate.
+
+        The illustration is a diagram of the product, and the product's name is
+        the very next thing in the markup, inside the link. A descriptive alt
+        here would make a screen reader read the same product twice in a row,
+        once as a picture and once as the link. It is decoration next to its own
+        label, so it is marked as decoration.
+
+        The SVG carries its own <title> internally, which an <img> does not
+        expose — so nothing leaks past the empty alt.
+
+        width/height are the files' real intrinsic size (all ten are 400x300),
+        which reserves the box before the asset lands and keeps the grid from
+        reflowing as the six illustrations arrive.  *@
+    <div class="ei-pcard-thumb">
+        <img class="ei-pcard-img"
+             src="@Url.Content("~" + Model.ImagePath)"
+             width="400" height="300"
+             loading="lazy" decoding="async"
+             alt="" />
+    </div>
+
+    <div class="ei-pcard-body">
+
+        @* Mono utility register — a classification, not a heading. *@
+        <p class="ei-pcard-cat">@Model.Category</p>
+
+        <h3 class="ei-pcard-name">
+            <a class="ei-pcard-link"
+               asp-controller="Products" asp-action="Detail" asp-route-slug="@Model.Slug">@Model.Name</a>
+        </h3>
+
+        @* The one line on where the product is actually used. This is what
+           WhereUsed exists for — Summary is the long-form line and belongs on
+           the detail page, not in a six-up grid. *@
+        <p class="ei-pcard-where">@Model.WhereUsed</p>
+
+        @* Decorative: the destination is already named by the link above, and
+           the arrow is a hover affordance rather than a second control. *@
+        <span class="ei-pcard-cue" aria-hidden="true">
+            <svg focusable="false"><use href="#i-arrow-right" /></svg>
+        </span>
+    </div>
+</article>

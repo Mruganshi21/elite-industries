@@ -1,0 +1,102 @@
+@using EliteIndustries.Models
+@*
+    Homepage about-us preview band.
+
+    The first content band after the hero, and the page's first light ground.
+    Its whole job is to say who the company is in four sentences and hand the
+    visitor to the full About page — it is a preview, not a summary, so it
+    deliberately carries no figures. The counters are the next band's work and
+    stating them twice would make neither read as the headline.
+
+    THE ENTRANCE
+    ------------
+    .ei-reveal, plus the --left / --right variants, and nothing else. reveal.js
+    already owns scroll entrances for the whole site and unobserves each block
+    the moment it lands; theme.css says in as many words that a section must
+    not write a second IntersectionObserver. The stagger is the inline --d.
+
+    THE ARTWORK
+    -----------
+    wwwroot/img/about-facility.svg is the client's existing illustration, reused
+    as briefed. It was drawn for the PREVIOUS palette — cool blue-greys and the
+    old #ee6a1e orange — and has since been recoloured onto this one: the grey
+    ramp remapped warm at matching lightness, #ee6a1e to --ei-orange, #cc5412 to
+    --ei-burnt. The kraft browns were left alone, because corrugate and timber
+    genuinely are that colour. The original is kept beside it as
+    about-facility.legacy-palette.svg.
+
+    The white panel therefore no longer separates two colour families — it is
+    now just a frame, giving the illustration a hard edge to end on rather than
+    fading into the warm --ei-shell ground. That is still worth having, so it
+    stays.
+*@
+
+<section class="ei-band ei-band--shell" id="about" aria-labelledby="ei-about-title">
+    <div class="ei-shell ei-about-split">
+
+        @*  PLACEHOLDER COPY — pending client sign-off.
+
+            Written to be replaceable: every company fact in it comes from
+            CompanyProfile, and the two paragraphs are positioning rather than
+            claims, so nothing here has to be checked against a certificate.
+            Swap the prose, keep the interpolations.  *@
+        <div class="ei-about-copy ei-reveal ei-reveal--left">
+
+            <p class="ei-eyebrow">Who we are</p>
+
+            <h2 class="ei-about-title" id="ei-about-title">Packaging built for the journey, not the shelf</h2>
+
+            <p class="ei-lede ei-about-lede">
+                @CompanyProfile.Name has manufactured export packaging and material handling
+                products in @CompanyProfile.City since @CompanyProfile.FoundedYear — the films,
+                straps, seals and dunnage that keep a container's contents exactly where they
+                were loaded.
+            </p>
+
+            <p class="ei-about-body">
+                Everything we make is specified against the leg it has to survive: monsoon
+                humidity in the hold, the compression of a stack six pallets deep, and a set of
+                hands at the far end that has never seen the load before. Retail packaging is
+                designed to be looked at. Ours is designed to arrive.
+            </p>
+
+            <p class="ei-about-body">
+                We hold stock across ten product lines, ship to the port on the schedule the
+                exporter gives us, and certify what we send.
+            </p>
+
+            <p class="ei-about-more">
+                <a class="ei-link" asp-controller="About" asp-action="Index">
+                    Learn more about us
+                    <svg aria-hidden="true" focusable="false"><use href="#i-arrow-right" /></svg>
+                </a>
+            </p>
+        </div>
+
+        @* 120ms behind the copy. Far enough to read as a sequence, close
+           enough that the two are still one movement. *@
+        <figure class="ei-about-figure ei-reveal ei-reveal--right" style="--d:120ms">
+            <div class="ei-about-frame">
+                <img class="ei-about-img"
+                     src="~/img/about-facility.svg"
+                     asp-append-version="true"
+                     width="1200" height="900"
+                     loading="lazy" decoding="async"
+                     alt="Isometric view of the @CompanyProfile.Name works: racked stock along the bays, palletised loads on the floor and a marked route out to the loading dock." />
+            </div>
+
+            @*  The stencilled plate.
+
+                The mono register theme.css reserves for shipping marks and
+                spec rows, used here for the one thing a plate on a works
+                actually carries: where it is and when it was built. Both
+                values come from CompanyProfile, so the plate cannot go stale
+                against the footer.  *@
+            <figcaption class="ei-about-plate">
+                <span class="ei-about-plate-line">@CompanyProfile.StreetAddress</span>
+                <span class="ei-about-plate-line">@CompanyProfile.ShortAddress</span>
+                <span class="ei-about-plate-line ei-about-plate-est">Est. @CompanyProfile.FoundedYear</span>
+            </figcaption>
+        </figure>
+    </div>
+</section>

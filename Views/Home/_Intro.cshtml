@@ -1,0 +1,103 @@
+@using EliteIndustries.Models
+@*
+    Homepage intro title card.
+
+    Rendered FIRST in the body of Views/Home/Index.cshtml, before the hero, so
+    it covers the page — masthead included — from first paint. Nothing about it
+    is injected: an overlay that JS adds is always one frame late, and that
+    frame is the homepage showing through before the curtain arrives.
+
+    The <script> at the bottom of this file is parser-blocking on purpose. See
+    the note there, and the block comment at the top of wwwroot/js/intro.js for
+    the full set of exit conditions.
+
+    The card carries no content of its own — the name, tagline and location are
+    all repeated in the page behind it — so the type is decorative and the
+    accessible copy is a single visually-hidden line. It is deliberately NOT an
+    <h1>: the hero underneath owns the page's one h1, and a second one hidden
+    behind a curtain would sit above it in the outline.
+*@
+@{
+    // One <span> per word so a 360px screen breaks the name between words and
+    // never inside one; one <i> per letter carrying its index across the whole
+    // name, so the stagger runs continuously rather than restarting per word.
+    var introWords = CompanyProfile.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+    var introLetter = 0;
+}
+
+<div class="ei-intro" data-intro>
+
+    @* muted + playsinline are what make an autoplay attempt legal at all; the
+       sound control offers the audio track back once the clip is running.
+       preload="auto" because the whole point is that it starts immediately —
+       it is 482 KB and the page behind it is not waiting on it. *@
+    <video class="ei-intro-video"
+           data-intro-video
+           muted
+           playsinline
+           preload="auto"
+           tabindex="-1"
+           aria-hidden="true">
+        <source data-intro-source src="@Url.Content("~" + CompanyProfile.IntroVideoPath)" type="video/mp4" />
+    </video>
+
+    <div class="ei-intro-scrim" aria-hidden="true"></div>
+
+    <div class="ei-intro-controls">
+        <button type="button" class="ei-intro-btn ei-intro-skip" data-intro-skip aria-label="Skip intro">
+            <span class="ei-intro-skip-label">Skip</span>
+            <svg aria-hidden="true" focusable="false"><use href="#i-close" /></svg>
+        </button>
+
+        @* Hidden until the clip is genuinely playing — offering to unmute
+           something that has not started is a control that does nothing.
+           aria-pressed is the state; intro.css swaps the glyph off it. *@
+        <button type="button" class="ei-intro-btn ei-intro-sound"
+                data-intro-sound hidden aria-pressed="false" aria-label="Unmute intro">
+            <svg class="ei-intro-i-off" aria-hidden="true" focusable="false"><use href="#i-sound-off" /></svg>
+            <svg class="ei-intro-i-on" aria-hidden="true" focusable="false"><use href="#i-sound-on" /></svg>
+        </button>
+    </div>
+
+    <div class="ei-intro-card">
+        <p class="ei-intro-name">
+            <span class="ei-sr">@CompanyProfile.Name</span>
+            @foreach (var word in introWords)
+            {
+                @* .ei-intro-word is a flex container, so the whitespace this
+                   loop leaves between the letters generates no boxes and the
+                   word is not spaced out by its own indentation. *@
+                <span class="ei-intro-word" aria-hidden="true">
+                    @foreach (var ch in word)
+                    {
+                        <i class="ei-intro-ch" style="--i:@introLetter">@ch</i>
+                        introLetter++;
+                    }
+                </span>
+            }
+        </p>
+
+        <span class="ei-intro-rule" aria-hidden="true"></span>
+
+        <p class="ei-intro-tagline">@CompanyProfile.Tagline</p>
+        <p class="ei-intro-meta">Established @CompanyProfile.FoundedYear &middot; @CompanyProfile.ShortAddress</p>
+    </div>
+
+    <div class="ei-intro-progress" aria-hidden="true">
+        <span class="ei-intro-bar" data-intro-bar></span>
+    </div>
+</div>
+
+@* Without JS nothing will ever remove the card, so without JS there is no
+   card. This is the only case the stylesheet cannot cover on its own. *@
+<noscript>
+    <style>.ei-intro { display: none; }</style>
+</noscript>
+
+@* PARSER-BLOCKING, and NOT in the Scripts section — deliberate, do not add
+   `defer`. The card is in the markup above, so the decision to skip it (seen
+   this session, or reduced motion) has to be taken before the browser paints;
+   a deferred script runs after the document is parsed and a returning visitor
+   would get a flash of the card on every navigation home. It is 5 KB, local,
+   and already in the connection the page came down. *@
+<script src="~/js/intro.js" asp-append-version="true"></script>

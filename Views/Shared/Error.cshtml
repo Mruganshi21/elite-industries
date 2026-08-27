@@ -1,0 +1,37 @@
+@model ErrorViewModel
+@using EliteIndustries.Models
+@{
+    ViewData["Title"] = "Error";
+    ViewData["ActiveNav"] = "";
+    // TEMPORARY — this page still renders against site.css. See _Layout.
+    ViewData["Legacy"] = true;
+}
+
+<section class="page-header">
+    <div class="shell">
+        <ol class="breadcrumb">
+            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li aria-current="page">Error</li>
+        </ol>
+        <h1>Something went wrong</h1>
+        <p>The page could not be completed. Nothing you submitted has been lost.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="shell" style="max-width:70ch">
+        <p>
+            Please try again. If it keeps happening, call us on
+            <a href="tel:@CompanyProfile.PhonePrimaryHref">@CompanyProfile.PhonePrimary</a>
+            or email <a href="mailto:@CompanyProfile.Email">@CompanyProfile.Email</a> and
+            we will pick it up directly.
+        </p>
+
+        @if (Model.ShowRequestId)
+        {
+            <p class="muted">Reference: <code>@Model.RequestId</code></p>
+        }
+
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Back to Home</a>
+    </div>
+</section>

@@ -1,0 +1,58 @@
+@using EliteIndustries.Models
+@{
+    ViewData["Title"] = "Privacy Policy";
+    ViewData["ActiveNav"] = "";
+    // TEMPORARY — this page still renders against site.css. See _Layout.
+    ViewData["Legacy"] = true;
+    ViewData["Description"] = $"How {CompanyProfile.Name} collects, uses and retains the information you send through this website.";
+}
+
+<section class="page-header">
+    <div class="shell">
+        <ol class="breadcrumb">
+            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li aria-current="page">Privacy Policy</li>
+        </ol>
+        <h1>Privacy Policy</h1>
+        <p>What we collect when you contact us, why we hold it, and how to have it removed.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="shell" style="max-width:76ch">
+        <h2>What we collect</h2>
+        <p>
+            We collect only what an enquiry needs: the name, email address, company,
+            phone number and requirement you enter into our contact form, together with
+            the product category you selected.
+        </p>
+
+        <h2>How we use it</h2>
+        <p>
+            Enquiry details are used to prepare a specification and quotation, and to
+            correspond with you about it. We do not sell them, and we do not add you to
+            a marketing list without asking you first.
+        </p>
+
+        <h2>How long we keep it</h2>
+        <p>
+            Enquiries that do not result in an order are deleted after 24 months.
+            Records attached to a placed order are retained for ten years so that we can
+            meet our quality, traceability and export documentation obligations.
+        </p>
+
+        <h2>Your rights</h2>
+        <p>
+            Write to <a href="mailto:@CompanyProfile.Email">@CompanyProfile.Email</a> to
+            request a copy of what we hold about you, to correct it, or to have it
+            erased. We will respond within 30 days.
+        </p>
+
+        <h2>Contact</h2>
+        <p class="muted">
+            @CompanyProfile.LegalName<br />
+            @CompanyProfile.FullAddress<br />
+            <a href="tel:@CompanyProfile.PhonePrimaryHref">@CompanyProfile.PhonePrimary</a>
+        </p>
+    </div>
+</section>

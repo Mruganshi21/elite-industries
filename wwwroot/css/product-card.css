@@ -1,0 +1,203 @@
+/* ==========================================================================
+   Elite Industries — product card (SHARED COMPONENT)
+
+   The card rendered by Views/Shared/_ProductCard.cshtml. This file is the
+   component's whole appearance and travels with it: the Products listing page
+   links this stylesheet and gets the same card, with no second copy of these
+   rules and no page-specific overrides.
+
+   NAMESPACE
+   ---------
+   .ei-pcard and .ei-pcard-* — nothing else. No selector in this file reaches
+   outside the card, and nothing in it knows what band or grid the card is
+   sitting in. Layout of the cards is the caller's job; see products.css for
+   the homepage's grid.
+
+   No token is declared here. Every colour, face, radius, shadow, easing and
+   duration comes from theme.css.
+
+   WHY IT IS A PLATE AND NOT A TILE
+   --------------------------------
+   White ground, one hairline, near-square corners from --ei-r-card, and the
+   illustration sitting in its own framed well. The range is industrial stock
+   sold on specification, not a shop; a rounded, shadowed, floating tile would
+   sell it as a consumer product. The card only lifts when it is pointed at.
+
+   THE ILLUSTRATIONS ALREADY HAVE A GROUND
+   ---------------------------------------
+   Every wwwroot/img/products/*.svg is 400x300 and paints its own full-bleed
+   --ei-ember wash with orange registration marks in the corners. So the thumb
+   needs no tint of its own — it would be painted over. What it does need is a
+   fixed aspect-ratio, so that a future asset drawn at another size cannot
+   break the row's common baseline.
+
+   HOVER — ONE TREATMENT
+   ---------------------
+   The card lifts and takes a shadow, and its hairline warms. That is all. An
+   image zoom on top of it was the other candidate and is not used: two motions
+   on one hover is the thing that makes a grid feel restless, and a diagram
+   that crops on hover loses the corner marks that make it read as a plate.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   The card
+   ========================================================================== */
+
+.ei-pcard {
+  /* The anchor for the stretched link's ::after. Without it the overlay would
+     size itself to the nearest positioned ancestor, which is the page. */
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  /* Fill the cell. A grid row is as tall as its tallest card, and without this
+     the shorter cards stop short and the row loses its baseline. */
+  height: 100%;
+
+  background: var(--ei-white);
+  border: 1px solid var(--ei-line);
+  border-radius: var(--ei-r-card);
+  overflow: hidden;
+
+  transition:
+    transform var(--ei-dur-ui) var(--ei-ease-ui),
+    box-shadow var(--ei-dur-ui) var(--ei-ease-ui),
+    border-color var(--ei-dur-ui) var(--ei-ease-ui);
+}
+
+/* Pointed at, or tabbed into. Both states are drawn the same way so a keyboard
+   visitor sees exactly what a mouse visitor sees. */
+.ei-pcard:hover,
+.ei-pcard:focus-within {
+  transform: translateY(-4px);
+  box-shadow: var(--ei-shadow-lg);
+  border-color: var(--ei-orange);
+}
+
+
+/* ==========================================================================
+   Thumbnail
+   ========================================================================== */
+
+.ei-pcard-thumb {
+  /* The files' own ratio. Stated rather than inferred so the box is reserved
+     at the right shape before the asset lands. */
+  aspect-ratio: 4 / 3;
+  border-bottom: 1px solid var(--ei-line);
+  overflow: hidden;
+}
+
+.ei-pcard-img {
+  width: 100%;
+  height: 100%;
+  /* cover, not contain: at 4/3 into a 4/3 box it crops nothing, but it means a
+     replacement asset at another ratio fills the well instead of letterboxing
+     into it and breaking the row. */
+  object-fit: cover;
+}
+
+
+/* ==========================================================================
+   Body
+   ========================================================================== */
+
+.ei-pcard-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  padding: clamp(1.1rem, 2vw, 1.5rem);
+}
+
+/* The classification. Mono, uppercase, tracked — the register theme.css
+   reserves for labels and spec rows. --ei-steel is 5.9:1 on white. */
+.ei-pcard-cat {
+  margin: 0 0 .6rem;
+  font-family: var(--ei-mono);
+  font-size: .68rem;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  color: var(--ei-steel);
+}
+
+.ei-pcard-name {
+  margin: 0 0 .55rem;
+  font-size: 1.15rem;
+  line-height: 1.25;
+  letter-spacing: -.014em;
+}
+
+/* --ei-graphite until it is pointed at. The name is the link, and a grid of
+   six burnt-orange headings would turn the whole band orange; the card carries
+   its accent in the hairline and the cue arrow instead. */
+.ei-pcard-link {
+  color: var(--ei-graphite);
+  /* Lifts the label above the ::after overlay, so the text is selectable and
+     the link's own focus ring is not painted over by its own hit area. */
+  position: relative;
+  z-index: 1;
+}
+
+.ei-pcard:hover .ei-pcard-link { color: var(--ei-burnt); }
+
+/* The hit area: the whole card, from one link. See the note in the partial for
+   why this rather than an anchor around the <article>. */
+.ei-pcard-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+/* --ei-steel, 5.9:1 on white. This is body copy, so it may not be --ei-orange
+   — see THE ORANGE RULE at the top of theme.css. */
+.ei-pcard-where {
+  margin: 0;
+  font-size: .92rem;
+  line-height: 1.55;
+  color: var(--ei-steel);
+}
+
+/* ---- The cue -------------------------------------------------------------
+   The card's "this goes somewhere" mark. margin-top:auto pins it to the foot
+   of the body however long the where-used line runs, so the arrows across a
+   row line up even when the cards do not. */
+
+.ei-pcard-cue {
+  display: block;
+  margin-top: auto;
+  padding-top: 1.1rem;
+  color: var(--ei-burnt);
+}
+
+.ei-pcard-cue svg {
+  width: 20px;
+  height: 20px;
+  transition: transform var(--ei-dur-ui) var(--ei-ease-ui);
+}
+
+.ei-pcard:hover .ei-pcard-cue svg,
+.ei-pcard:focus-within .ei-pcard-cue svg { transform: translateX(5px); }
+
+
+/* ==========================================================================
+   Reduced motion
+
+   theme.css already collapses every transition to .01ms globally, so nothing
+   here animates under the query. What it does NOT do is remove the transforms
+   themselves — the lift and the arrow would still jump to their hovered
+   position instantly. That is a jolt rather than a transition, so both are
+   dropped here and the state change is carried by the shadow and the hairline,
+   which move nothing.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .ei-pcard:hover,
+  .ei-pcard:focus-within { transform: none; }
+
+  .ei-pcard:hover .ei-pcard-cue svg,
+  .ei-pcard:focus-within .ei-pcard-cue svg { transform: none; }
+}

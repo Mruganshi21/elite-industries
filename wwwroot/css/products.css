@@ -1,0 +1,116 @@
+/* ==========================================================================
+   Elite Industries — homepage products band
+
+   The band only: its ground, the grid the cards are laid out in, and the row
+   that carries the way out to the full listing.
+
+   NAMESPACE
+   ---------
+   .ei-feat and .ei-feat-* — nothing else. The cards' own appearance is not in
+   this file and must not be added to it: that is the shared component in
+   wwwroot/css/product-card.css, which the Products listing page also links.
+   A card rule written here would be a homepage rule the listing page cannot
+   have, which is how one component quietly becomes two.
+
+   No token is declared here. Everything comes from theme.css.
+
+   WHY THE GROUND IS SHELL
+   -----------------------
+   The band above (.ei-stats) is --ei-ink and the closing CTA below is deep
+   orange, so this one has to be light. The cards are white with a hairline, so
+   --ei-white loses: white cards on a white band dissolve into it and the
+   hairline ends up doing all the work of holding six objects apart.
+
+   --ei-shell is four percent off white — enough for the cards to read as
+   plates set down on a surface, not enough to become a colour. #about is also
+   shell, but the ink stats plate sits between the two, so no two shell bands
+   ever meet.
+
+   THE BAND IS NOT SIZED HERE
+   --------------------------
+   The <section> carries .ei-band --shell and takes its vertical rhythm from
+   --ei-band-y in theme.css. Nothing in this file sets padding-block on the
+   section, for the same reason the about and stats bands do not.
+
+   MOTION
+   ------
+   None is declared in this file. The entrance is .ei-reveal on the cells,
+   which theme.css defines and reveal.js drives; the card's hover lives in
+   product-card.css and carries its own reduced-motion block. There is
+   deliberately no reduced-motion query here.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   The grid
+
+   Three across. auto-rows: 1fr so every row is as tall as its tallest card and
+   the cards, which set height:100%, all reach the same baseline — without it a
+   short where-used line makes a short card and the row goes ragged along the
+   bottom.
+   ========================================================================== */
+
+.ei-feat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: clamp(1.25rem, 2.4vw, 1.9rem);
+
+  /* It is a <ul>. The list semantics are wanted; the bullets and the UA
+     indent are not. */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* The cell exists to carry the entrance and to give the card something to
+   fill. It has no appearance of its own — display:flex so the card stretches
+   to the full height of the row. */
+.ei-feat-cell { display: flex; }
+
+
+/* ==========================================================================
+   The way out
+   ========================================================================== */
+
+.ei-feat-more {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(2.25rem, 4vw, 3.25rem);
+}
+
+
+/* ==========================================================================
+   Two up
+
+   1000px, the masthead's own breakpoint in shell.css. The page should change
+   shape at the widths it already changes shape at, rather than at a new one
+   invented per band.
+   ========================================================================== */
+
+@media (max-width: 999.98px) {
+  .ei-feat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+
+/* ==========================================================================
+   One up
+
+   Below 600px a two-column card is about 150px of illustration and a
+   where-used line broken over four lines, which is unreadable at any density.
+   One column, and the cards get their full measure back.
+
+   grid-auto-rows returns to auto here: in a single column every row holds one
+   card, so equal row heights would only pad short cards with dead space.
+   ========================================================================== */
+
+@media (max-width: 599.98px) {
+  .ei-feat-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: auto;
+  }
+
+  /* Full width, because a centred pill under a full-width column reads as
+     unfinished rather than as centred. */
+  .ei-feat-more .ei-btn { width: 100%; }
+}

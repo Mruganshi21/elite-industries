@@ -1,0 +1,411 @@
+/* ==========================================================================
+   Elite Industries — theme foundation
+
+   The single source of truth for colour, type, rhythm and the shared controls.
+   Every other stylesheet in the rebuild loads AFTER this one and builds on the
+   tokens below. Nothing here targets a page section; section files own that.
+
+   NAMESPACE
+   ---------
+   Every token is prefixed --ei-. The legacy site.css still ships for the
+   interior pages that have not been rebuilt yet and declares its own :root
+   tokens (--orange, --navy, --cream ...). The prefix is what keeps the two
+   from colliding while both are on the page. Do not add an unprefixed token
+   here, and do not read a legacy token from a rebuilt component.
+
+   THE ORANGE RULE — read before using a colour
+   --------------------------------------------
+   --ei-orange is 3.06:1 on white. That is enough for large display type, rules,
+   icons and fills; it is NOT enough for body copy or a link.
+     - orange on white  -> only at 24px+ bold, or as a non-text fill
+     - --ei-burnt on white -> 5.6:1, this is the orange for text and links
+     - white on --ei-orange -> 3.06:1, fails; do not do it
+     - --ei-graphite on --ei-orange -> 4.99:1, passes
+   Dark type on safety orange is also the industrial signage vernacular, which
+   is why the primary button is built that way rather than white-on-orange.
+
+   TYPE ROLES
+   ----------
+   --ei-display  Archivo        headings and display numerals
+   --ei-body     IBM Plex Sans  running copy and controls
+   --ei-mono     IBM Plex Mono  eyebrows, stat labels, spec values, counters
+   The mono face is doing real work, not decoration: it is the register export
+   packaging is actually labelled in — shipping marks, seal numbers, spec rows.
+   ========================================================================== */
+
+:root {
+  /* ---- Brand ---------------------------------------------------------- */
+  --ei-orange:      #F26A1B;   /* the accent: fills, rules, icons, big numerals */
+  --ei-burnt:       #B8400E;   /* hover / emphasis / any orange that is TEXT */
+  --ei-burnt-deep:  #93330B;   /* pressed state */
+  --ei-ember:       #FFF1E6;   /* pale wash for tinted surfaces */
+  --ei-ember-line:  #FBD9C0;   /* hairline on a tinted surface */
+
+  /* ---- Ground --------------------------------------------------------- */
+  --ei-white:       #FFFFFF;
+  --ei-shell:       #F7F5F2;   /* off-white, the alternating band */
+  --ei-line:        #E4E1DC;   /* hairline on white or shell */
+
+  /* ---- Ink ------------------------------------------------------------ */
+  --ei-graphite:    #22262B;   /* body + headings. Never pure black. */
+  --ei-steel:       #5C646E;   /* secondary copy, 5.5:1 on shell */
+  --ei-steel-soft:  #8A929C;   /* captions and disabled only, never body copy */
+
+  /* ---- Dark surfaces --------------------------------------------------- */
+  --ei-ink:         #16191D;   /* footer ground */
+  --ei-ink-2:       #23272C;   /* raised block on the footer ground */
+  --ei-ink-line:    #34393F;
+
+  /* ---- Type ----------------------------------------------------------- */
+  --ei-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --ei-body:    "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ei-mono:    "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+
+  /* ---- Layout --------------------------------------------------------- */
+  --ei-shell-w:   1240px;
+  --ei-gutter:    clamp(1.25rem, 4vw, 2.5rem);
+  --ei-header-h:  76px;
+
+  /* Section rhythm. One scale, used by every band, so no two section files
+     can disagree about how much air sits between them. */
+  --ei-band-y:    clamp(4.5rem, 9vw, 8rem);
+  --ei-band-y-sm: clamp(3rem, 6vw, 5rem);
+
+  /* ---- Form ----------------------------------------------------------- */
+  /* Near-square. A rounded corner reads consumer-soft; this range is built
+     from extruded sheet and steel-strapped crates. */
+  --ei-r:      3px;
+  --ei-r-card: 4px;
+
+  --ei-shadow-sm: 0 1px 2px rgba(22, 25, 29, .06);
+  --ei-shadow-md: 0 6px 20px rgba(22, 25, 29, .08);
+  --ei-shadow-lg: 0 18px 44px rgba(22, 25, 29, .13);
+
+  /* ---- Motion ---------------------------------------------------------- */
+  /* One easing for entrances, one for interface response. Section files use
+     these rather than inventing a curve, so the whole page decelerates alike. */
+  --ei-ease-rise: cubic-bezier(.16, 1, .3, 1);
+  --ei-ease-ui:   cubic-bezier(.4, 0, .2, 1);
+  --ei-dur-rise:  .8s;
+  --ei-dur-ui:    .22s;
+}
+
+
+/* ==========================================================================
+   Reset and base
+   ========================================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  /* An in-page jump must clear the sticky masthead rather than land under it. */
+  scroll-padding-top: calc(var(--ei-header-h) + 1rem);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--ei-white);
+  color: var(--ei-graphite);
+  font-family: var(--ei-body);
+  font-size: 1rem;
+  line-height: 1.65;
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, svg, video, canvas { display: block; max-width: 100%; }
+img, video { height: auto; }
+
+
+/* ==========================================================================
+   Typography
+
+   Archivo is set tight and heavy. It is a grotesque with a wide, flat-sided
+   character that holds up at display size the way a condensed face does not —
+   the whole hierarchy leans on weight and tracking, not on size alone.
+   ========================================================================== */
+
+h1, h2, h3, h4 {
+  font-family: var(--ei-display);
+  color: var(--ei-graphite);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -.022em;
+  margin: 0 0 .5em;
+  text-wrap: balance;
+}
+
+h1 { font-size: clamp(2.6rem, 6vw, 4.75rem); font-weight: 800; letter-spacing: -.032em; }
+h2 { font-size: clamp(2rem, 4.2vw, 3.15rem);  letter-spacing: -.026em; }
+h3 { font-size: clamp(1.25rem, 2vw, 1.6rem);  letter-spacing: -.016em; }
+h4 { font-size: 1.05rem; letter-spacing: -.01em; }
+
+p { margin: 0 0 1.2em; }
+p:last-child { margin-bottom: 0; }
+
+a {
+  color: var(--ei-burnt);            /* 5.6:1 — the orange that is allowed to be text */
+  text-decoration: none;
+  transition: color var(--ei-dur-ui) var(--ei-ease-ui);
+}
+a:hover { color: var(--ei-burnt-deep); }
+
+strong, b { font-weight: 600; }
+
+/* ---- The mono utility register ------------------------------------------
+   Eyebrows, stat labels, counters, spec values. Uppercase, widely tracked,
+   small — it should read as a stencilled mark on a crate, not as a heading. */
+.ei-eyebrow {
+  font-family: var(--ei-mono);
+  font-size: .75rem;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ei-burnt);
+  margin: 0 0 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+}
+
+/* The short orange rule that leads an eyebrow. Decorative, so it is drawn
+   here rather than added as an element in every section's markup. */
+.ei-eyebrow::before {
+  content: "";
+  width: 26px;
+  height: 2px;
+  background: var(--ei-orange);
+  flex: none;
+}
+
+/* Centred variant, for bands whose head is centred. */
+.ei-eyebrow.is-centred { justify-content: center; }
+
+/* ---- Section head -------------------------------------------------------
+   eyebrow + h2 + lede, the block every band opens with. */
+.ei-band-head { max-width: 46rem; margin: 0 0 clamp(2.5rem, 4vw, 3.5rem); }
+.ei-band-head.is-centred { margin-inline: auto; text-align: center; }
+
+.ei-lede {
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  line-height: 1.6;
+  color: var(--ei-steel);
+  margin: 0;
+}
+
+
+/* ==========================================================================
+   Layout primitives
+   ========================================================================== */
+
+.ei-shell {
+  width: 100%;
+  max-width: var(--ei-shell-w);
+  margin-inline: auto;
+  padding-inline: var(--ei-gutter);
+}
+
+/* Vertical rhythm. .ei-band is the default white band; -shell is the
+   alternating off-white. Both take their padding from the same token so two
+   adjacent bands can never disagree about the gap between them. */
+.ei-band { padding-block: var(--ei-band-y); background: var(--ei-white); }
+.ei-band--shell { background: var(--ei-shell); }
+.ei-band--tight { padding-block: var(--ei-band-y-sm); }
+
+
+/* ==========================================================================
+   Buttons
+
+   Primary is orange with graphite type — see THE ORANGE RULE above. Hover
+   flips to burnt with white type, so the state change is a genuine inversion
+   rather than a shade darker.
+   ========================================================================== */
+
+.ei-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  padding: .95rem 1.6rem;
+  border: 1px solid transparent;
+  border-radius: var(--ei-r);
+  font-family: var(--ei-body);
+  font-size: .9rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  line-height: 1;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background var(--ei-dur-ui) var(--ei-ease-ui),
+    border-color var(--ei-dur-ui) var(--ei-ease-ui),
+    color var(--ei-dur-ui) var(--ei-ease-ui),
+    transform var(--ei-dur-ui) var(--ei-ease-ui);
+}
+
+.ei-btn svg { width: 1.05em; height: 1.05em; flex: none; }
+.ei-btn:active { transform: translateY(1px); }
+
+.ei-btn--primary {
+  background: var(--ei-orange);
+  color: var(--ei-graphite);
+  border-color: var(--ei-orange);
+}
+.ei-btn--primary:hover {
+  background: var(--ei-burnt);
+  border-color: var(--ei-burnt);
+  color: var(--ei-white);
+}
+
+.ei-btn--outline {
+  background: transparent;
+  color: var(--ei-burnt);
+  border-color: var(--ei-orange);
+}
+.ei-btn--outline:hover {
+  background: var(--ei-burnt);
+  border-color: var(--ei-burnt);
+  color: var(--ei-white);
+}
+
+/* On a dark or video ground. */
+.ei-btn--light {
+  background: var(--ei-white);
+  color: var(--ei-graphite);
+  border-color: var(--ei-white);
+}
+.ei-btn--light:hover { background: var(--ei-ember); border-color: var(--ei-ember); }
+
+.ei-btn--ghost {
+  background: transparent;
+  color: var(--ei-white);
+  border-color: rgba(255, 255, 255, .55);
+}
+.ei-btn--ghost:hover { background: rgba(255, 255, 255, .12); border-color: var(--ei-white); }
+
+/* ---- Text link with a travelling arrow ----------------------------------
+   The arrow moves on hover; the rule under the label draws in from the left.
+   Used for "Learn more" and "View all products". */
+.ei-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  font-family: var(--ei-body);
+  font-size: .92rem;
+  font-weight: 600;
+  letter-spacing: .01em;
+  color: var(--ei-burnt);
+  position: relative;
+  padding-bottom: .3rem;
+}
+.ei-link::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  height: 2px;
+  width: 100%;
+  background: var(--ei-orange);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-link:hover::after { transform: scaleX(1); }
+.ei-link svg { width: 1.05em; height: 1.05em; transition: transform var(--ei-dur-ui) var(--ei-ease-ui); }
+.ei-link:hover svg { transform: translateX(4px); }
+
+
+/* ==========================================================================
+   Focus
+
+   One visible ring for every interactive element on the page. Section files
+   must not override this — if a control needs a different offset, set
+   --ei-focus-offset on that control rather than redeclaring the outline.
+   ========================================================================== */
+
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--ei-orange);
+  outline-offset: var(--ei-focus-offset, 3px);
+  border-radius: var(--ei-r);
+}
+
+/* Anything sitting on an orange ground needs a ring that is not orange. */
+.ei-on-orange :where(a, button):focus-visible { outline-color: var(--ei-graphite); }
+
+.ei-skip {
+  position: absolute;
+  left: 1rem;
+  top: -5rem;
+  z-index: 900;
+  padding: .8rem 1.3rem;
+  background: var(--ei-graphite);
+  color: var(--ei-white);
+  font-size: .9rem;
+  font-weight: 600;
+  border-radius: var(--ei-r);
+  transition: top var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-skip:focus { top: 1rem; color: var(--ei-white); }
+
+.ei-sr {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* ==========================================================================
+   Scroll reveal
+
+   The one entrance shared by the whole page. Add .ei-reveal to a block and
+   wwwroot/js/reveal.js adds .is-in when it scrolls into view — once, never
+   again. --d staggers siblings; set it in the markup as an inline style.
+
+   Section files must not write their own IntersectionObserver. If a band
+   needs a different entrance, vary it off .is-in, not with a second observer.
+   ========================================================================== */
+
+.ei-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity var(--ei-dur-rise) var(--ei-ease-rise),
+    transform var(--ei-dur-rise) var(--ei-ease-rise);
+  transition-delay: var(--d, 0ms);
+  will-change: opacity, transform;
+}
+.ei-reveal.is-in { opacity: 1; transform: none; }
+
+/* Slide in from the side — for the two halves of a split band. */
+.ei-reveal--left  { transform: translateX(-34px); }
+.ei-reveal--right { transform: translateX(34px); }
+
+/* Once it has arrived, drop the compositor hint. */
+.ei-reveal.is-in { will-change: auto; }
+
+
+/* ==========================================================================
+   Reduced motion
+
+   Everything above is an entrance or a hover. None of it carries meaning that
+   is lost by removing it, so under this query the page simply arrives.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .ei-reveal { opacity: 1; transform: none; }
+}

@@ -1,0 +1,89 @@
+@model EliteIndustries.Controllers.PagesController.StubPage
+@using EliteIndustries.Models
+@*
+    Holding page for a nav section that has not been written yet.
+
+    Deliberately short. It states what the section will cover, says plainly that
+    it is not finished, and gives a route to a human — because a visitor who
+    lands here from the nav still has a live enquiry. Nothing on this page claims
+    a capability, certification or figure that is not already on the site.
+*@
+@{
+    // TEMPORARY — this page still renders against site.css. See _Layout.
+    ViewData["Legacy"] = true;
+}
+
+@section Head {
+    @* Five one-off rules, scoped to this page per docs/build-contract.md — the
+       holding page is a narrow single-column read, which no shared class covers. *@
+    <style>
+        .stub-shell { max-width: 62rem; }
+        .stub-lede { font-size: 1.12rem; color: var(--navy); margin: 0 0 2.25rem; }
+        .stub-card { border-left: 3px solid var(--orange); }
+        .stub-contact { margin: 1.5rem 0 0; }
+        .stub-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.75rem; }
+    </style>
+}
+
+<section class="page-header">
+    <div class="shell">
+        <ol class="breadcrumb">
+            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li>@Model.Section</li>
+            <li aria-current="page">@Model.Title</li>
+        </ol>
+        <h1>@Model.Title</h1>
+    </div>
+</section>
+
+<section class="section">
+    <div class="shell stub-shell">
+
+        <p class="stub-lede">@Model.Blurb</p>
+
+        <div class="info-card stub-card">
+            <h2>This section is being built</h2>
+            <p>
+                The page is not written yet, so there is nothing here to read.
+                If you need this information now, ask us for it directly — we can
+                usually answer a specification question the same working day.
+            </p>
+
+            <ul class="contact-list stub-contact">
+                <li>
+                    <span class="ci" aria-hidden="true"><svg><use href="#i-phone" /></svg></span>
+                    <div>
+                        <strong>@CompanyProfile.PhoneLabel</strong>
+                        <a href="tel:@CompanyProfile.PhonePrimaryHref">@CompanyProfile.PhonePrimary</a><br />
+                        <a href="tel:@CompanyProfile.PhoneSecondaryHref">@CompanyProfile.PhoneSecondary</a>
+                    </div>
+                </li>
+                <li>
+                    <span class="ci" aria-hidden="true"><svg><use href="#i-mail" /></svg></span>
+                    <div>
+                        <strong>Email</strong>
+                        <a href="mailto:@CompanyProfile.Email">@CompanyProfile.Email</a>
+                    </div>
+                </li>
+                <li>
+                    <span class="ci" aria-hidden="true"><svg><use href="#i-clock" /></svg></span>
+                    <div>
+                        <strong>Office hours</strong>
+                        <span>@CompanyProfile.BusinessHours</span>
+                    </div>
+                </li>
+            </ul>
+
+            <div class="stub-actions">
+                <a class="btn btn-primary" asp-controller="Contact" asp-action="Index">
+                    Send an enquiry
+                    <svg width="18" height="18" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+                </a>
+                <a class="btn btn-outline" asp-controller="Products" asp-action="Index">
+                    Browse the catalogue
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>

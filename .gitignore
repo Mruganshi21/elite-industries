@@ -1,0 +1,10 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+appsettings.*.local.json
+
+# Intro media is usually too large for git — keep the README.
+wwwroot/video/*.mp4
+wwwroot/video/*.webm

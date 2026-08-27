@@ -1,0 +1,115 @@
+@using EliteIndustries.Models
+@using EliteIndustries.Services
+@*
+    Homepage hero band.
+
+    Sits directly under the masthead, full-bleed. It is NOT .ei-band — that
+    carries the vertical padding a content band needs; this one has its own
+    height. The masthead above stays exactly what the client signed off: a
+    solid white sticky bar with a hairline under it. The hero starts where that
+    hairline ends and does not reach up behind it.
+
+    The ground is two things. The drawn isometric mesh is always there and is
+    what most mobile visitors actually see, because hero.mp4 is 20.5 MB and is
+    skipped outright on a phone, on a metered or slow connection, and under
+    reduced motion — see shouldSkipVideo() in wwwroot/js/hero.js and the notes
+    in wwwroot/video/README.md. The video, when it is allowed, cross-fades in
+    over the top.
+*@
+@{
+    var heroNames = ProductCatalog.ForNav.Select(p => p.Name).ToList();
+
+    // The slot reserves the width of the longest name so the rails either side
+    // of it do not breathe in and out as the list cycles. Measured here rather
+    // than in JS: the answer is known at render time and never changes.
+    var heroLongest = heroNames.OrderByDescending(n => n.Length).First();
+}
+
+<section class="ei-hero" data-hero aria-labelledby="ei-hero-title">
+
+    <div class="ei-hero-bg" aria-hidden="true">
+        <div class="ei-hero-pool"></div>
+        <div class="ei-hero-mesh"></div>
+
+        @* data-src, not src. The 20.5 MB fetch is hero.js's decision and it
+           does not make it until after window.load and an idle callback, so
+           the clip can never compete with the CSS, the fonts or first paint.
+           preload="none" is the belt to that braces: with the attribute unset
+           a browser may start buffering the moment a src appears. *@
+        <video class="ei-hero-video"
+               data-hero-video
+               data-src="@Url.Content("~" + CompanyProfile.HeroVideoPath)"
+               muted
+               loop
+               playsinline
+               preload="none"
+               tabindex="-1"></video>
+
+        <div class="ei-hero-scrim"></div>
+    </div>
+
+    <div class="ei-shell ei-hero-inner">
+        <div class="ei-hero-copy">
+
+            <p class="ei-hero-eyebrow">@CompanyProfile.Tagline</p>
+
+            <h1 class="ei-hero-title" id="ei-hero-title">@CompanyProfile.Name</h1>
+
+            @*  The rotating shipping mark.
+
+                aria-live="off" because it is ambient: it says what the company
+                makes, it is not an alert, and announcing a new product name
+                every 2.6 seconds would make the page unusable with a screen
+                reader. The names themselves are aria-hidden here and carried
+                instead by the list below, which holds all ten at once — that is
+                what assistive tech and a crawler read, and it is also the array
+                hero.js rotates through, so the two cannot drift apart.
+
+                The sizer is the longest name, visibility:hidden, holding the
+                slot open. The two name layers stack over it absolutely.  *@
+            <div class="ei-hero-mark" data-hero-mark aria-live="off">
+                <span class="ei-hero-mark-rail" aria-hidden="true"></span>
+
+                <span class="ei-hero-mark-slot" aria-hidden="true">
+                    <span class="ei-hero-mark-sizer">@heroLongest</span>
+                    <span class="ei-hero-mark-name is-in" data-hero-name>@heroNames[0]</span>
+                    <span class="ei-hero-mark-name" data-hero-name></span>
+                </span>
+
+                <span class="ei-hero-mark-rail ei-hero-mark-rail--end" aria-hidden="true"></span>
+
+                @* Position in a real list of ten, not decorative numbering. *@
+                <span class="ei-hero-mark-count" data-hero-count aria-hidden="true">01 / @heroNames.Count.ToString("00")</span>
+            </div>
+
+            <ul class="ei-sr" data-hero-names aria-label="Product range">
+                @foreach (var name in heroNames)
+                {
+                    <li>@name</li>
+                }
+            </ul>
+
+            <div class="ei-hero-actions">
+                @* --light and --ghost, the two theme.css variants built for a
+                   dark or video ground. *@
+                <a class="ei-btn ei-btn--light" asp-controller="Products" asp-action="Index">
+                    Explore products
+                    <svg aria-hidden="true" focusable="false"><use href="#i-arrow-right" /></svg>
+                </a>
+
+                <a class="ei-btn ei-btn--ghost" href="@Url.Content("~" + CompanyProfile.BrochurePath)" download>
+                    Download brochure
+                    <svg aria-hidden="true" focusable="false"><use href="#i-download" /></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @* A hint that the page continues, not a control — so it is decorative and
+       aria-hidden rather than a link. An anchor here would promise a
+       destination, and the band it would point at is another piece of work. *@
+    <div class="ei-hero-cue" aria-hidden="true">
+        <span>Scroll</span>
+        <svg focusable="false"><use href="#i-arrow-down" /></svg>
+    </div>
+</section>

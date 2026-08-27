@@ -1,0 +1,165 @@
+@using EliteIndustries.Models
+@using EliteIndustries.Services
+@*
+    Masthead.
+
+    One row: brand left, the five signed-off tabs and the phone number right.
+    The address block and the language picker that used to live up here are
+    gone — the client dropped the language switcher and the search overlay, and
+    the address belongs in the footer. The top of the page is navigation only.
+
+    Two of the five tabs carry a dropdown. Both are <button aria-expanded>
+    rather than a link that also opens something: a control whose entire job is
+    to reveal a panel is a button, and making it an anchor would promise a
+    destination that the About and Products *sections* do have but that this
+    control does not go to. The panel's own first row is the section landing
+    page where one exists.
+*@
+@{
+    // Accepts: home, about, products, usecases, contact. Anything else — and
+    // the deliberate empty string on Privacy, Error and the footer-only stubs —
+    // highlights nothing. "usedcases" is taken as well because that is the
+    // controller name, and the interior views spell it that way today.
+    var nav = ViewData["ActiveNav"] as string ?? "";
+    var onUseCases = nav is "usecases" or "usedcases";
+
+    // AboutController.Index renders overview / ideology / achievements as three
+    // tab panels on one page, so these are fragments rather than routes.
+    var aboutSections = new[]
+    {
+        ("overview",     "Overview"),
+        ("ideology",     "Ideology"),
+        ("achievements", "Achievements")
+    };
+}
+
+<header class="ei-hd" id="siteHeader" data-hd>
+    <div class="ei-shell ei-hd-inner">
+
+        @* The crate mark is the client's existing brand asset, carried across
+           unchanged from the previous build. Do not redraw it. *@
+        <a class="ei-hd-brand" asp-controller="Home" asp-action="Index" aria-label="@CompanyProfile.Name home">
+            <span class="ei-hd-mark" aria-hidden="true">
+                <svg viewBox="0 0 44 44" width="36" height="36">
+                    <rect x="3" y="12" width="38" height="24" rx="2" fill="none" stroke="currentColor" stroke-width="2.6" />
+                    <path d="M12 12v24M22 12v24M32 12v24" stroke="currentColor" stroke-width="2.2" />
+                    <path d="M8 12 22 3l14 9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" />
+                </svg>
+            </span>
+            <span class="ei-hd-wordmark">@CompanyProfile.Name</span>
+        </a>
+
+        <nav class="ei-hd-nav" id="ei-hd-nav" aria-label="Main" data-hd-nav>
+            <ul class="ei-hd-tabs">
+
+                <li class="ei-hd-tab">
+                    <a class="ei-hd-link@(nav == "home" ? " is-current" : "")"
+                       asp-controller="Home" asp-action="Index"
+                       data-hd-tab
+                       aria-current="@(nav == "home" ? "page" : null)">Home</a>
+                </li>
+
+                <li class="ei-hd-tab">
+                    <button class="ei-hd-link@(nav == "about" ? " is-current" : "")"
+                            type="button"
+                            data-hd-tab data-hd-trigger
+                            aria-haspopup="true" aria-expanded="false" aria-controls="ei-hd-panel-about">
+                        About Us
+                        <svg class="ei-hd-caret" aria-hidden="true"><use href="#i-chevron-down" /></svg>
+                    </button>
+
+                    <div class="ei-hd-panel" id="ei-hd-panel-about">
+                        <div class="ei-hd-panel-inner">
+                            <ul class="ei-hd-panel-list">
+                                @foreach (var (fragment, label) in aboutSections)
+                                {
+                                    <li>
+                                        <a class="ei-hd-panel-link"
+                                           asp-controller="About" asp-action="Index" asp-fragment="@fragment">@label</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="ei-hd-tab">
+                    <button class="ei-hd-link@(nav == "products" ? " is-current" : "")"
+                            type="button"
+                            data-hd-tab data-hd-trigger
+                            aria-haspopup="true" aria-expanded="false" aria-controls="ei-hd-panel-products">
+                        Products
+                        <svg class="ei-hd-caret" aria-hidden="true"><use href="#i-chevron-down" /></svg>
+                    </button>
+
+                    @* Ten products. One column runs past the fold on a laptop,
+                       so the panel is two columns on desktop and one in the
+                       mobile accordion — see .ei-hd-panel--wide in shell.css. *@
+                    <div class="ei-hd-panel ei-hd-panel--wide" id="ei-hd-panel-products">
+                        <div class="ei-hd-panel-inner">
+                            <ul class="ei-hd-panel-list">
+                                @foreach (var product in ProductCatalog.ForNav)
+                                {
+                                    <li>
+                                        <a class="ei-hd-panel-link"
+                                           asp-controller="Products" asp-action="Detail" asp-route-slug="@product.Slug">@product.Name</a>
+                                    </li>
+                                }
+                                <li class="ei-hd-panel-all">
+                                    <a class="ei-hd-panel-link" asp-controller="Products" asp-action="Index">
+                                        View all products
+                                        <svg aria-hidden="true"><use href="#i-arrow-right" /></svg>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="ei-hd-tab">
+                    <a class="ei-hd-link@(onUseCases ? " is-current" : "")"
+                       asp-controller="UsedCases" asp-action="Index"
+                       data-hd-tab
+                       aria-current="@(onUseCases ? "page" : null)">Use Cases</a>
+                </li>
+
+                <li class="ei-hd-tab">
+                    <a class="ei-hd-link@(nav == "contact" ? " is-current" : "")"
+                       asp-controller="Contact" asp-action="Index"
+                       data-hd-tab
+                       aria-current="@(nav == "contact" ? "page" : null)">Contact Us</a>
+                </li>
+            </ul>
+
+            @* Repeated inside the slide-in panel because the utility cluster is
+               hidden below 1000px — without this the phone number would be
+               unreachable on a phone, which is where it is most likely used. *@
+            <div class="ei-hd-nav-tail">
+                <a class="ei-hd-phone" href="tel:@CompanyProfile.PhonePrimaryHref">
+                    <svg aria-hidden="true"><use href="#i-phone" /></svg>
+                    @CompanyProfile.PhonePrimary
+                </a>
+            </div>
+        </nav>
+
+        <div class="ei-hd-utils">
+            <a class="ei-hd-phone" href="tel:@CompanyProfile.PhonePrimaryHref">
+                <svg aria-hidden="true"><use href="#i-phone" /></svg>
+                @CompanyProfile.PhonePrimary
+            </a>
+
+            @* The label, not just the state, flips on open — a screen reader
+               announcing "Open menu, expanded" is a contradiction. *@
+            <button class="ei-hd-burger" type="button"
+                    data-hd-burger
+                    aria-label="Open menu" aria-expanded="false" aria-controls="ei-hd-nav">
+                <svg class="ei-hd-burger-open" aria-hidden="true"><use href="#i-menu" /></svg>
+                <svg class="ei-hd-burger-close" aria-hidden="true"><use href="#i-close" /></svg>
+            </button>
+        </div>
+    </div>
+
+    @* Inside the header so it inherits the sticky stacking context: the scrim
+       must dim the page without ever covering the bar that closes it. *@
+    <div class="ei-hd-scrim" data-hd-scrim></div>
+</header>

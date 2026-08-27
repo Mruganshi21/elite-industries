@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" role="img">
+  <title>Security Seal</title>
+  <rect width="400" height="300" fill="#FFF1E6"/>
+  <g stroke="#E4E1DC" stroke-width="1">
+    <path d="M0 232h400"/>
+  </g>
+  <g stroke="#F26A1B" stroke-width="2" stroke-linecap="round" opacity=".55">
+    <path d="M18 18h20M18 18v20"/>
+    <path d="M382 18h-20M382 18v20"/>
+    <path d="M18 282h20M18 282v-20"/>
+    <path d="M382 282h-20M382 282v-20"/>
+  </g>
+
+  <!-- container door edge -->
+  <g fill="#FFFFFF" stroke="#22262B" stroke-width="2.4" stroke-linejoin="round">
+    <path d="M52 60h96v212H52z"/>
+    <path d="M252 60h96v212h-96z"/>
+  </g>
+  <g stroke="#22262B" stroke-width="1.6" opacity=".45">
+    <path d="M70 60v212M88 60v212M106 60v212M124 60v212"/>
+    <path d="M270 60v212M288 60v212M306 60v212M324 60v212"/>
+  </g>
+  <!-- hasp plates -->
+  <g fill="#FFF1E6" stroke="#22262B" stroke-width="2.4" stroke-linejoin="round">
+    <path d="M148 138h32v36h-32zM220 138h32v36h-32z"/>
+  </g>
+  <!-- the bolt: pin through both plates, barrel locking it -->
+  <path d="M162 156h76" stroke="#22262B" stroke-width="9" stroke-linecap="round"/>
+  <g fill="#F26A1B" stroke="#B8400E" stroke-width="2.4" stroke-linejoin="round">
+    <path d="M150 138h24v36h-24z"/>
+    <path d="M226 136h30v40h-30z"/>
+  </g>
+  <!-- the number, which is what the seal actually is -->
+  <g fill="#FFFFFF" stroke="#22262B" stroke-width="2.2" stroke-linejoin="round">
+    <path d="M170 196h64v30h-64z"/>
+  </g>
+  <text x="202" y="216" text-anchor="middle" font-family="'IBM Plex Mono',monospace"
+        font-size="15" font-weight="500" fill="#22262B">EI 0472</text>
+  <path d="M202 176v20" stroke="#22262B" stroke-width="2.2"/>
+</svg>

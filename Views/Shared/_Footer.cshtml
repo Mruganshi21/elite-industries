@@ -1,0 +1,130 @@
+@using EliteIndustries.Models
+@using EliteIndustries.Services
+@*
+    Footer.
+
+    The same job the previous footer did — identity, contact, the link columns,
+    the brochure and the legal bar — restyled onto the dark ground and pruned to
+    the new information architecture.
+
+    Gone, because the pages behind them no longer exist in the signed-off IA:
+    Our Brands, Events, News, Industries, and the whole Media column with them.
+    "Solutions" was only ever a second name for the Used Cases page and is now
+    labelled Use Cases, matching the header tab.
+
+    Everything on the ink ground is white or an alpha white. --ei-steel and
+    --ei-steel-soft are legible on the shell and are not legible here; the
+    colour notes in shell.css say which value is doing what.
+*@
+
+<footer class="ei-ft">
+
+    <div class="ei-shell ei-ft-top">
+
+        <div class="ei-ft-brand">
+            <a class="ei-ft-lockup" asp-controller="Home" asp-action="Index" aria-label="@CompanyProfile.Name home">
+                <span class="ei-ft-mark" aria-hidden="true">
+                    <svg viewBox="0 0 44 44" width="46" height="46">
+                        <rect x="3" y="12" width="38" height="24" rx="2" fill="none" stroke="currentColor" stroke-width="2.6" />
+                        <path d="M12 12v24M22 12v24M32 12v24" stroke="currentColor" stroke-width="2.2" />
+                        <path d="M8 12 22 3l14 9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" />
+                    </svg>
+                </span>
+                <span class="ei-ft-wordmark">@CompanyProfile.Name</span>
+            </a>
+
+            <address class="ei-ft-address">
+                @CompanyProfile.LegalName<br />
+                @CompanyProfile.StreetAddress<br />
+                @CompanyProfile.City, @CompanyProfile.Region @CompanyProfile.PostalCode<br />
+                @CompanyProfile.Country
+            </address>
+
+            @* Both numbers are dialable. On a desktop that costs nothing; on a
+               phone it is the difference between an enquiry and a copy-paste. *@
+            <p class="ei-ft-lines">
+                <a href="tel:@CompanyProfile.PhonePrimaryHref">@CompanyProfile.PhonePrimary</a>
+                <span class="ei-ft-sep" aria-hidden="true">/</span>
+                <a href="tel:@CompanyProfile.PhoneSecondaryHref">@CompanyProfile.PhoneSecondary</a>
+            </p>
+
+            <p class="ei-ft-mail">
+                <svg aria-hidden="true"><use href="#i-mail" /></svg>
+                <a href="mailto:@CompanyProfile.Email">@CompanyProfile.Email</a>
+            </p>
+
+            @* Icon-only, so each one carries its own label. The visible glyph is
+               aria-hidden and the accessible name comes from the link. *@
+            <ul class="ei-ft-social">
+                <li><a href="@CompanyProfile.LinkedIn" target="_blank" rel="noopener" aria-label="@CompanyProfile.Name on LinkedIn"><svg aria-hidden="true"><use href="#i-linkedin" /></svg></a></li>
+                <li><a href="@CompanyProfile.Facebook" target="_blank" rel="noopener" aria-label="@CompanyProfile.Name on Facebook"><svg aria-hidden="true"><use href="#i-facebook" /></svg></a></li>
+                <li><a href="@CompanyProfile.Twitter" target="_blank" rel="noopener" aria-label="@CompanyProfile.Name on X"><svg aria-hidden="true"><use href="#i-twitter" /></svg></a></li>
+                <li><a href="@CompanyProfile.YouTube" target="_blank" rel="noopener" aria-label="@CompanyProfile.Name on YouTube"><svg aria-hidden="true"><use href="#i-youtube" /></svg></a></li>
+            </ul>
+        </div>
+
+        <nav class="ei-ft-nav" aria-label="Footer">
+
+            <div class="ei-ft-col">
+                <h2 class="ei-ft-heading">Company</h2>
+                <ul class="ei-ft-list">
+                    <li><a asp-controller="About" asp-action="Index">About Us</a></li>
+                    <li><a asp-controller="UsedCases" asp-action="Index">Use Cases</a></li>
+                    <li><a asp-controller="Contact" asp-action="Index">Contact Us</a></li>
+                    <li><a asp-controller="Pages" asp-action="Stub" asp-route-slug="careers">Careers</a></li>
+                    <li><a asp-controller="Pages" asp-action="Stub" asp-route-slug="locations">Locations</a></li>
+                </ul>
+            </div>
+
+            <div class="ei-ft-col">
+                <h2 class="ei-ft-heading">Products</h2>
+                @* The five featured lines, not the first five in the catalogue —
+                   the footer is a shortcut to what sells, and the flag on the
+                   product is where that judgement is recorded. *@
+                <ul class="ei-ft-list">
+                    @foreach (var product in ProductCatalog.All.Where(p => p.IsFeatured).Take(5))
+                    {
+                        <li><a asp-controller="Products" asp-action="Detail" asp-route-slug="@product.Slug">@product.Name</a></li>
+                    }
+                    <li><a asp-controller="Products" asp-action="Index">All products</a></li>
+                </ul>
+            </div>
+
+            <div class="ei-ft-col">
+                <h2 class="ei-ft-heading">Legal &amp; Privacy</h2>
+                <ul class="ei-ft-list">
+                    <li><a asp-controller="Pages" asp-action="Stub" asp-route-slug="accessibility">Accessibility</a></li>
+                    <li><a asp-controller="Pages" asp-action="Stub" asp-route-slug="cookies-policy">Cookies Policy</a></li>
+                    <li><a asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+                    <li><a asp-controller="Pages" asp-action="Stub" asp-route-slug="terms-of-website-use">Terms of Website Use</a></li>
+                </ul>
+            </div>
+
+            <div class="ei-ft-col">
+                <h2 class="ei-ft-heading">Brochure</h2>
+                <a class="ei-ft-download" href="@CompanyProfile.BrochurePath" download>
+                    <svg aria-hidden="true"><use href="#i-download" /></svg>
+                    Product range, PDF
+                </a>
+                <p class="ei-ft-hours">
+                    <svg aria-hidden="true"><use href="#i-clock" /></svg>
+                    @CompanyProfile.BusinessHours
+                </p>
+            </div>
+        </nav>
+    </div>
+
+    <div class="ei-ft-base">
+        <div class="ei-shell ei-ft-base-inner">
+            <span>&copy; @DateTime.Now.Year @CompanyProfile.LegalName. All rights reserved.</span>
+            <span class="ei-ft-standards">ISO 9001:2015 Certified &middot; ISPM-15 Registered</span>
+            @* An in-page jump, not a scripted scroll: it works with the script
+               blocked, and honours the smooth-scroll setting theme.css already
+               drops under prefers-reduced-motion. *@
+            <a class="ei-ft-totop" href="#siteHeader">
+                Back to top
+                <svg aria-hidden="true"><use href="#i-arrow-up" /></svg>
+            </a>
+        </div>
+    </div>
+</footer>

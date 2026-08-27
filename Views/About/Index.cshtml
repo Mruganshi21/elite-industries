@@ -1,0 +1,368 @@
+@{
+    ViewData["Title"] = "About Us";
+    ViewData["ActiveNav"] = "about";
+    // TEMPORARY — this page still renders against site.css. See _Layout.
+    ViewData["Legacy"] = true;
+    ViewData["SeoTitle"] = $"Leading Provider of {CompanyProfile.ProductCategory} for Container and Cargo Shipping | {CompanyProfile.Name}";
+    ViewData["Description"] = $"{CompanyProfile.Name} has manufactured export packaging and material handling products since {CompanyProfile.FoundedYear} from {CompanyProfile.ShortAddress} — ISO 9001:2015 certified, ISPM-15 registered.";
+}
+
+<section class="page-header">
+    <div class="shell">
+        <ol class="breadcrumb">
+            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li aria-current="page">About Us</li>
+        </ol>
+        <h1>About Us</h1>
+        <p>Manufacturer and wholesaler of export packaging and material handling products for container and cargo shipping since @CompanyProfile.FoundedYear.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="shell">
+
+        <div class="tabs" role="tablist" aria-label="About @CompanyProfile.Name">
+            <button class="tab" type="button" role="tab" id="tab-overview"
+                    aria-controls="overview" aria-selected="true" tabindex="0">Overview</button>
+            <button class="tab" type="button" role="tab" id="tab-ideology"
+                    aria-controls="ideology" aria-selected="false" tabindex="-1">Ideology</button>
+            <button class="tab" type="button" role="tab" id="tab-achievements"
+                    aria-controls="achievements" aria-selected="false" tabindex="-1">Achievements</button>
+        </div>
+
+        <!-- ============================== overview ============================== -->
+        <div class="tab-panel" id="overview" role="tabpanel" aria-labelledby="tab-overview">
+
+            <div class="section-head reveal">
+                <span class="eyebrow">Company Overview</span>
+                <h2>@CompanyProfile.YearsOfExperience years of packing cargo that arrives intact</h2>
+                <p class="lede">
+                    @CompanyProfile.LegalName was established in @CompanyProfile.FoundedYear at
+                    @CompanyProfile.ShortAddress, supplying corrosion protection and load-securing
+                    materials to engineering exporters shipping out of the west-coast ports.
+                </p>
+            </div>
+
+            <div class="split wide-left reveal">
+                <div>
+                    <h3>How we started</h3>
+                    <p>
+                        The company began as a strapping and stretch film converter serving a handful of
+                        machinery exporters. Repeated claims for rust and in-transit shifting pushed the
+                        business towards the two problems that damage most containerised cargo — moisture
+                        and movement. Extrusion of VCI film followed, then a wood shop for ISPM-15 treated
+                        pallets and crates, and later container desiccants and lashing systems.
+                    </p>
+                    <p>
+                        Today @CompanyProfile.Name runs its own extrusion, converting, slitting and timber
+                        lines with a team of @CompanyProfile.Employees people, and has completed more than
+                        @CompanyProfile.ProjectsCompleted supply programmes for around
+                        @CompanyProfile.HappyClients customers.
+                    </p>
+
+                    <h3>What we make</h3>
+                    <ul class="check-list">
+                        <li>VCI films, bags, paper and emitters for ferrous and mixed-metal assemblies</li>
+                        <li>ISPM-15 heat-treated pallets, cases, crates and skids</li>
+                        <li>Steel and polyester strapping, seals, buckles and tensioning tools</li>
+                        <li>Machine and hand stretch film, 12 to 35 micron</li>
+                        <li>Container desiccants, dunnage bags, lashing systems and edge protection</li>
+                    </ul>
+
+                    <h3>Our mission</h3>
+                    <p>
+                        To get every consignment to the port of discharge in the condition it left the
+                        packing bay. That means specifying the right barrier for the metal, the right
+                        restraint for the load, and documentation the destination customs officer accepts
+                        without a query. We would rather size a job correctly than sell more material into it.
+                    </p>
+                </div>
+
+                <div>
+                    <h3>Quality standards</h3>
+                    <table class="spec-table">
+                        <tr>
+                            <th>Quality management</th>
+                            <td>ISO 9001:2015 certified</td>
+                        </tr>
+                        <tr>
+                            <th>Wood packaging</th>
+                            <td>ISPM-15 heat treatment, 56&nbsp;&deg;C core for 30 minutes, stamped and recorded</td>
+                        </tr>
+                        <tr>
+                            <th>Film thickness</th>
+                            <td>Gauge checked every shift, &plusmn;5% tolerance on nominal micron</td>
+                        </tr>
+                        <tr>
+                            <th>VCI performance</th>
+                            <td>Razor-blade corrosion test on every masterbatch lot before extrusion</td>
+                        </tr>
+                        <tr>
+                            <th>Strapping</th>
+                            <td>Break load and elongation verified per coil on a calibrated tensile rig</td>
+                        </tr>
+                        <tr>
+                            <th>Desiccants</th>
+                            <td>Gravimetric absorption check at 90% RH before dispatch</td>
+                        </tr>
+                        <tr>
+                            <th>Traceability</th>
+                            <td>Lot number on every roll, coil, bag and pallet</td>
+                        </tr>
+                        <tr>
+                            <th>Despatch documents</th>
+                            <td>Test reports and ISPM-15 treatment records travel with the consignment</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================== ideology ============================== -->
+        <div class="tab-panel" id="ideology" role="tabpanel" aria-labelledby="tab-ideology" hidden>
+
+            <div class="section-head reveal">
+                <span class="eyebrow">Our Ideology</span>
+                <h2>Packaging is a load calculation, not a wrapper</h2>
+                <p class="lede">
+                    A container crossing the equator sees 40&nbsp;&deg;C temperature swings, condensation
+                    on the roof panels and continuous vibration for four to six weeks. These are the
+                    working principles we apply to every specification we write.
+                </p>
+            </div>
+
+            <div class="grid cols-3 reveal">
+                <div class="info-card">
+                    <span class="card-icon"><svg aria-hidden="true"><use href="#i-shield" /></svg></span>
+                    <h3>Specify for the voyage</h3>
+                    <p>
+                        Barrier grade, desiccant quantity and lashing capacity are calculated from the
+                        metal, the net weight, the route and the transit time — not copied from the
+                        last order.
+                    </p>
+                </div>
+
+                <div class="info-card">
+                    <span class="card-icon"><svg aria-hidden="true"><use href="#i-factory" /></svg></span>
+                    <h3>Make it ourselves</h3>
+                    <p>
+                        Extrusion, converting, slitting and timber treatment run in-house. Controlling the
+                        line is the only reliable way to hold film gauge, VCI dosing and treatment records.
+                    </p>
+                </div>
+
+                <div class="info-card">
+                    <span class="card-icon"><svg aria-hidden="true"><use href="#i-container" /></svg></span>
+                    <h3>Test before it ships</h3>
+                    <p>
+                        Corrosion, tensile, absorption and gauge checks are run on our own samples and
+                        recorded against the lot. A test figure is worth more than a claim.
+                    </p>
+                </div>
+
+                <div class="info-card">
+                    <span class="card-icon"><svg aria-hidden="true"><use href="#i-globe" /></svg></span>
+                    <h3>Clear customs cleanly</h3>
+                    <p>
+                        Wood packaging is heat treated and marked to ISPM-15 so consignments are not held,
+                        re-treated or turned back at the destination port.
+                    </p>
+                </div>
+
+                <div class="info-card">
+                    <span class="card-icon"><svg aria-hidden="true"><use href="#i-truck" /></svg></span>
+                    <h3>Hold the schedule</h3>
+                    <p>
+                        Buffer stock on fast-moving films, strapping and desiccants, so a packing bay is
+                        never idle waiting on consumables ahead of a vessel cut-off.
+                    </p>
+                </div>
+
+                <div class="info-card">
+                    <span class="card-icon"><svg aria-hidden="true"><use href="#i-users" /></svg></span>
+                    <h3>Train the packing bay</h3>
+                    <p>
+                        Our engineers work on the floor with the packing team on sealing, tension settings
+                        and lashing patterns. Good material applied badly still ends in a claim.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================ achievements ============================ -->
+        <div class="tab-panel" id="achievements" role="tabpanel" aria-labelledby="tab-achievements" hidden>
+
+            <div class="section-head reveal">
+                <span class="eyebrow">Achievements</span>
+                <h2>What we have built since @CompanyProfile.FoundedYear</h2>
+                <p class="lede">
+                    Growth has followed capability — each step brought in a process we had previously
+                    been buying from someone else.
+                </p>
+            </div>
+
+            <div class="split wide-left reveal">
+                <div>
+                    <ul class="timeline">
+                        <li>
+                            <span class="year">@CompanyProfile.FoundedYear</span>
+                            <p>
+                                Founded at @CompanyProfile.ShortAddress as a converter of stretch film and
+                                strapping for local machinery exporters.
+                            </p>
+                        </li>
+                        <li>
+                            <span class="year">@(CompanyProfile.FoundedYear + 5)</span>
+                            <p>
+                                First blown-film extrusion line commissioned, bringing VCI film production
+                                in-house instead of buying converted stock.
+                            </p>
+                        </li>
+                        <li>
+                            <span class="year">@(CompanyProfile.FoundedYear + 9)</span>
+                            <p>
+                                Timber shop and heat-treatment chamber added; registered for ISPM-15
+                                treatment and marking of pallets, cases and crates.
+                            </p>
+                        </li>
+                        <li>
+                            <span class="year">@(CompanyProfile.FoundedYear + 13)</span>
+                            <p>
+                                Quality management system certified to ISO 9001, covering extrusion,
+                                converting, timber treatment and despatch.
+                            </p>
+                        </li>
+                        <li>
+                            <span class="year">@(CompanyProfile.FoundedYear + 17)</span>
+                            <p>
+                                In-house test laboratory set up for razor-blade corrosion testing, tensile
+                                break-load checks and gravimetric desiccant absorption.
+                            </p>
+                        </li>
+                        <li>
+                            <span class="year">@(CompanyProfile.FoundedYear + 20)</span>
+                            <p>
+                                Container desiccants and dunnage bags added to the range; first direct
+                                shipments to buyers in the Gulf and South East Asia.
+                            </p>
+                        </li>
+                        <li>
+                            <span class="year">@(CompanyProfile.FoundedYear + 23)</span>
+                            <p>
+                                Second extrusion line and automatic slitting installed, taking VCI and
+                                stretch film capacity past 300 tonnes a month.
+                            </p>
+                        </li>
+                        <li>
+                            <span class="year">@(CompanyProfile.FoundedYear + 26)</span>
+                            <p>
+                                Lashing and load-securing range introduced — web lashings, edge protection
+                                and container fittings — alongside on-site packing surveys.
+                            </p>
+                        </li>
+                        <li>
+                            <span class="year">@DateTime.Now.Year</span>
+                            <p>
+                                @CompanyProfile.Employees people across manufacturing, testing and
+                                despatch, with more than @CompanyProfile.ProjectsCompleted supply
+                                programmes completed for around @CompanyProfile.HappyClients customers.
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3>By the numbers</h3>
+                    <table class="spec-table">
+                        <tr>
+                            <th>Established</th>
+                            <td>@CompanyProfile.FoundedYear (@CompanyProfile.YearsOfExperience years)</td>
+                        </tr>
+                        <tr>
+                            <th>Works</th>
+                            <td>@CompanyProfile.StreetAddress, @CompanyProfile.ShortAddress</td>
+                        </tr>
+                        <tr>
+                            <th>Team</th>
+                            <td>@CompanyProfile.Employees across manufacturing, testing and despatch</td>
+                        </tr>
+                        <tr>
+                            <th>Supply programmes</th>
+                            <td>@CompanyProfile.ProjectsCompleted+ completed</td>
+                        </tr>
+                        <tr>
+                            <th>Customers served</th>
+                            <td>@CompanyProfile.HappyClients+</td>
+                        </tr>
+                        <tr>
+                            <th>Product families</th>
+                            <td>VCI, timber packaging, strapping, stretch film, desiccants, lashing</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="section-sm">
+                <div class="section-head reveal">
+                    <span class="eyebrow">Certifications</span>
+                    <h2>What we hold, and what it covers</h2>
+                </div>
+
+                <div class="grid cols-3 reveal">
+                    <div class="info-card">
+                        <span class="card-icon"><svg aria-hidden="true"><use href="#i-award" /></svg></span>
+                        <h3>ISO 9001:2015</h3>
+                        <p>
+                            Quality management system certified across extrusion, converting, timber
+                            treatment, testing and despatch, with annual surveillance audits.
+                        </p>
+                    </div>
+
+                    <div class="info-card">
+                        <span class="card-icon"><svg aria-hidden="true"><use href="#i-shield" /></svg></span>
+                        <h3>ISPM-15 registered</h3>
+                        <p>
+                            Registered facility for heat treatment and marking of solid wood packaging —
+                            56&nbsp;&deg;C core temperature held for 30 minutes, with treatment records
+                            issued per consignment.
+                        </p>
+                    </div>
+
+                    <div class="info-card">
+                        <span class="card-icon"><svg aria-hidden="true"><use href="#i-container" /></svg></span>
+                        <h3>In-house test laboratory</h3>
+                        <p>
+                            Corrosion, tensile, gauge and humidity testing run on our own lots, so each
+                            despatch leaves with figures against it rather than a generic datasheet.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="cta-band">
+    <div class="shell">
+        <div class="cta-inner reveal">
+            <div>
+                <h2>Send us the packing list</h2>
+                <p>
+                    Give us the metal, the net weight, the route and the transit time, and we will specify
+                    the barrier, restraint and desiccant quantity for the job.
+                </p>
+            </div>
+            <div class="cta-actions">
+                <a class="btn btn-light btn-lg" href="@CompanyProfile.BrochurePath" download>
+                    <svg width="18" height="18" aria-hidden="true"><use href="#i-download" /></svg>
+                    Download Brochure
+                </a>
+                <a class="btn btn-ghost-light btn-lg" asp-controller="Contact" asp-action="Index">
+                    Contact Us
+                    <svg width="18" height="18" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

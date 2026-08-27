@@ -1,0 +1,415 @@
+/* ==========================================================================
+   Elite Industries — homepage hero band
+
+   The full-bleed band directly under the masthead: video ground, wordmark,
+   the rotating shipping mark, two calls to action, a scroll cue.
+
+   NAMESPACE
+   ---------
+   .ei-hero and .ei-hero-* — nothing else. Every selector in this file is the
+   block or a descendant of it, so nothing here can reach the masthead above,
+   the intro card over it, or the band that follows. No token is declared here;
+   every colour, face, radius, easing and duration comes from theme.css, and
+   the layout gutter comes from .ei-shell.
+
+   STACKING
+   --------
+   The block sets `isolation: isolate`, so the layers inside it (mesh, pool,
+   video, scrim, content) resolve against each other and can never be painted
+   over the sticky masthead, which sits at z-index 200 in the page's own
+   stacking context.
+
+   THE GROUND IS TWO THINGS
+   ------------------------
+   hero.mp4 is 20.5 MB and is skipped outright on a phone, on a metered or slow
+   connection, and under reduced motion — see shouldSkipVideo() in hero.js.
+   That means most mobile visitors never see the video at all, so the fallback
+   below is not a grey holding colour: it is the real background, drawn from
+   the tokens as an isometric line mesh lit by a warm pool. The video, when it
+   is allowed to load, cross-fades in on top of it.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   The band
+
+   Not .ei-band — that carries the vertical padding a content band needs and
+   would fight the fixed height this one wants. clamp() gives it 88vh with a
+   900px ceiling on a tall desktop and a 440px floor, which is what keeps a
+   landscape phone at 380px tall from crushing the wordmark into the buttons.
+   ========================================================================== */
+
+.ei-hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-height: clamp(440px, 88vh, 900px);
+  padding-block: clamp(3rem, 7vh, 5.5rem);
+  overflow: hidden;
+  background: var(--ei-ink);
+  color: var(--ei-white);
+}
+
+/* The masthead is a solid white bar with a --ei-line hairline under it and the
+   client has frozen that. The hero simply starts at the pixel the hairline
+   ends: no negative margin, no pull-up, nothing that would put a dark band
+   under a transparent header the header was never designed to be. */
+.ei-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--ei-ink);
+}
+
+
+/* ==========================================================================
+   The drawn ground
+
+   Two radial pools and three families of hairline, which is what an isometric
+   grid is: verticals plus lines at +30 and -30 degrees. The mask fades the
+   mesh out at the edges so it reads as a lit area of floor rather than as a
+   texture tiled to the crop.
+
+   color-mix rather than a hard-coded rgba: the alphas here are the brand
+   tokens seen through the ground, not new colours, and mixing them keeps them
+   correct if a token is ever retuned.
+   ========================================================================== */
+
+.ei-hero-pool {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(52% 62% at 16% 26%,
+      color-mix(in srgb, var(--ei-orange) 38%, transparent) 0%,
+      transparent 70%),
+    radial-gradient(64% 74% at 88% 96%,
+      color-mix(in srgb, var(--ei-burnt) 30%, transparent) 0%,
+      transparent 72%);
+}
+
+.ei-hero-mesh {
+  position: absolute;
+  /* Bled past the edges so the drift below never walks a hard edge into view. */
+  inset: -12%;
+  background-image:
+    repeating-linear-gradient(30deg,
+      transparent 0 43px,
+      color-mix(in srgb, var(--ei-white) 9%, transparent) 43px 44px),
+    repeating-linear-gradient(-30deg,
+      transparent 0 43px,
+      color-mix(in srgb, var(--ei-white) 9%, transparent) 43px 44px),
+    repeating-linear-gradient(90deg,
+      transparent 0 86px,
+      color-mix(in srgb, var(--ei-orange) 16%, transparent) 86px 87px);
+  -webkit-mask-image: radial-gradient(74% 70% at 34% 44%, #000 8%, transparent 76%);
+          mask-image: radial-gradient(74% 70% at 34% 44%, #000 8%, transparent 76%);
+
+  /* A minute at a time, so it is movement you notice only if you are looking
+     for it. theme.css's reduced-motion block already collapses this to a
+     single instant iteration, so it needs no query of its own. */
+  animation: ei-hero-drift 72s linear infinite;
+}
+
+@keyframes ei-hero-drift {
+  from { background-position: 0 0, 0 0, 0 0; }
+  to   { background-position: 344px 0, -344px 0, 344px 0; }
+}
+
+
+/* ==========================================================================
+   The video
+
+   data-src, not src — hero.js decides when, and whether, this is fetched at
+   all. Until then the element is an empty box over the drawn ground.
+   ========================================================================== */
+
+.ei-hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  /* Long, because it is crossing over artwork that is already good enough to
+     stand alone — a hard cut would announce that the page was waiting. */
+  transition: opacity 1.1s var(--ei-ease-ui);
+}
+
+.ei-hero.is-video-playing .ei-hero-video { opacity: 1; }
+
+/* Contrast, and the reason everything on this band clears 4.5:1 whatever the
+   video happens to be showing. Weighted to the left, where the copy sits: at
+   88% ink over a pure white frame the composite still leaves white type above
+   7:1, and the flat wash underneath covers the right-hand edge where the
+   buttons end. The bottom stop lands the band on the ground the next section
+   starts from. */
+.ei-hero-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg,
+      color-mix(in srgb, var(--ei-ink) 88%, transparent) 0%,
+      color-mix(in srgb, var(--ei-ink) 72%, transparent) 46%,
+      color-mix(in srgb, var(--ei-ink) 46%, transparent) 100%),
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--ei-ink) 30%, transparent) 0%,
+      transparent 30%,
+      color-mix(in srgb, var(--ei-ink) 55%, transparent) 100%);
+}
+
+
+/* ==========================================================================
+   Content
+   ========================================================================== */
+
+.ei-hero-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.ei-hero-copy { max-width: 46rem; }
+
+/* The eyebrow is written here rather than reused from theme.css: .ei-eyebrow
+   is --ei-burnt, which is the orange that is allowed to be text on white and
+   drops to roughly 2.4:1 on this ground. On --ei-ink the safe accent is
+   --ei-orange itself, at 6.9:1 — the same swap the footer headings make. */
+.ei-hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  margin: 0 0 1.15rem;
+  font-family: var(--ei-mono);
+  font-size: .75rem;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ei-orange);
+}
+
+.ei-hero-eyebrow::before {
+  content: "";
+  width: 26px;
+  height: 2px;
+  background: var(--ei-orange);
+  flex: none;
+}
+
+/* Bigger and tighter than the h1 in theme.css, which is scaled for a band
+   head sitting in a column of copy. This one is the top of the page and has a
+   whole viewport behind it. */
+.ei-hero-title {
+  margin: 0 0 clamp(1.25rem, 2.4vw, 1.9rem);
+  font-family: var(--ei-display);
+  font-weight: 800;
+  font-size: clamp(2.9rem, 8.2vw, 6.25rem);
+  line-height: .96;
+  letter-spacing: -.042em;
+  color: var(--ei-white);
+  text-wrap: balance;
+}
+
+
+/* ==========================================================================
+   The rotating shipping mark
+
+   A stencilled crate mark: mono, uppercase, widely tracked, bracket rails on
+   both sides and a counter reading position in a real list of ten. The counter
+   is not decoration — it says how much of the range is being shown, which is a
+   fact about the catalogue rather than a number invented to fill a corner.
+   ========================================================================== */
+
+.ei-hero-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(.55rem, 1.6vw, .9rem);
+  margin-bottom: clamp(1.9rem, 3.5vw, 2.6rem);
+  padding: .55rem 0;
+}
+
+/* The bracket rails. Drawn with borders rather than a glyph so they scale with
+   the line box and stay hairline-thin at every size. */
+.ei-hero-mark-rail {
+  width: 9px;
+  height: 1.9em;
+  flex: none;
+  border-block: 1px solid var(--ei-orange);
+  border-inline-start: 1px solid var(--ei-orange);
+}
+.ei-hero-mark-rail--end {
+  border-inline-start: 0;
+  border-inline-end: 1px solid var(--ei-orange);
+}
+
+/* The slot reserves BOTH dimensions. The sizer inside it is the longest name
+   in the catalogue, rendered with visibility:hidden so it still takes space:
+   without it the h1 above would sit still but the rails either side would
+   breathe in and out on every change, which is the same reflow wearing a
+   different coat. */
+.ei-hero-mark-slot {
+  position: relative;
+  display: inline-block;
+}
+
+.ei-hero-mark-sizer { visibility: hidden; }
+
+.ei-hero-mark-sizer,
+.ei-hero-mark-name {
+  font-family: var(--ei-mono);
+  font-size: clamp(.7rem, 1.5vw, .84rem);
+  font-weight: 500;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  line-height: 1.6;
+  white-space: nowrap;
+  color: var(--ei-white);
+}
+
+/* Two layers, both absolute, so the outgoing and incoming names occupy the
+   same place at the same time and the change is a crossfade rather than a cut.
+   The base state is the incoming state: below the line and invisible. */
+.ei-hero-mark-name {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transform: translateY(.5em);
+  transition:
+    opacity .5s var(--ei-ease-rise),
+    transform .5s var(--ei-ease-rise);
+}
+
+.ei-hero-mark-name.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Declared after .is-in on purpose: the two are the same specificity, and the
+   swap removes one class and adds the other in the same frame. Source order is
+   what makes the leaving name lift instead of dropping back. */
+.ei-hero-mark-name.is-out {
+  opacity: 0;
+  transform: translateY(-.5em);
+}
+
+.ei-hero-mark-count {
+  font-family: var(--ei-mono);
+  font-size: clamp(.66rem, 1.4vw, .78rem);
+  font-weight: 500;
+  letter-spacing: .16em;
+  color: var(--ei-orange);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  transition: opacity .18s var(--ei-ease-ui);
+}
+
+/* A blink on the tick, so the counter is visibly tied to the name that just
+   changed rather than looking like a static caption. */
+.ei-hero-mark-count.is-tick { opacity: .25; }
+
+
+/* ==========================================================================
+   Actions
+   ========================================================================== */
+
+.ei-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+}
+
+
+/* ==========================================================================
+   Scroll cue
+
+   Decorative and aria-hidden: it is a hint that the page continues, not a
+   control. Making it a link would promise a destination, and the section it
+   would point at is built by another hand and may not be there yet.
+   ========================================================================== */
+
+.ei-hero-cue {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1rem, 3vh, 2rem);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  transform: translateX(-50%);
+  font-family: var(--ei-mono);
+  font-size: .64rem;
+  font-weight: 500;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .68);
+}
+
+.ei-hero-cue svg {
+  width: 20px;
+  height: 20px;
+  color: var(--ei-orange);
+  animation: ei-hero-nudge 2.4s var(--ei-ease-ui) infinite;
+}
+
+@keyframes ei-hero-nudge {
+  0%, 100% { transform: translateY(0);   opacity: .55; }
+  50%      { transform: translateY(6px); opacity: 1; }
+}
+
+
+/* ==========================================================================
+   Narrow screens
+
+   Below 760px the video is skipped outright (see hero.js), so this is the
+   layout the drawn ground is designed for. The pool is pulled to the top of
+   the frame, where there is nothing over it, rather than sitting behind the
+   copy and eating its contrast.
+   ========================================================================== */
+
+@media (max-width: 759.98px) {
+  .ei-hero-pool {
+    background:
+      radial-gradient(70% 46% at 62% 12%,
+        color-mix(in srgb, var(--ei-orange) 40%, transparent) 0%,
+        transparent 72%),
+      radial-gradient(80% 50% at 20% 100%,
+        color-mix(in srgb, var(--ei-burnt) 28%, transparent) 0%,
+        transparent 74%);
+  }
+
+  .ei-hero-scrim {
+    background:
+      linear-gradient(180deg,
+        color-mix(in srgb, var(--ei-ink) 58%, transparent) 0%,
+        color-mix(in srgb, var(--ei-ink) 78%, transparent) 45%,
+        color-mix(in srgb, var(--ei-ink) 88%, transparent) 100%);
+  }
+
+  /* Two full-width buttons rather than two half-width ones that wrap their
+     own labels at 360px. */
+  .ei-hero-actions { flex-direction: column; align-items: stretch; }
+}
+
+/* A landscape phone has no room for a cue at the bottom of a 440px band — it
+   would land on top of the buttons. */
+@media (max-height: 560px) {
+  .ei-hero-cue { display: none; }
+}
+
+
+/* ==========================================================================
+   Reduced motion
+
+   theme.css already flattens transitions and animations globally. The two
+   rules here are the ones that need removing rather than shortening: a cue
+   whose whole meaning is the movement, and a rotation that would otherwise sit
+   frozen mid-crossfade. hero.js never starts the rotation under this query, so
+   this only guarantees the first name is the one left standing.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .ei-hero-cue { display: none; }
+  .ei-hero-mark-name.is-in { opacity: 1; transform: none; }
+}

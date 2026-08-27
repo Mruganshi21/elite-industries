@@ -1,0 +1,181 @@
+@using EliteIndustries.Services
+@model EliteIndustries.Models.Product
+@{
+    ViewData["Title"] = Model.Name;
+    ViewData["ActiveNav"] = "products";
+    // TEMPORARY — this page still renders against site.css. See _Layout.
+    ViewData["Legacy"] = true;
+    ViewData["SeoTitle"] = Model.SeoTitle;
+    ViewData["Description"] = Model.Summary;
+
+    var related = ProductCatalog.All.Where(p => p.Slug != Model.Slug).Take(3).ToList();
+
+    // JSON-safe (and correctly escaped) string literal, quotes included.
+    string JsonString(string value) => System.Text.Json.JsonSerializer.Serialize(value);
+}
+
+@section Head {
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "Product",
+      "name": @Html.Raw(JsonString(Model.Name)),
+      "description": @Html.Raw(JsonString(Model.Summary)),
+      "category": @Html.Raw(JsonString(Model.Category)),
+      "image": @Html.Raw(JsonString(Model.ImagePath)),
+      "brand": {
+        "@@type": "Brand",
+        "name": @Html.Raw(JsonString(CompanyProfile.Name))
+      },
+      "manufacturer": {
+        "@@type": "Organization",
+        "name": @Html.Raw(JsonString(CompanyProfile.LegalName))
+      }
+    }
+    </script>
+}
+
+<section class="page-header">
+    <div class="shell">
+        <ol class="breadcrumb">
+            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li><a asp-controller="Products" asp-action="Index">Products</a></li>
+            <li aria-current="page">@Model.Name</li>
+        </ol>
+        <h1>@Model.Name</h1>
+        <p>@Model.Summary</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="shell">
+        <div class="split wide-right reveal">
+
+            <div>
+                <div class="media-frame">
+                    <img src="@Model.ImagePath" alt="@Model.Name" width="900" height="900" />
+                </div>
+            </div>
+
+            <div>
+                <span class="eyebrow">@Model.Category</span>
+                <h2>@Model.Name</h2>
+
+                @foreach (var paragraph in Model.Description)
+                {
+                    <p>@paragraph</p>
+                }
+
+                <div class="cta-actions">
+                    <a class="btn btn-primary btn-lg" asp-controller="Contact" asp-action="Index">
+                        Request a Quote
+                        <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+                    </a>
+                    <a class="btn btn-outline btn-lg" href="@CompanyProfile.BrochurePath" download>
+                        <svg width="16" height="16" aria-hidden="true"><use href="#i-download" /></svg>
+                        Download Brochure
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="section section-alt">
+    <div class="shell">
+        <div class="split reveal">
+
+            <div>
+                <h3>Specifications</h3>
+                <table class="spec-table">
+                    <tbody>
+                    @foreach (var spec in Model.Specifications)
+                    {
+                        <tr>
+                            <th scope="row">@spec.Label</th>
+                            <td>@spec.Value</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+            <div>
+                <h3>Applications</h3>
+                <p>Typically specified for @Model.UseCase and jobs of this kind:</p>
+                <ul class="check-list">
+                    @foreach (var application in Model.Applications)
+                    {
+                        <li>@application</li>
+                    }
+                </ul>
+                <p class="muted">
+                    Working to a specification we have not listed? Send us the drawing or
+                    the transit conditions and we will quote against them.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="shell">
+
+        <div class="section-head reveal">
+            <span class="eyebrow">Related products</span>
+            <h2>Often packed alongside</h2>
+            <p>
+                Most consignments use two or three of these together — protection inside
+                the wrap, securing outside it.
+            </p>
+        </div>
+
+        <div class="grid cols-3 reveal">
+            @foreach (var p in related)
+            {
+                <a class="product-card" asp-controller="Products" asp-action="Detail" asp-route-slug="@p.Slug">
+                    <div class="product-thumb">
+                        <img src="@p.ImagePath" alt="@p.Name" loading="lazy" width="600" height="600" />
+                        <span class="product-tag">@p.Category</span>
+                    </div>
+                    <div class="product-body">
+                        <h3>@p.Name</h3>
+                        <p>@p.Summary</p>
+                        <span class="product-link">
+                            View Details
+                            <svg aria-hidden="true"><use href="#i-arrow-right" /></svg>
+                        </span>
+                    </div>
+                </a>
+            }
+        </div>
+
+    </div>
+</section>
+
+<section class="cta-band reveal">
+    <div class="shell">
+        <div class="cta-inner">
+            <div>
+                <h2>Get a quote on @Model.Name</h2>
+                <p>
+                    Give us the quantity, the destination and the transit time. Quotations
+                    go out within one business day, with the certificates and load data
+                    attached.
+                </p>
+            </div>
+            <div class="cta-actions">
+                <a class="btn btn-light btn-lg" asp-controller="Contact" asp-action="Index">
+                    Request a Quote
+                    <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+                </a>
+                <a class="btn btn-ghost-light btn-lg" href="mailto:@CompanyProfile.Email">
+                    <svg width="16" height="16" aria-hidden="true"><use href="#i-mail" /></svg>
+                    @CompanyProfile.Email
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

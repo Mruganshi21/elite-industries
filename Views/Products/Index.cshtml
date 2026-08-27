@@ -1,0 +1,123 @@
+@model IReadOnlyList<EliteIndustries.Models.Product>
+@{
+    ViewData["Title"] = "Products";
+    ViewData["ActiveNav"] = "products";
+    // TEMPORARY — this page still renders against site.css. See _Layout.
+    ViewData["Legacy"] = true;
+    ViewData["Description"] = $"Export packaging and material handling products from {CompanyProfile.Name} — VCI film, ISPM-15 timber, strapping, lashing, desiccants, dunnage bags and edge protection, manufactured in {CompanyProfile.ShortAddress}.";
+    ViewData["SeoTitle"] = $"Leading Provider of {CompanyProfile.ProductCategory} for Container Shipping | {CompanyProfile.Name}";
+
+    // Set by ProductsController when the header search box submits ?q=. Null on
+    // a plain visit to /Products, which is still the full listing.
+    var query = ViewData["Query"] as string;
+    var searching = !string.IsNullOrWhiteSpace(query);
+}
+
+<section class="page-header">
+    <div class="shell">
+        <ol class="breadcrumb">
+            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li aria-current="page">Products</li>
+        </ol>
+        <h1>Products</h1>
+        @if (searching)
+        {
+            <p>
+                @Model.Count of @EliteIndustries.Services.ProductCatalog.All.Count ranges match
+                “@query”.
+                <a asp-controller="Products" asp-action="Index">Show the full range</a>
+            </p>
+        }
+        else
+        {
+            <p>
+                @Model.Count product ranges covering everything that goes into a container
+                before the doors close — corrosion protection, unitising, securing, moisture
+                control and certified timber packaging.
+            </p>
+        }
+    </div>
+</section>
+
+<section class="section">
+    <div class="shell">
+
+        <div class="section-head reveal" hidden="@searching">
+            <span class="eyebrow">Our Range</span>
+            <h2>Packaging built for the voyage, not the shelf</h2>
+            <p class="lede">
+                Everything below is manufactured or converted in-house at
+                @CompanyProfile.ShortAddress and supplied with the test data, treatment
+                certificates and load ratings your documentation needs. Sizes outside the
+                standard ranges are made to drawing.
+            </p>
+        </div>
+
+        @if (searching && Model.Count == 0)
+        {
+            @* A dead end is still a page. Say what was searched, and give the two
+               routes out that actually help: the full range, or a person. *@
+            <div class="form-card center">
+                <h2>Nothing in the catalogue matches “@query”</h2>
+                <p class="lede">
+                    We convert to drawing as well as to the standard ranges, so the item
+                    may still be something we make. Tell us the cargo and the route.
+                </p>
+                <p>
+                    <a class="btn btn-primary" asp-controller="Products" asp-action="Index">
+                        Browse all @EliteIndustries.Services.ProductCatalog.All.Count ranges
+                    </a>
+                    <a class="btn btn-outline" asp-controller="Contact" asp-action="Index">
+                        Ask us
+                    </a>
+                </p>
+            </div>
+        }
+
+        <div class="grid cols-4 reveal">
+            @foreach (var p in Model)
+            {
+                <a class="product-card" asp-controller="Products" asp-action="Detail" asp-route-slug="@p.Slug">
+                    <div class="product-thumb">
+                        <img src="@p.ImagePath" alt="@p.Name" loading="lazy" width="600" height="600" />
+                        <span class="product-tag">@p.Category</span>
+                    </div>
+                    <div class="product-body">
+                        <h3>@p.Name</h3>
+                        <p>@p.Summary</p>
+                        <span class="product-link">
+                            View Details
+                            <svg aria-hidden="true"><use href="#i-arrow-right" /></svg>
+                        </span>
+                    </div>
+                </a>
+            }
+        </div>
+
+    </div>
+</section>
+
+<section class="cta-band reveal">
+    <div class="shell">
+        <div class="cta-inner">
+            <div>
+                <h2>Not sure which specification you need?</h2>
+                <p>
+                    Tell us the cargo, the route and the transit time. We will size the
+                    desiccant, pick the film gauge and rate the lashing for you — and
+                    quote against it the same week.
+                </p>
+            </div>
+            <div class="cta-actions">
+                <a class="btn btn-light btn-lg" asp-controller="Contact" asp-action="Index">
+                    Request a Quote
+                    <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+                </a>
+                <a class="btn btn-ghost-light btn-lg" href="tel:@CompanyProfile.PhonePrimaryHref">
+                    <svg width="16" height="16" aria-hidden="true"><use href="#i-phone" /></svg>
+                    @CompanyProfile.PhonePrimary
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,101 @@
+@using System.Globalization
+@using EliteIndustries.Models
+@*
+    Homepage stats band.
+
+    Four figures on the dark ground, divided by hairlines — a spec plate, not
+    four cards. It follows the about preview deliberately: that band says who
+    the company is and carries no numbers at all, so this one can be nothing
+    but numbers and the two do not compete.
+
+    WHERE THE FIGURES COME FROM
+    ---------------------------
+    All four read from Models/CompanyProfile.cs and nothing is hard-coded here.
+    YearsOfExperience is computed from FoundedYear and is real. The other three
+    are PLACEHOLDERS — see the comment block above them in CompanyProfile.cs.
+    That file is the one place to change them; this band follows automatically.
+
+    THE COUNT-UP
+    ------------
+    reveal.js already owns both behaviours this band needs and fires each of
+    them exactly once, unobserving the element as it lands. So there is no
+    script here and no observer of any kind:
+
+      .ei-reveal        the entrance
+      [data-count-to]   the count
+
+    Two rules that come with borrowing that counter:
+
+      1. data-count-to must be the bare integer. reveal.js runs it through
+         parseFloat, and parseFloat("2,400") is 2.
+      2. The element's own text must already be the FINAL figure, grouped the
+         same way reveal.js will group it — it formats with toLocaleString on
+         en-IN, so the server formats with en-IN too. reveal.js overwrites the
+         text only while the animation runs, which means a crawler and a
+         visitor with no JS both read the true number rather than a zero.
+
+    There is no suffix support in reveal.js: it assigns to textContent, so
+    anything inside the counting element is wiped on the first frame. The "+"
+    is therefore a sibling, outside it.
+*@
+@{
+    // en-IN, to match the locale reveal.js formats with. If those two ever
+    // disagree the figure visibly re-groups itself on the last frame of the
+    // count, which reads as a glitch.
+    var inr = CultureInfo.GetCultureInfo("en-IN");
+
+    // Icons are picked from the trade rather than from a generic set, and each
+    // one has to already exist in _Icons.cshtml:
+    //   award     — the years, the only earned figure of the four
+    //   container — a consignment packed and shipped
+    //   globe     — clients, who are exporters selling into other markets
+    //   users     — the people on the floor
+    //
+    // Approximate is marked with a "+", exact is not. Years is computed and
+    // therefore exact; the three placeholders are round numbers standing in
+    // for real ones, so they carry the "+" and claim only "at least".
+    var stats = new[]
+    {
+        ("i-award",     CompanyProfile.YearsOfExperience, "Years of Experience", false),
+        ("i-container", CompanyProfile.ProjectsCompleted, "Projects Completed",  true),
+        ("i-globe",     CompanyProfile.HappyClients,      "Happy Clients",       true),
+        ("i-users",     CompanyProfile.Employees,         "Employees",           true)
+    };
+}
+
+<section class="ei-band ei-band--tight ei-stats" aria-labelledby="ei-stats-title">
+
+    @* The brief asks for four stat blocks and no heading, but a landmark with
+       no accessible name is just "region" in a screen reader's list. This
+       names it without putting a heading on screen that the design does not
+       want. *@
+    <h2 class="ei-sr" id="ei-stats-title">@CompanyProfile.Name in numbers</h2>
+
+    <div class="ei-shell">
+        <div class="ei-stats-row">
+            @{ var step = 0; }
+            @foreach (var (icon, value, label, approx) in stats)
+            {
+                @* 90ms apart: the four cells arrive left to right as one
+                   movement rather than together as a block. *@
+                <div class="ei-stats-cell ei-reveal" style="--d:@(step * 90)ms">
+
+                    <svg class="ei-stats-icon" aria-hidden="true" focusable="false"><use href="#@icon" /></svg>
+
+                    <p class="ei-stats-value">
+                        @* data-count-to is the bare integer; the text is the
+                           grouped final figure. See the note at the top. *@
+                        <span class="ei-stats-figure" data-count-to="@value">@value.ToString("N0", inr)</span>@if (approx)
+                        {
+                            <span class="ei-stats-plus">+</span>
+                        }
+                    </p>
+
+                    <p class="ei-stats-label">@label</p>
+                </div>
+
+                step++;
+            }
+        </div>
+    </div>
+</section>

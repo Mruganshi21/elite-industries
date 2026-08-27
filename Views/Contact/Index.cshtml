@@ -1,0 +1,179 @@
+@using EliteIndustries.Services
+@model EliteIndustries.Models.ContactMessage
+@{
+    ViewData["Title"] = "Contact Us";
+    ViewData["ActiveNav"] = "contact";
+    // TEMPORARY — this page still renders against site.css. See _Layout.
+    ViewData["Legacy"] = true;
+    ViewData["SeoTitle"] = $"Contact {CompanyProfile.Name} | Leading Provider of {CompanyProfile.ProductCategory} in {CompanyProfile.ShortAddress}";
+    ViewData["Description"] = $"Contact {CompanyProfile.Name} — {CompanyProfile.StreetAddress}, {CompanyProfile.City}. Call {CompanyProfile.PhonePrimary} or send an enquiry for export packaging and material handling supply. {CompanyProfile.BusinessHours}.";
+
+    // Keyless Google Maps embed — works without an API key. Coordinates come
+    // from CompanyProfile, so a change of premises is made in one place only.
+    var mapSrc = $"https://maps.google.com/maps?q={CompanyProfile.Latitude},{CompanyProfile.Longitude}&z=15&output=embed";
+
+    var successMessage = TempData["ContactSuccess"] as string;
+}
+
+<section class="page-header">
+    <div class="shell">
+        <ol class="breadcrumb">
+            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+            <li aria-current="page">Contact Us</li>
+        </ol>
+        <h1>Contact Us</h1>
+        <p>
+            Tell us the grade, size and quantity you need and we will come back with
+            availability, lead time and a delivered price. Enquiries are answered
+            within one business day.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="shell">
+        <div class="split wide-right">
+
+            <div class="reveal">
+                <div class="section-head">
+                    <span class="eyebrow">Reach Us</span>
+                    <h2>Works and sales office</h2>
+                    <p>
+                        Our plant and sales desk share one address, so the people who quote
+                        you are the people who run the line. Visitors are welcome — call
+                        ahead and we will have the right samples on the table.
+                    </p>
+                </div>
+
+                <ul class="contact-list">
+                    <li>
+                        <span class="ci" aria-hidden="true"><svg><use href="#i-pin" /></svg></span>
+                        <div>
+                            <h4>Address</h4>
+                            <p>@CompanyProfile.StreetAddress</p>
+                            <p>@CompanyProfile.City, @CompanyProfile.Region @CompanyProfile.PostalCode, @CompanyProfile.Country</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="ci" aria-hidden="true"><svg><use href="#i-phone" /></svg></span>
+                        <div>
+                            <h4>Telephone</h4>
+                            <a href="tel:@CompanyProfile.PhonePrimaryHref">@CompanyProfile.PhonePrimary</a>
+                            <a href="tel:@CompanyProfile.PhoneSecondaryHref">@CompanyProfile.PhoneSecondary</a>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="ci" aria-hidden="true"><svg><use href="#i-mail" /></svg></span>
+                        <div>
+                            <h4>Email</h4>
+                            <a href="mailto:@CompanyProfile.Email">@CompanyProfile.Email</a>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="ci" aria-hidden="true"><svg><use href="#i-clock" /></svg></span>
+                        <div>
+                            <h4>Business hours</h4>
+                            <p>@CompanyProfile.BusinessHours</p>
+                            <p>Urgent despatch queries: @CompanyProfile.PhoneLabel</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="reveal">
+                <div class="form-card">
+                    @if (!string.IsNullOrEmpty(successMessage))
+                    {
+                        <div class="alert-success" role="status">@successMessage</div>
+                    }
+
+                    <h3>Send an enquiry</h3>
+                    <p>
+                        Required fields are the minimum we need to quote. The more detail
+                        you give on specification and volume, the closer the first price
+                        will be.
+                    </p>
+
+                    <form asp-controller="Contact" asp-action="Index" method="post" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+                        <div class="form-grid">
+                            <div class="field">
+                                <label asp-for="Name"></label>
+                                <input asp-for="Name" autocomplete="name" placeholder="Your name" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="field">
+                                <label asp-for="Email"></label>
+                                <input asp-for="Email" type="email" autocomplete="email" placeholder="name@company.com" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="field">
+                                <label asp-for="Company"></label>
+                                <input asp-for="Company" autocomplete="organization" placeholder="Company name" />
+                                <span asp-validation-for="Company" class="text-danger"></span>
+                            </div>
+
+                            <div class="field">
+                                <label asp-for="Phone"></label>
+                                <input asp-for="Phone" type="tel" autocomplete="tel" placeholder="+91 00000 00000" />
+                                <span asp-validation-for="Phone" class="text-danger"></span>
+                            </div>
+
+                            <div class="field full">
+                                <label asp-for="ProductInterest"></label>
+                                <select asp-for="ProductInterest">
+                                    <option value="">Any / general enquiry</option>
+                                    @foreach (var product in ProductCatalog.All)
+                                    {
+                                        <option value="@product.Name">@product.Name</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="ProductInterest" class="text-danger"></span>
+                            </div>
+
+                            <div class="field full">
+                                <label asp-for="Body"></label>
+                                <textarea asp-for="Body" rows="6"
+                                          placeholder="Specification, dimensions, monthly volume, destination port and any standard you need us to meet."></textarea>
+                                <span asp-validation-for="Body" class="text-danger"></span>
+                            </div>
+
+                            <div class="field full">
+                                <button type="submit" class="btn btn-primary">
+                                    Send Enquiry
+                                    <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="section-sm section-alt">
+    <div class="shell reveal">
+        <div class="section-head">
+            <span class="eyebrow">Find Us</span>
+            <h2>@CompanyProfile.City works</h2>
+            <p>@CompanyProfile.FullAddress</p>
+        </div>
+
+        <div class="map-frame">
+            <iframe src="@mapSrc"
+                    title="Map showing @CompanyProfile.Name at @CompanyProfile.FullAddress"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                    allowfullscreen></iframe>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

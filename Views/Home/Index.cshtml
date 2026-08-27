@@ -1,0 +1,65 @@
+﻿@model IReadOnlyList<EliteIndustries.Models.Product>
+@using EliteIndustries.Models
+@*
+    Homepage.
+
+    A running order and nothing else. Each band is a partial with its own
+    stylesheet; put markup in the partial, not here. The remaining band
+    (the closing CTA) is a separate piece of work and lands in below the
+    products grid.
+
+    Deliberately does NOT set ViewData["Legacy"]: site.css must never load on
+    the rebuilt homepage. The model is the featured product set and is passed
+    straight through to _Products.
+*@
+@{
+    ViewData["Title"] = "Home";
+    ViewData["ActiveNav"] = "home";
+    ViewData["SeoTitle"] = $"Leading Provider of {CompanyProfile.ProductCategory} for Container Shipping | {CompanyProfile.Name}";
+    ViewData["Description"] = $"{CompanyProfile.Name} manufactures and wholesales export packaging and material handling products — VCI films, steel strapping, ISPM-15 crates, desiccants and lashing systems — for container and cargo shipping. Established {CompanyProfile.FoundedYear} in {CompanyProfile.ShortAddress}.";
+}
+
+@section Head {
+    @* Loaded after theme.css and shell.css, so the page stylesheets are last
+       and win where they genuinely need to. Neither reaches outside its own
+       prefix, so neither has to. *@
+    <link rel="stylesheet" href="~/css/intro.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/hero.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/about.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/stats.css" asp-append-version="true" />
+
+    @* product-card.css is the SHARED card component, not a homepage file —
+       the Products listing page links the same stylesheet. products.css is
+       the band around it. Card first: the band only lays the cards out and
+       has nothing to override in them. *@
+    <link rel="stylesheet" href="~/css/product-card.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/products.css" asp-append-version="true" />
+
+    @* The intro clip is the first thing on screen and the card is useless
+       until it plays, so it is fetched alongside the CSS rather than waiting to
+       be discovered in the markup. 482 KB, and the trade-off is real: someone
+       who has already seen the card this session downloads it anyway, because
+       whether they have is a sessionStorage answer the server cannot know at
+       render time. hero.mp4 is emphatically NOT preloaded — see the loading
+       policy in wwwroot/js/hero.js. *@
+    <link rel="preload" href="@Url.Content("~" + CompanyProfile.IntroVideoPath)" as="video" type="video/mp4" />
+}
+
+@* First in the body, so the card covers the page — masthead included — from
+   first paint. It carries its own parser-blocking <script>; the reason it is
+   not in the Scripts section is inside the partial. *@
+<partial name="_Intro" />
+
+<partial name="_Hero" />
+
+<partial name="_About" />
+
+<partial name="_Stats" />
+
+@* Handed ProductCatalog.Featured(6) by HomeController. The band renders
+   whatever it is given and does not re-slice it. *@
+<partial name="_Products" model="Model" />
+
+@section Scripts {
+    <script src="~/js/hero.js" asp-append-version="true" defer></script>
+}

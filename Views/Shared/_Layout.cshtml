@@ -1,0 +1,102 @@
+@using EliteIndustries.Models
+@*
+    The shared shell. Head, header, main, footer, scripts — and nothing else.
+    Every piece of navigation markup now lives in _Header and _Footer, so this
+    file stays short enough to read in one go and a change to the nav does not
+    touch the document head.
+*@
+@{
+    // ------------------------------------------------------------------ SEO --
+    // Three levers, in order of specificity: a page sets Title and gets the
+    // consistent suffix for free, or sets SeoTitle to take the whole line.
+    var pageTitle = ViewData["Title"] as string ?? CompanyProfile.Tagline;
+    var seoTitle = ViewData["SeoTitle"] as string ?? $"{pageTitle} | {CompanyProfile.Name}";
+    var metaDescription = ViewData["Description"] as string
+        ?? $"{CompanyProfile.Name} — manufacturer and wholesaler of export packaging and material handling products for container and cargo shipping. Established {CompanyProfile.FoundedYear}, {CompanyProfile.ShortAddress}.";
+
+    // --------------------------------------------------- TEMPORARY: legacy --
+    // About, Products, Contact, UsedCases, Privacy, Error and Pages/Stub have
+    // not been rebuilt onto theme.css yet and still depend on site.css and its
+    // unprefixed tokens (--orange, --navy, --cream). Those seven views set
+    // ViewData["Legacy"] = true and get the old stylesheet; nothing else does,
+    // so site.css never reaches a rebuilt page and cannot fight theme.css there.
+    //
+    // DELETE this flag, the conditional <link> below, and the ViewData line in
+    // each of those seven views as each page is rebuilt. When the last one goes,
+    // site.css goes with it. Nothing else in the build depends on this.
+    var legacy = ViewData["Legacy"] as bool? == true;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#F26A1B" />
+
+    <title>@seoTitle</title>
+    <meta name="description" content="@metaDescription" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="@CompanyProfile.Name" />
+    <meta property="og:title" content="@seoTitle" />
+    <meta property="og:description" content="@metaDescription" />
+
+    <link rel="icon" href="~/favicon.ico" />
+
+    @* One request for all three families. Archivo carries display, IBM Plex
+       Sans the copy, IBM Plex Mono the utility register. display=swap, so the
+       page is readable in the fallback stack while they arrive. *@
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@@500;600;700;800&family=IBM+Plex+Sans:wght@@400;500;600&family=IBM+Plex+Mono:wght@@400;500&display=swap" />
+
+    @* Order is the contract: tokens, then the shell, then the page. A section
+       stylesheet loaded through the Head section is last and therefore wins. *@
+    <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/shell.css" asp-append-version="true" />
+    @if (legacy)
+    {
+        @* TEMPORARY — see the note in the code block above. *@
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    }
+    @await RenderSectionAsync("Head", required: false)
+
+    <partial name="_LocalBusinessSchema" />
+</head>
+<body>
+
+<partial name="_Icons" />
+
+<a class="ei-skip" href="#main">Skip to content</a>
+
+<partial name="_Header" />
+
+<main id="main">
+    @RenderBody()
+</main>
+
+<partial name="_Footer" />
+
+@* Both deferred: neither has anything to say before the document is parsed,
+   and neither depends on the other, so load order between them is free. *@
+<script src="~/js/shell.js" asp-append-version="true" defer></script>
+<script src="~/js/reveal.js" asp-append-version="true" defer></script>
+@if (legacy)
+{
+    @* TEMPORARY — pairs with the site.css link above, and goes when it goes.
+
+       site.css declares `.reveal { opacity: 0 }` and hides inactive `.tab-panel`s
+       behind [hidden]; site.js is what adds `.is-visible` and switches the panels.
+       Shipping the stylesheet without the script leaves every revealed block on
+       the interior pages permanently invisible and the About tabs inert, so the
+       two have to travel together until those pages are rebuilt.
+
+       Its masthead, mega-menu and search branches all query markup this layout
+       no longer renders, so they return null, hit their guards and no-op. The one
+       live overlap is toggling `.is-scrolled` on #siteHeader, which shell.js also
+       does — same class, same 10px threshold, so the duplicate is harmless. *@
+    <script src="~/js/site.js" asp-append-version="true" defer></script>
+}
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
