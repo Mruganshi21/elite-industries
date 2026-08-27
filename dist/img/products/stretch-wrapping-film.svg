@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" role="img">
+  <title>Stretch Wrapping Film</title>
+  <rect width="400" height="300" fill="#FFF1E6"/>
+  <g stroke="#E4E1DC" stroke-width="1">
+    <path d="M0 232h400"/>
+  </g>
+  <g stroke="#F26A1B" stroke-width="2" stroke-linecap="round" opacity=".55">
+    <path d="M18 18h20M18 18v20"/>
+    <path d="M382 18h-20M382 18v20"/>
+    <path d="M18 282h20M18 282v-20"/>
+    <path d="M382 282h-20M382 282v-20"/>
+  </g>
+
+  <g stroke="#22262B" stroke-width="2.4" fill="none" stroke-linejoin="round">
+    <path d="M126 208h148v14h-148z"/>
+    <path d="M132 222v10M200 222v10M268 222v10"/>
+    <path d="M126 232h148"/>
+  </g>
+  <g fill="#FFFFFF" stroke="#22262B" stroke-width="2.4" stroke-linejoin="round">
+    <path d="M132 106h136v102H132z"/>
+    <path d="M132 140h136M132 174h136M200 106v102"/>
+  </g>
+  <!-- the wrap: translucent bands climbing the load -->
+  <g fill="#F26A1B" opacity=".26">
+    <path d="M126 118h148v22H126zM126 152h148v22H126zM126 186h148v22H126z"/>
+  </g>
+  <g fill="none" stroke="#F26A1B" stroke-width="2.6" opacity=".95">
+    <path d="M126 118h148M126 140h148M126 152h148M126 174h148M126 186h148M126 208h148"/>
+  </g>
+  <!-- the roll feeding it, on its bearing core -->
+  <g stroke="#22262B" stroke-width="2.4" fill="#FFFFFF" stroke-linejoin="round">
+    <path d="M300 128h34v88h-34z"/>
+    <ellipse cx="317" cy="128" rx="17" ry="7" fill="#F26A1B"/>
+  </g>
+  <path d="M300 160c-10 4-18 6-26 6" fill="none" stroke="#F26A1B" stroke-width="6" stroke-linecap="round" opacity=".7"/>
+</svg>

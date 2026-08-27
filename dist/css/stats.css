@@ -1,0 +1,196 @@
+/* ==========================================================================
+   Elite Industries — homepage stats band
+
+   Four figures on the dark ground, framed top and bottom and divided by
+   hairlines: an instrument plate bolted across the page, not four cards
+   floating on it.
+
+   NAMESPACE
+   ---------
+   .ei-stats and .ei-stats-* — nothing else. Every selector in this file is the
+   block or a descendant of it, so it cannot reach the about band above or the
+   products band below. No token is declared here; every colour, face, radius
+   and easing comes from theme.css.
+
+   WHY THE GROUND IS INK
+   ---------------------
+   The band above (#about) is --ei-shell and the closing CTA below will be deep
+   orange, so this band could be white or dark. White loses: --ei-shell and
+   --ei-white differ by about four percent, so two light bands meeting would
+   put the section boundary somewhere the eye cannot find it, and the page
+   would read as one long scroll with no measure in it.
+
+   Ink gives the page a beat — hero dark, about light, stats dark, products
+   light, CTA orange, footer dark — and it is the site's existing dark ground,
+   the same --ei-ink the hero and the footer already stand on, so it introduces
+   no new surface. It also buys the numerals real contrast: white on --ei-ink
+   is about 16:1 and --ei-orange on it about 6.9:1, where on white the accent
+   would be 3.06:1 and barred from anything but display sizes.
+
+   COLOUR ON A DARK GROUND
+   -----------------------
+   --ei-steel and --ei-steel-soft are tuned for the shell and are NOT legible
+   here — see the ink notes in theme.css. Labels use the same alpha white the
+   footer uses in shell.css, which is roughly 9:1 on this ground.
+
+   THE BAND IS NOT SIZED HERE
+   --------------------------
+   The <section> carries .ei-band --tight and takes its vertical rhythm from
+   --ei-band-y-sm in theme.css. Nothing in this file sets padding-block on the
+   section. --tight rather than the full band because a plate is a punctuation
+   mark between two content bands, not a third content band.
+
+   .ei-stats overrides the white background .ei-band declares. The two are the
+   same specificity, so this works on file order alone: stats.css is loaded
+   after theme.css from the homepage's Head section. It is not a fight to win
+   with a longer selector.
+
+   MOTION
+   ------
+   None is declared in this file. The entrance is .ei-reveal and the count is
+   [data-count-to] — theme.css defines the first, reveal.js drives both, and
+   the global prefers-reduced-motion block in theme.css already switches the
+   entrance off and leaves the final figures standing. There is deliberately no
+   reduced-motion query here because this band has nothing of its own to
+   switch off.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   The band
+   ========================================================================== */
+
+.ei-stats {
+  background: var(--ei-ink);
+  color: var(--ei-white);
+}
+
+
+/* ==========================================================================
+   The plate
+
+   No gap between cells. The dividers are real borders on the cells, so the
+   four read as one ruled object; a grid gap would leave the hairlines floating
+   with daylight either side and the plate would fall apart into cards.
+   ========================================================================== */
+
+.ei-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-block: 1px solid var(--ei-ink-line);
+}
+
+.ei-stats-cell {
+  padding: clamp(1.75rem, 3.2vw, 2.5rem) clamp(1rem, 2.4vw, 2rem);
+  border-inline-start: 1px solid var(--ei-ink-line);
+}
+
+/* The outer edges are open. The frame is the two horizontal rules; closing the
+   sides as well would box the figures in and make the plate look like a table. */
+.ei-stats-cell:first-child { border-inline-start: 0; }
+
+
+/* ==========================================================================
+   Cell contents
+   ========================================================================== */
+
+/* The accent, and the only orange on this band. Stroked at the sprite's own
+   1.7 weight, so it sits at the same optical weight as every other icon on the
+   site rather than being scaled up into a heavier drawing. */
+.ei-stats-icon {
+  width: 30px;
+  height: 30px;
+  color: var(--ei-orange);
+  margin-bottom: clamp(1rem, 2vw, 1.4rem);
+}
+
+.ei-stats-value {
+  display: flex;
+  align-items: flex-start;
+  margin: 0 0 .55rem;
+  font-family: var(--ei-display);
+  font-weight: 800;
+  font-size: clamp(2.4rem, 4.4vw, 3.5rem);
+  line-height: 1;
+  letter-spacing: -.035em;
+  color: var(--ei-white);
+}
+
+/* Tabular figures, or the number physically changes width as it counts and the
+   whole cell shuffles sideways for the length of the animation. */
+.ei-stats-figure { font-variant-numeric: tabular-nums; }
+
+/* Outside the counting element on purpose — reveal.js assigns to textContent,
+   so anything inside would be wiped on the first frame. Set smaller and raised
+   so it reads as a qualifier on the figure rather than as another digit. */
+.ei-stats-plus {
+  font-size: .55em;
+  line-height: 1;
+  margin-top: .12em;
+  margin-inline-start: .1em;
+  color: var(--ei-orange);
+}
+
+/* The mono utility register: this is a label on a plate, stencilled, not a
+   caption. ~9:1 on --ei-ink, the same alpha white the footer uses. */
+.ei-stats-label {
+  margin: 0;
+  font-family: var(--ei-mono);
+  font-size: .74rem;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, .72);
+}
+
+
+/* ==========================================================================
+   Two up
+
+   1000px, matching the masthead's own breakpoint in shell.css — below it the
+   nav collapses, and the page should change shape in one place rather than at
+   four different widths on the way down.
+
+   The dividers have to be rebuilt for a 2x2: cells 1 and 3 now start a row, so
+   they lose the leading border, and cells 3 and 4 gain a rule above them so
+   the plate stays ruled in both directions.
+   ========================================================================== */
+
+@media (max-width: 999.98px) {
+  .ei-stats-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .ei-stats-cell:nth-child(odd) { border-inline-start: 0; }
+  .ei-stats-cell:nth-child(n+3) { border-top: 1px solid var(--ei-ink-line); }
+}
+
+
+/* ==========================================================================
+   Phone
+
+   It stays 2x2. Stacking four numerals this size into a single column makes a
+   wall roughly two thirds of a phone screen tall that the visitor has to
+   scroll past to reach the products — and the whole point of a stats plate is
+   that it is taken in at a glance, which a column of four cannot be.
+
+   So the grid holds and the type comes down instead. clamp()'s floor is what
+   has to go: 2.4rem across a 150px cell at 360px overflows once the "+" is on
+   it, and the label's tracking is what breaks the second line.
+   ========================================================================== */
+
+@media (max-width: 599.98px) {
+  .ei-stats-cell { padding: 1.4rem 1rem; }
+
+  .ei-stats-icon {
+    width: 24px;
+    height: 24px;
+    margin-bottom: .8rem;
+  }
+
+  .ei-stats-value { font-size: clamp(1.7rem, 8.5vw, 2.4rem); }
+
+  .ei-stats-label {
+    font-size: .66rem;
+    letter-spacing: .1em;
+  }
+}

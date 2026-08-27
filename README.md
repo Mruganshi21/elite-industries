@@ -155,16 +155,55 @@ docs/homepage.md                the homepage: sections, generator, motion policy
    is hand-written CSS. jQuery is still used, but only by the contact form's
    client-side validation.
 
-## Deploying to Render
+## Deploying
 
-Render has no native .NET runtime, so the service is built from the `Dockerfile`
-in the repo root — SDK image to compile, ASP.NET runtime image to ship.
+Two routes are set up, because the site can be served two different ways.
 
-1. Push to GitHub (already done — `Mruganshi21/elite-industries`).
-2. On [render.com](https://render.com): **New → Web Service**, connect the repo.
-3. Render reads `render.yaml` and picks Docker automatically. Nothing to fill in.
-4. Deploy. First build takes a few minutes; after that the URL is
-   `https://elite-industries.onrender.com` and is public.
+### Static, on Cloudflare Pages — free, and what is live
+
+Nothing here varies per visitor. Every page is rendered from `ProductCatalog`
+and `CompanyProfile`, both hardcoded, so the server does the same work on every
+request. `tools/export_static.py` does that work once and writes flat HTML to
+`dist/`, which any static host serves for nothing, with no cold start and no
+process to fall over.
+
+```
+python tools/export_static.py --form-endpoint https://formspree.io/f/XXXXXXXX
+```
+
+It builds the app, starts it on port 5199, crawls every reachable page, copies
+`wwwroot` in at the root, writes `404.html` from the error view, and stops the
+app. `dist/` is committed, so Cloudflare Pages needs no build step:
+
+| Cloudflare Pages setting | Value |
+| --- | --- |
+| Build command | *(leave empty)* |
+| Build output directory | `dist` |
+| Framework preset | None |
+
+Routes are written as `About/index.html`, not `About.html`, so every link the
+app generated keeps working unchanged — a static host resolves `/About` to
+`/About/index.html` on its own. Nothing is rewritten.
+
+**Re-run the export after any content change**, then commit `dist/` — otherwise
+the deployed site still shows the old copy.
+
+#### The contact form
+
+A static host cannot accept a POST, so `--form-endpoint` repoints the form at a
+form service and strips the antiforgery field, which would otherwise arrive as a
+junk entry on every enquiry. Sign up at [formspree.io](https://formspree.io),
+create a form, and pass the endpoint it gives you.
+
+This is the one place where the static build is *better* than the running app:
+`ContactController` never sent email in the first place — see Known gaps.
+
+### As a running .NET app, on Render
+
+Kept for when the site needs a real server again — a live catalogue, a login, a
+contact form handled in-process. Render has no native .NET runtime, so the
+service builds from the root `Dockerfile`: SDK image to compile, ASP.NET runtime
+image to ship. Render reads `render.yaml` and needs nothing filled in.
 
 Two things about the container the app cannot see from inside:
 
@@ -174,13 +213,13 @@ Two things about the container the app cannot see from inside:
 - **TLS terminates at Render's proxy**, so requests reach Kestrel over plain
   HTTP. `app.UseHttpsRedirection()` finds no HTTPS port, logs
   `Failed to determine the https port for redirect` once, and does nothing —
-  which is correct here. Render already redirects HTTP to HTTPS at the edge.
+  which is correct here, as Render already redirects HTTP to HTTPS at the edge.
   Do **not** set `ASPNETCORE_HTTPS_PORTS` to silence that warning; it produces a
   redirect loop.
 
-On the free plan the service sleeps after 15 minutes of no traffic and the next
-visitor waits roughly a minute for it to wake. Fine for sharing a link, not for
-a launch — the paid instance stays warm.
+Render's free instance sleeps after 15 minutes of no traffic and takes about a
+minute to wake, and now wants a card on file. That is why the static route above
+is the one in use.
 
 ## Adding a page
 

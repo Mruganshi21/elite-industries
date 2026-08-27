@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" role="img">
+  <title>Pp Box Strapping</title>
+  <rect width="400" height="300" fill="#FFF1E6"/>
+  <g stroke="#E4E1DC" stroke-width="1">
+    <path d="M0 232h400"/>
+  </g>
+  <g stroke="#F26A1B" stroke-width="2" stroke-linecap="round" opacity=".55">
+    <path d="M18 18h20M18 18v20"/>
+    <path d="M382 18h-20M382 18v20"/>
+    <path d="M18 282h20M18 282v-20"/>
+    <path d="M382 282h-20M382 282v-20"/>
+  </g>
+
+  <!-- the coil, on its 200mm machine core -->
+  <g fill="none" stroke="#22262B" stroke-width="2.4">
+    <circle cx="308" cy="150" r="54"/>
+    <circle cx="308" cy="150" r="20"/>
+  </g>
+  <g fill="none" stroke="#F26A1B" stroke-width="2.6" opacity=".9">
+    <circle cx="308" cy="150" r="46"/><circle cx="308" cy="150" r="38"/><circle cx="308" cy="150" r="30"/>
+  </g>
+  <!-- the carton -->
+  <g fill="#FFFFFF" stroke="#22262B" stroke-width="2.4" stroke-linejoin="round">
+    <path d="M62 132h164v100H62z"/>
+    <path d="M62 132 108 98h164l-46 34z"/>
+    <path d="M226 132l46-34v100l-46 34z"/>
+  </g>
+  <path d="M144 98v134" stroke="#22262B" stroke-width="2" opacity=".5"/>
+  <!-- the strap round it, weld joint on the face -->
+  <g fill="#F26A1B" stroke="#B8400E" stroke-width="1.6">
+    <path d="M126 132h12v100h-12z"/>
+    <path d="M126 132 172 98h12l-46 34z"/>
+  </g>
+  <path d="M124 168h16v14h-16z" fill="#22262B"/>
+  <g stroke="#B8400E" stroke-width="1" opacity=".6">
+    <path d="M129 140h6M129 148h6M129 156h6M129 192h6M129 200h6M129 208h6M129 216h6M129 224h6"/>
+  </g>
+</svg>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" role="img">
+  <title>Paper Edge Boards</title>
+  <rect width="400" height="300" fill="#FFF1E6"/>
+  <g stroke="#E4E1DC" stroke-width="1">
+    <path d="M0 232h400"/>
+  </g>
+  <g stroke="#F26A1B" stroke-width="2" stroke-linecap="round" opacity=".55">
+    <path d="M18 18h20M18 18v20"/>
+    <path d="M382 18h-20M382 18v20"/>
+    <path d="M18 282h20M18 282v-20"/>
+    <path d="M382 282h-20M382 282v-20"/>
+  </g>
+
+  <g fill="#FFFFFF" stroke="#22262B" stroke-width="2.4" stroke-linejoin="round">
+    <path d="M96 104h208v128H96z"/>
+    <path d="M96 150h208"/>
+  </g>
+  <!-- the angle boards, one on each top corner -->
+  <g fill="#F26A1B" stroke="#B8400E" stroke-width="2.2" stroke-linejoin="round">
+    <path d="M86 94h68v16H102v52H86z"/>
+    <path d="M314 94h-68v16h52v52h16z"/>
+  </g>
+  <!-- laminate plies, the reason it spreads the load -->
+  <g stroke="#B8400E" stroke-width="1" opacity=".55">
+    <path d="M86 99h68M86 104h68M91 110v52M96 110v52"/>
+    <path d="M314 99h-68M314 104h-68M309 110v52M304 110v52"/>
+  </g>
+  <!-- the strap that would otherwise cut the corner -->
+  <path d="M60 126h280" fill="none" stroke="#22262B" stroke-width="7" stroke-linecap="round"/>
+  <path d="M60 126h280" fill="none" stroke="#F26A1B" stroke-width="3" stroke-linecap="round"/>
+  <!-- load spreading down the edge -->
+  <g stroke="#B8400E" stroke-width="2" stroke-linecap="round" opacity=".8">
+    <path d="M94 140v14M94 160v14M306 140v14M306 160v14"/>
+  </g>
+</svg>

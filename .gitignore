@@ -1,5 +1,6 @@
 bin/
 obj/
+artifacts/
 .vs/
 *.user
 *.suo
@@ -7,8 +8,8 @@ appsettings.*.local.json
 
 # Video is ignored by default so a stray clip cannot land in history by
 # accident, then the two the site actually needs are re-admitted by name.
-# Both are served straight out of wwwroot on the deployed container, so they
-# have to be in the repo — see "Deploying to Render" in README.md.
+# Both are served straight out of wwwroot, and the static export copies
+# them into dist/, so they have to be in the repo — see README.md.
 wwwroot/video/*.mp4
 wwwroot/video/*.webm
 !wwwroot/video/elite-industries-intro.mp4

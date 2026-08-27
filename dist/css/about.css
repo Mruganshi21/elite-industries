@@ -1,0 +1,177 @@
+/* ==========================================================================
+   Elite Industries — homepage about-us preview band
+
+   Two columns on a warm off-white ground: the copy, and the client's facility
+   illustration set on a white panel with a stencilled plate over it.
+
+   NAMESPACE
+   ---------
+   .ei-about and .ei-about-* — nothing else. Every selector is the block or a
+   descendant of it, so this file cannot reach the hero above or the band that
+   follows. No token is declared here; every colour, face, radius, shadow and
+   easing comes from theme.css.
+
+   THE BAND IS NOT SIZED HERE
+   --------------------------
+   The <section> carries .ei-band --shell and takes its vertical rhythm from
+   --ei-band-y in theme.css, like every other content band. Nothing in this
+   file sets padding-block on the section. That is the whole point of the
+   shared token: two adjacent bands can never disagree about the gap between
+   them, and a band that opts out reintroduces exactly the drift the token
+   exists to prevent.
+
+   WHY THE ARTWORK SITS ON WHITE
+   -----------------------------
+   about-facility.svg was drawn against the previous palette — cool blue-greys
+   (#e8edf1, #cfd8e0, #aab6c2) and the old #ee6a1e orange — and has since been
+   recoloured onto this one, so the clash this panel was originally introduced
+   to hide no longer exists.
+
+   The panel stays anyway, for a smaller reason: the illustration's lightest
+   tone is close enough to --ei-shell that its edges would dissolve into the
+   band. The white ground and its hairline give it something definite to end
+   on. If the asset is ever redrawn with its own margin, this panel can go.
+
+   MOTION
+   ------
+   None is declared in this file. The entrance is .ei-reveal, which theme.css
+   defines and reveal.js drives, and the only hover is on .ei-link, which
+   theme.css also owns — both are already switched off under the global
+   prefers-reduced-motion block. There is deliberately no reduced-motion query
+   here because there is nothing of this band's own to switch off.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   The split
+
+   1.02fr / 1fr rather than a straight half: the copy column wants a measure
+   just past 30rem before it starts costing the reader, and the figure is happy
+   to give up the difference. minmax(0, …) on both tracks because the default
+   `auto` minimum refuses to shrink below the illustration's intrinsic width
+   and would push the grid wider than .ei-shell on a narrow laptop.
+   ========================================================================== */
+
+.ei-about-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr);
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: center;
+}
+
+
+/* ==========================================================================
+   Copy column
+   ========================================================================== */
+
+.ei-about-copy { max-width: 34rem; }
+
+/* .ei-lede sets margin: 0 so a band head can control its own spacing. This
+   band has body copy under the lede, so the gap is put back here rather than
+   by loosening the shared component. */
+.ei-about-lede { margin-bottom: 1.4rem; }
+
+/* --ei-steel is 5.5:1 on --ei-shell. --ei-steel-soft is NOT and is captions
+   only — see the ink notes in theme.css before changing this. */
+.ei-about-body {
+  color: var(--ei-steel);
+  max-width: 33rem;
+}
+
+.ei-about-more { margin: clamp(1.75rem, 3vw, 2.25rem) 0 0; }
+
+
+/* ==========================================================================
+   Figure
+
+   The frame is a real panel — white ground, hairline, card radius, medium
+   shadow — not a border drawn round a transparent SVG. The plate then hangs
+   off its lower-left corner, overlapping the edge, so the two read as one
+   object photographed rather than as two stacked boxes.
+   ========================================================================== */
+
+.ei-about-figure {
+  position: relative;
+  margin: 0;
+}
+
+.ei-about-frame {
+  background: var(--ei-white);
+  border: 1px solid var(--ei-line);
+  border-radius: var(--ei-r-card);
+  padding: clamp(.75rem, 1.6vw, 1.15rem);
+  box-shadow: var(--ei-shadow-md);
+}
+
+.ei-about-img {
+  width: 100%;
+  height: auto;
+  border-radius: calc(var(--ei-r-card) - 1px);
+}
+
+/* ---- The stencilled plate ------------------------------------------------
+   Mono, uppercase, widely tracked: the register theme.css reserves for
+   shipping marks and spec rows. Graphite ground rather than orange — white on
+   --ei-orange is 3.06:1 and fails, and this is small text. */
+
+.ei-about-plate {
+  position: absolute;
+  left: clamp(-.5rem, -1vw, 0rem);
+  bottom: clamp(1.25rem, 3vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+  padding: .9rem 1.25rem;
+  background: var(--ei-graphite);
+  border-radius: var(--ei-r);
+  box-shadow: var(--ei-shadow-lg);
+}
+
+.ei-about-plate-line {
+  font-family: var(--ei-mono);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: var(--ei-white);
+}
+
+/* --ei-orange on --ei-graphite is 4.99:1 — the one place on this band the
+   accent is allowed to be text. */
+.ei-about-plate-est { color: var(--ei-orange); }
+
+
+/* ==========================================================================
+   Narrow
+
+   900px, not the hero's 760: this is a two-column split and it runs out of
+   measure long before the hero runs out of height. Copy is first in the DOM,
+   so it stays first when the grid collapses — the illustration is support and
+   should not be the thing a phone opens on.
+   ========================================================================== */
+
+@media (max-width: 899.98px) {
+  .ei-about-split { grid-template-columns: minmax(0, 1fr); }
+
+  .ei-about-copy,
+  .ei-about-body { max-width: 40rem; }
+
+  /* Inside the frame at this width. Hanging off the corner needs a gutter to
+     hang into, and there is none once the grid is a single column. */
+  .ei-about-plate {
+    left: clamp(1rem, 4vw, 1.75rem);
+    bottom: clamp(1rem, 4vw, 1.75rem);
+  }
+}
+
+@media (max-width: 479.98px) {
+  /* At 360px the three plate lines cover a third of the illustration. Put it
+     back in flow under the frame, where it reads as the caption it is. */
+  .ei-about-plate {
+    position: static;
+    align-items: flex-start;
+    margin-top: 1rem;
+    box-shadow: var(--ei-shadow-sm);
+  }
+}
