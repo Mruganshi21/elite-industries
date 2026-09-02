@@ -49,9 +49,17 @@
                     <li>
                         <span class="ci" aria-hidden="true"><svg><use href="#i-pin" /></svg></span>
                         <div>
-                            <h4>Address</h4>
+                            <h4>Works</h4>
                             <p>@CompanyProfile.StreetAddress</p>
                             <p>@CompanyProfile.City, @CompanyProfile.Region @CompanyProfile.PostalCode, @CompanyProfile.Country</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="ci" aria-hidden="true"><svg><use href="#i-pin" /></svg></span>
+                        <div>
+                            <h4>@CompanyProfile.OfficeLabel</h4>
+                            <p>@CompanyProfile.OfficeStreetAddress</p>
+                            <p>@CompanyProfile.OfficeCity, @CompanyProfile.OfficeRegion</p>
                         </div>
                     </li>
                     <li>

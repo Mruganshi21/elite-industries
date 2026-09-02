@@ -90,7 +90,7 @@
 <circle cx="890" cy="351" r="3.4"/><circle cx="903" cy="351" r="3.4"/><circle cx="916" cy="351" r="3.4"/><circle cx="305" cy="364" r="3.4"/><circle cx="318" cy="364" r="3.4"/><circle cx="903" cy="364" r="3.4"/><circle cx="981" cy="364" r="3.4"/><circle cx="305" cy="377" r="3.4"/>
 <circle cx="318" cy="377" r="3.4"/><circle cx="305" cy="390" r="3.4"/>
 </g>
-<g id="wr-arcs" fill="none" stroke="#ee6a1e" stroke-width="1.6" stroke-dasharray="5 6" stroke-linecap="round" opacity="0.55">
+<g id="wr-arcs" fill="none" stroke="#E4181F" stroke-width="1.6" stroke-dasharray="5 6" stroke-linecap="round" opacity="0.55">
 <path id="wr-arc-1" pathLength="1" d="M703.0 197.0 Q682.2 177.7 654.0 180.0"/>
 <path id="wr-arc-2" pathLength="1" d="M703.0 197.0 Q644.5 211.3 612.0 262.0"/>
 <path id="wr-arc-3" pathLength="1" d="M703.0 197.0 Q629.6 125.8 528.0 114.0"/>
@@ -99,12 +99,12 @@
 <path id="wr-arc-6" pathLength="1" d="M703.0 197.0 Q837.5 231.6 919.0 344.0"/>
 </g>
 <g id="wr-nodes">
-<g id="wr-node-1"><circle cx="654" cy="180" r="13" fill="#fde4d2"/><circle cx="654" cy="180" r="6.5" fill="#ee6a1e"/></g>
-<g id="wr-node-2"><circle cx="612" cy="262" r="13" fill="#fde4d2"/><circle cx="612" cy="262" r="6.5" fill="#ee6a1e"/></g>
-<g id="wr-node-3"><circle cx="528" cy="114" r="13" fill="#fde4d2"/><circle cx="528" cy="114" r="6.5" fill="#ee6a1e"/></g>
-<g id="wr-node-4"><circle cx="491" cy="100" r="13" fill="#fde4d2"/><circle cx="491" cy="100" r="6.5" fill="#ee6a1e"/></g>
-<g id="wr-node-5"><circle cx="789" cy="246" r="13" fill="#fde4d2"/><circle cx="789" cy="246" r="6.5" fill="#ee6a1e"/></g>
-<g id="wr-node-6"><circle cx="919" cy="344" r="13" fill="#fde4d2"/><circle cx="919" cy="344" r="6.5" fill="#ee6a1e"/></g>
+<g id="wr-node-1"><circle cx="654" cy="180" r="13" fill="#F9CDCA"/><circle cx="654" cy="180" r="6.5" fill="#E4181F"/></g>
+<g id="wr-node-2"><circle cx="612" cy="262" r="13" fill="#F9CDCA"/><circle cx="612" cy="262" r="6.5" fill="#E4181F"/></g>
+<g id="wr-node-3"><circle cx="528" cy="114" r="13" fill="#F9CDCA"/><circle cx="528" cy="114" r="6.5" fill="#E4181F"/></g>
+<g id="wr-node-4"><circle cx="491" cy="100" r="13" fill="#F9CDCA"/><circle cx="491" cy="100" r="6.5" fill="#E4181F"/></g>
+<g id="wr-node-5"><circle cx="789" cy="246" r="13" fill="#F9CDCA"/><circle cx="789" cy="246" r="6.5" fill="#E4181F"/></g>
+<g id="wr-node-6"><circle cx="919" cy="344" r="13" fill="#F9CDCA"/><circle cx="919" cy="344" r="6.5" fill="#E4181F"/></g>
 </g>
-<g id="wr-origin"><circle cx="703" cy="197" r="19" fill="#fde4d2" opacity="0.6"/><circle cx="703" cy="197" r="13.5" fill="none" stroke="#ee6a1e" stroke-width="2.6"/><circle cx="703" cy="197" r="8" fill="#16202e"/></g>
+<g id="wr-origin"><circle cx="703" cy="197" r="19" fill="#F9CDCA" opacity="0.6"/><circle cx="703" cy="197" r="13.5" fill="none" stroke="#E4181F" stroke-width="2.6"/><circle cx="703" cy="197" r="8" fill="#16202e"/></g>
 </svg>

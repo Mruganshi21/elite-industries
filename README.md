@@ -3,7 +3,7 @@
 A B2B website for a manufacturer and wholesaler of **export packaging and
 material handling products** for container and cargo shipping.
 
-ASP.NET Core 8 MVC. Orange-and-white corporate industrial theme. No database and
+ASP.NET Core 8 MVC. Red-and-white corporate industrial theme. No database and
 no external runtime dependencies — the catalogue lives in code, so the site
 deploys as a single artefact.
 
@@ -78,17 +78,20 @@ python tools/gen_hero_scene.py
 `docs/homepage.md` covers the projection, the animation policy, and the rest of
 the page section by section. **Read it before editing the homepage.**
 
-### The old video hero is gone
+### There is no intro title card
 
-`wwwroot/video/hero.mp4` was a screen recording of **signode.com** — the
-reference the brief supplied for the animation style, browser toolbar and
-bookmarks bar included. It was reference material, not footage, so it is no
-longer rendered anywhere. The file is still on disk and
-`CompanyProfile.HeroVideoPath` still points at it; delete both, or repoint the
-constant at real facility footage and reinstate a video layer behind
-`.hero-bg` in `home.css`.
+The homepage used to open with a full-screen title card playing
+`elite-industries-intro.mp4` over the whole page, once per session. It is gone:
+`Views/Home/Index.cshtml` renders `_Hero` first and the page opens straight on
+the hero. `Views/Home/_Intro.cshtml`, `wwwroot/css/intro.css` and
+`wwwroot/js/intro.js` were deleted with it, and nothing writes the
+`ei.intro.seen` session key any more.
 
-`wwwroot/css/hero.css` and `wwwroot/js/hero.js` were removed with it.
+That clip is now the hero background — `CompanyProfile.HeroVideoPath` points at
+it. It replaced `wwwroot/video/hero.mp4`, a 20.5 MB screen recording of
+**signode.com** that the brief supplied as an animation-style reference, browser
+toolbar and bookmarks bar included. It was reference material, not footage. The
+file is still on disk and nothing renders it — see `wwwroot/video/README.md`.
 
 ## Layout of the source
 
@@ -116,7 +119,8 @@ wwwroot/img/about-facility.svg  isometric plant cutaway (About block)
 wwwroot/img/process-line.svg    the four-stage capability strip
 wwwroot/img/world-reach.svg     dot-map, inlined as Views/Home/_WorldReach.cshtml
 wwwroot/img/hero/slide-*.svg    3 scenes; now only the schema.org image
-wwwroot/video/hero.mp4          UNUSED — see "The old video hero is gone"
+wwwroot/video/elite-industries-intro.mp4   hero background loop, 482 KB
+wwwroot/video/hero.mp4          UNUSED — see wwwroot/video/README.md
 wwwroot/downloads/*.pdf         brochure
 
 tools/gen_hero_scene.py         regenerates Views/Home/_HeroScene.cshtml

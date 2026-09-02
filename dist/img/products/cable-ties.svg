@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" role="img">
   <title>Cable Ties</title>
-  <rect width="400" height="300" fill="#FFF1E6"/>
+  <rect width="400" height="300" fill="#FEECEB"/>
   <g stroke="#E4E1DC" stroke-width="1">
     <path d="M0 232h400"/>
   </g>
-  <g stroke="#F26A1B" stroke-width="2" stroke-linecap="round" opacity=".55">
+  <g stroke="#E4181F" stroke-width="2" stroke-linecap="round" opacity=".55">
     <path d="M18 18h20M18 18v20"/>
     <path d="M382 18h-20M382 18v20"/>
     <path d="M18 282h20M18 282v-20"/>
@@ -20,13 +20,13 @@
   </g>
   <!-- the tie: loop, then the tail hanging out of the head -->
   <path d="M150 118h84c14 0 22 10 22 24v20c0 16-10 26-24 26h-82c-14 0-22-10-22-24v-22c0-14 8-24 22-24z"
-        fill="none" stroke="#F26A1B" stroke-width="9" stroke-linejoin="round"/>
-  <g fill="#F26A1B" stroke="#B8400E" stroke-width="2.2" stroke-linejoin="round">
+        fill="none" stroke="#E4181F" stroke-width="9" stroke-linejoin="round"/>
+  <g fill="#E4181F" stroke="#B30F15" stroke-width="2.2" stroke-linejoin="round">
     <path d="M136 106h34v26h-34z"/>
   </g>
-  <path d="M153 132c0 34-14 56-40 74" fill="none" stroke="#F26A1B" stroke-width="8" stroke-linecap="round"/>
+  <path d="M153 132c0 34-14 56-40 74" fill="none" stroke="#E4181F" stroke-width="8" stroke-linecap="round"/>
   <!-- the ladder teeth the pawl bites -->
-  <g stroke="#B8400E" stroke-width="1.4" opacity=".75">
+  <g stroke="#B30F15" stroke-width="1.4" opacity=".75">
     <path d="M148 142h12M147 152h12M145 162h12M142 172h12M137 182h12M130 191h12"/>
   </g>
   <g stroke="#22262B" stroke-width="2" fill="none">

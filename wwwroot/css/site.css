@@ -1,15 +1,15 @@
 /* ==========================================================================
-   Elite Industries — corporate industrial theme (orange on warm cream)
+   Elite Industries — corporate industrial theme (red on neutral white)
 
    Component contract used by every page:
      .shell                     centred max-width container
-     .page-header               orange banner under the nav on interior pages
+     .page-header               red banner under the nav on interior pages
      .breadcrumb                nav trail inside .page-header
      .section / .section-alt    vertical rhythm; -alt is the sand band
      .section-head              eyebrow + h2 + lede block
-     .eyebrow                   small orange uppercase label
-     .btn .btn-primary          orange fill    (main CTA)
-     .btn .btn-outline          orange outline
+     .eyebrow                   small red uppercase label
+     .btn .btn-primary          red fill       (main CTA)
+     .btn .btn-outline          red outline
      .btn .btn-light            white on dark
      .grid.cols-2/3/4           responsive card grids
      .product-card              square thumb + name + category
@@ -24,10 +24,22 @@
 
 :root {
   /* Brand */
-  --orange:        #ee6a1e;
-  --orange-dark:   #cc5412;
-  --orange-light:  #fff3ea;
-  --orange-tint:   #fde4d2;
+  /* Kept under the --orange-* names so the interior pages that still read
+     these tokens keep working; the values are the red the rebuilt pages use.
+     --orange is the brand red, exactly eliteind.in's --theme-color, and it is
+     the resting accent for everything on a light ground — fills, rules, icons
+     and TYPE. It is bright and its margin is thin (4.7:1 on white, 4.5:1 on
+     --cream), which is why --cream was lightened to #fafafa. --orange-dark is
+     the hover shade, not the resting one. */
+  --orange:        #e4181f;
+  /* The accent again, lifted for the navy grounds — topbar, page banner,
+     footer. --orange is 3.5:1 on --navy, a graphics-floor figure; this is
+     5.9:1. Only for accents ON navy; it is 2.5:1 on white. */
+  --orange-lift:   #ff6b62;
+  --orange-dark:   #b30f15;
+  --orange-deep:   #8c0a10;
+  --orange-light:  #feeceb;
+  --orange-tint:   #f9cdca;
 
   /* Neutrals */
   --navy:          #16202e;
@@ -38,18 +50,20 @@
   --grey-bg:       #f5f7f9;
   --white:         #ffffff;
 
-  /* Warm ground. The page no longer sits on flat white: cream is the paper,
-     sand is the alternating band, and --line is the hairline that reads as a
-     rule rather than a box edge on top of it. --border stays for the few
-     surfaces that are still genuinely white (cards, inputs), because a cool
-     grey hairline on white is correct and a warm one looks dirty.
-     --ink is --navy under the name the cream palette calls it by. */
-  --cream:         #faf7f2;
-  --sand:          #f0e9df;
-  --line:          #e3d9cc;
+  /* Near-neutral ground. The page does not sit on flat white: --cream is the
+     paper, --sand the alternating band, and --line the hairline that reads as
+     a rule rather than a box edge on top of it. The warmth these three used to
+     carry has been taken out — against red a cream ground reads as a wash of
+     the accent, so the ground is held just off white and the red is left as
+     the only warm thing on the page. --border stays for the few surfaces that
+     are genuinely white (cards, inputs).
+     --ink is --navy under the name the ground palette calls it by. */
+  --cream:         #fafafa;
+  --sand:          #f4f4f4;
+  --line:          #e6e6e6;
   --ink:           #16202e;
-  /* --slate-light drops to 4.2:1 on cream, so secondary copy that sits
-     directly on the ground uses this instead — same hue, 5.3:1. */
+  /* --slate-light drops to 4.2:1 on the ground, so secondary copy that sits
+     directly on it uses this instead — same hue, 5.3:1. */
   --slate-cream:   #5b6877;
 
   --shell: 1200px;
@@ -119,10 +133,15 @@ a { color: var(--orange); text-decoration: none; transition: color .18s; }
 a:hover { color: var(--orange-dark); }
 img, svg, video { max-width: 100%; display: block; }
 
-/* Keyboard focus has to survive the quieter chrome — the orange ring is the
-   one place we spend contrast freely. */
+/* Keyboard focus has to survive the quieter chrome — the red ring is the
+   one place we spend contrast freely. The red is 2.8:1 on navy and invisible
+   on the red stats bar, so the dark bands and the bar each rebind --focus
+   below rather than redeclaring the outline. */
+.topbar, .page-header, .cta-band, .site-footer { --focus: var(--orange-lift); }
+.stats-bar { --focus: #fff; }
+
 :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
-  outline: 2px solid var(--orange);
+  outline: 2px solid var(--focus, var(--orange));
   outline-offset: 2px;
 }
 
@@ -202,11 +221,11 @@ img, svg, video { max-width: 100%; display: block; }
   align-items: center;
 }
 .topbar a { color: rgba(255, 255, 255, .78); }
-.topbar a:hover { color: var(--orange); }
+.topbar a:hover { color: var(--orange-lift); }
 .topbar-inner { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; width: 100%; }
 .topbar-meta { display: flex; align-items: center; gap: 1.75rem; flex-wrap: wrap; }
 .topbar-item { display: inline-flex; align-items: center; gap: .5rem; }
-.topbar-item svg { width: 15px; height: 15px; flex: none; color: var(--orange); }
+.topbar-item svg { width: 15px; height: 15px; flex: none; color: var(--orange-lift); }
 
 .social-links { display: flex; align-items: center; gap: .45rem; }
 .social-links a {
@@ -281,7 +300,7 @@ img, svg, video { max-width: 100%; display: block; }
   border-radius: var(--r);
   transition: color .18s, background .18s;
 }
-.nav-link:hover, .nav-link:focus-visible { color: var(--orange); background: var(--orange-light); }
+.nav-link:hover, .nav-link:focus-visible { color: var(--orange-dark); background: var(--orange-light); }
 .nav-link.is-active { color: var(--orange); }
 .nav-link.is-active::after {
   content: "";
@@ -328,7 +347,7 @@ img, svg, video { max-width: 100%; display: block; }
   color: var(--slate);
   transition: background .16s, color .16s, padding-left .16s;
 }
-.dropdown a:hover { background: var(--orange-light); color: var(--orange); padding-left: 1.2rem; }
+.dropdown a:hover { background: var(--orange-light); color: var(--orange-dark); padding-left: 1.2rem; }
 
 /* ---- phone block + CTA ---- */
 .header-phone {
@@ -363,7 +382,7 @@ img, svg, video { max-width: 100%; display: block; }
   font-weight: 600;
   color: var(--navy);
 }
-.header-phone .phone-number:hover { color: var(--orange); }
+.header-phone .phone-number:hover { color: var(--orange-dark); }
 
 .header-cta { flex: none; }
 
@@ -409,7 +428,7 @@ img, svg, video { max-width: 100%; display: block; }
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(560px 320px at 88% 20%, rgba(238, 106, 30, .28), transparent 65%),
+    radial-gradient(560px 320px at 88% 20%, rgba(228, 24, 31, .28), transparent 65%),
     repeating-linear-gradient(135deg, rgba(255,255,255,.03) 0 2px, transparent 2px 12px);
   pointer-events: none;
 }
@@ -429,9 +448,9 @@ img, svg, video { max-width: 100%; display: block; }
   color: rgba(255, 255, 255, .65);
 }
 .breadcrumb a { color: rgba(255, 255, 255, .82); }
-.breadcrumb a:hover { color: var(--orange); }
+.breadcrumb a:hover { color: var(--orange-lift); }
 .breadcrumb li + li::before { content: "/"; margin-right: .55rem; opacity: .5; }
-.breadcrumb [aria-current="page"] { color: var(--orange); }
+.breadcrumb [aria-current="page"] { color: var(--orange-lift); }
 
 /* ==========================================================================
    Sections
@@ -440,7 +459,7 @@ img, svg, video { max-width: 100%; display: block; }
    further apart than they need to be and that is the whole effect. */
 .section { padding: 6.25rem 0; }
 .section-sm { padding: 4rem 0; }
-/* The band that used to be cool grey is now the warm step up from cream. */
+/* The band that used to be cool grey is now the step up from the page ground. */
 .section-alt { background: var(--sand); }
 .section-navy { background: var(--navy); color: rgba(255,255,255,.8); }
 .section-navy h2, .section-navy h3 { color: #fff; }
@@ -457,7 +476,7 @@ img, svg, video { max-width: 100%; display: block; }
 
 /* ---- generic info card ---- */
 /* White on cream: the card has to lift, but a shadow at rest would fight the
-   flatness the reference gets from hairlines alone — so the warm rule does the
+   flatness the reference gets from hairlines alone — so the ground rule does the
    separating and the shadow only appears under the cursor. */
 .info-card {
   position: relative;
@@ -491,7 +510,7 @@ img, svg, video { max-width: 100%; display: block; }
   margin-bottom: .6rem;
 }
 /* On sand the same card needs a slightly firmer edge to stay legible. */
-.section-alt .info-card { background: var(--white); border-color: #ded2c2; }
+.section-alt .info-card { background: var(--white); border-color: #ded9d9; }
 
 /* ==========================================================================
    Product cards
@@ -528,7 +547,7 @@ img, svg, video { max-width: 100%; display: block; }
   position: absolute;
   top: .8rem;
   left: .8rem;
-  background: rgba(250, 247, 242, .94);
+  background: rgba(250, 250, 250, .94);
   color: var(--orange);
   font-family: var(--font-display);
   font-size: .72rem;
@@ -664,7 +683,7 @@ img, svg, video { max-width: 100%; display: block; }
   display: flex;
   flex-wrap: wrap;
   gap: .5rem;
-  /* Flat rail on the cream ground, so the warm hairline. */
+  /* Flat rail on the page ground, so the ground hairline. */
   border-bottom: 1px solid var(--line);
   margin-bottom: 3rem;
 }
@@ -683,7 +702,7 @@ img, svg, video { max-width: 100%; display: block; }
   cursor: pointer;
   transition: color .2s, border-color .2s;
 }
-.tab:hover { color: var(--orange); }
+.tab:hover { color: var(--orange-dark); }
 .tab[aria-selected="true"] { color: var(--orange); border-bottom-color: var(--orange); }
 .tab-panel[hidden] { display: none; }
 
@@ -737,7 +756,7 @@ img, svg, video { max-width: 100%; display: block; }
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(620px 340px at 82% 30%, rgba(238, 106, 30, .30), transparent 65%);
+  background: radial-gradient(620px 340px at 82% 30%, rgba(228, 24, 31, .30), transparent 65%);
   pointer-events: none;
 }
 .cta-band > .shell { position: relative; z-index: 1; }
@@ -783,7 +802,7 @@ img, svg, video { max-width: 100%; display: block; }
 .field input:focus, .field textarea:focus, .field select:focus {
   outline: none;
   border-color: var(--orange);
-  box-shadow: 0 0 0 3px rgba(238, 106, 30, .16);
+  box-shadow: 0 0 0 3px rgba(228, 24, 31, .16);
 }
 .field textarea { resize: vertical; min-height: 155px; }
 .field .text-danger, .validation-summary-errors { color: #c0392b; font-size: .86rem; }
@@ -802,7 +821,7 @@ img, svg, video { max-width: 100%; display: block; }
 
 /* ---- contact detail list ---- */
 .contact-list { list-style: none; margin: 0; padding: 0; }
-/* Rules on the page ground, not a card — warm hairline. */
+/* Rules on the page ground, not a card — the ground hairline. */
 .contact-list li { display: flex; gap: 1.1rem; padding: 1.3rem 0; border-bottom: 1px solid var(--line); }
 .contact-list li:last-child { border-bottom: 0; }
 .contact-list .ci {
@@ -818,7 +837,7 @@ img, svg, video { max-width: 100%; display: block; }
 .contact-list .ci svg { width: 21px; height: 21px; }
 .contact-list h4 { margin-bottom: .15rem; }
 .contact-list p, .contact-list a { margin: 0; display: block; color: var(--slate); }
-.contact-list a:hover { color: var(--orange); }
+.contact-list a:hover { color: var(--orange-dark); }
 
 .map-frame {
   border: 1px solid var(--line);
@@ -838,7 +857,7 @@ img, svg, video { max-width: 100%; display: block; }
   padding-top: 4.5rem;
   overflow: hidden;
 }
-/* Orange hairline across the top, and the same isometric mesh the hero uses. */
+/* Red hairline across the top, and the same isometric mesh the hero uses. */
 .site-footer::before {
   content: "";
   position: absolute;
@@ -846,14 +865,14 @@ img, svg, video { max-width: 100%; display: block; }
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--orange), rgba(238, 106, 30, .15) 55%, transparent);
+  background: linear-gradient(90deg, var(--orange), rgba(228, 24, 31, .15) 55%, transparent);
 }
 .site-footer::after {
   content: "";
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(48% 60% at 88% 0%, rgba(238, 106, 30, .13), transparent 70%),
+    radial-gradient(48% 60% at 88% 0%, rgba(228, 24, 31, .13), transparent 70%),
     repeating-linear-gradient(30deg, rgba(255, 255, 255, .028) 0 1px, transparent 1px 86px);
   pointer-events: none;
 }
@@ -873,11 +892,11 @@ img, svg, video { max-width: 100%; display: block; }
   bottom: 0;
   width: 34px;
   height: 2px;
-  background: var(--orange);
+  background: var(--orange-lift);
 }
 .footer-grid { display: grid; grid-template-columns: 1.7fr 1fr 1fr 1.3fr; gap: 3rem; padding-bottom: 3rem; }
 .footer-grid a { color: rgba(255, 255, 255, .68); }
-.footer-grid a:hover { color: var(--orange); }
+.footer-grid a:hover { color: var(--orange-lift); }
 .footer-links { list-style: none; margin: 0; padding: 0; }
 .footer-links li { margin-bottom: .6rem; }
 .footer-links a {
@@ -887,7 +906,7 @@ img, svg, video { max-width: 100%; display: block; }
   font-size: .94rem;
   transition: color .18s, gap .18s, transform .18s;
 }
-.footer-links a::before { content: "›"; color: var(--orange); font-size: 1.1rem; line-height: 1; }
+.footer-links a::before { content: "›"; color: var(--orange-lift); font-size: 1.1rem; line-height: 1; }
 .footer-links a:hover { gap: .75rem; transform: translateX(2px); }
 
 .footer-brand { display: inline-flex; align-items: center; gap: .75rem; margin-bottom: 1.2rem; }
@@ -897,7 +916,7 @@ img, svg, video { max-width: 100%; display: block; }
 
 .footer-contact { list-style: none; margin: 0; padding: 0; font-size: .94rem; }
 .footer-contact li { display: flex; gap: .75rem; margin-bottom: .9rem; }
-.footer-contact svg { width: 17px; height: 17px; flex: none; margin-top: .35rem; color: var(--orange); }
+.footer-contact svg { width: 17px; height: 17px; flex: none; margin-top: .35rem; color: var(--orange-lift); }
 
 .footer-base {
   border-top: 1px solid rgba(255, 255, 255, .1);
@@ -910,7 +929,7 @@ img, svg, video { max-width: 100%; display: block; }
   font-size: .87rem;
 }
 .footer-base a { color: rgba(255, 255, 255, .68); }
-.footer-base a:hover { color: var(--orange); }
+.footer-base a:hover { color: var(--orange-lift); }
 .footer-legal { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
 
 /* Back to top — a quiet affordance at the very end of a long page. */

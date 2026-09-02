@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" role="img">
   <title>Pet Strap</title>
-  <rect width="400" height="300" fill="#FFF1E6"/>
+  <rect width="400" height="300" fill="#FEECEB"/>
   <g stroke="#E4E1DC" stroke-width="1">
     <path d="M0 232h400"/>
   </g>
-  <g stroke="#F26A1B" stroke-width="2" stroke-linecap="round" opacity=".55">
+  <g stroke="#E4181F" stroke-width="2" stroke-linecap="round" opacity=".55">
     <path d="M18 18h20M18 18v20"/>
     <path d="M382 18h-20M382 18v20"/>
     <path d="M18 282h20M18 282v-20"/>
@@ -21,19 +21,19 @@
     <path d="M118 158h164"/>
   </g>
   <!-- two straps round the load, each with a weld joint -->
-  <g fill="#F26A1B" stroke="#B8400E" stroke-width="1.6">
+  <g fill="#E4181F" stroke="#B30F15" stroke-width="1.6">
     <path d="M152 100h14v116h-14zM234 100h14v116h-14z"/>
   </g>
   <g fill="#22262B">
     <path d="M150 128h18v12h-18zM232 128h18v12h-18z"/>
   </g>
   <!-- embossing, which is what a friction-weld head bites on -->
-  <g stroke="#B8400E" stroke-width="1" opacity=".6">
+  <g stroke="#B30F15" stroke-width="1" opacity=".6">
     <path d="M154 108h10M154 116h10M154 150h10M154 158h10M154 166h10M154 174h10M154 182h10M154 190h10M154 198h10M154 206h10"/>
     <path d="M236 108h10M236 116h10M236 150h10M236 158h10M236 166h10M236 174h10M236 182h10M236 190h10M236 198h10M236 206h10"/>
   </g>
   <!-- tension arrows -->
-  <g stroke="#B8400E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+  <g stroke="#B30F15" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none">
     <path d="M96 82h30m-8-7 8 7-8 7"/>
     <path d="M304 82h-30m8-7-8 7 8 7"/>
   </g>

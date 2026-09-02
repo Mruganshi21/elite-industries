@@ -7,8 +7,8 @@
    NAMESPACE
    ---------
    .ei-hero and .ei-hero-* — nothing else. Every selector in this file is the
-   block or a descendant of it, so nothing here can reach the masthead above,
-   the intro card over it, or the band that follows. No token is declared here;
+   block or a descendant of it, so nothing here can reach the masthead above
+   or the band that follows. No token is declared here;
    every colour, face, radius, easing and duration comes from theme.css, and
    the layout gutter comes from .ei-shell.
 
@@ -21,12 +21,12 @@
 
    THE GROUND IS TWO THINGS
    ------------------------
-   hero.mp4 is 20.5 MB and is skipped outright on a phone, on a metered or slow
-   connection, and under reduced motion — see shouldSkipVideo() in hero.js.
-   That means most mobile visitors never see the video at all, so the fallback
-   below is not a grey holding colour: it is the real background, drawn from
-   the tokens as an isometric line mesh lit by a warm pool. The video, when it
-   is allowed to load, cross-fades in on top of it.
+   The clip is 482 KB and is only skipped under reduced motion or an explicit
+   save-data request — see shouldSkipVideo() in hero.js. It still arrives after
+   window.load, though, and it is skipped outright in those two cases, so the
+   fallback below is not a grey holding colour: it is the real background,
+   drawn from the tokens as an isometric line mesh lit by a warm pool. The
+   video cross-fades in on top of it.
    ========================================================================== */
 
 
@@ -40,6 +40,8 @@
    ========================================================================== */
 
 .ei-hero {
+  /* Dark ground: the focus ring lifts with the rest of the accent. */
+  --ei-focus: var(--ei-red-lift);
   position: relative;
   isolation: isolate;
   display: flex;
@@ -81,10 +83,10 @@
   inset: 0;
   background:
     radial-gradient(52% 62% at 16% 26%,
-      color-mix(in srgb, var(--ei-orange) 38%, transparent) 0%,
+      color-mix(in srgb, var(--ei-red) 38%, transparent) 0%,
       transparent 70%),
     radial-gradient(64% 74% at 88% 96%,
-      color-mix(in srgb, var(--ei-burnt) 30%, transparent) 0%,
+      color-mix(in srgb, var(--ei-crimson) 30%, transparent) 0%,
       transparent 72%);
 }
 
@@ -101,7 +103,7 @@
       color-mix(in srgb, var(--ei-white) 9%, transparent) 43px 44px),
     repeating-linear-gradient(90deg,
       transparent 0 86px,
-      color-mix(in srgb, var(--ei-orange) 16%, transparent) 86px 87px);
+      color-mix(in srgb, var(--ei-red) 16%, transparent) 86px 87px);
   -webkit-mask-image: radial-gradient(74% 70% at 34% 44%, #000 8%, transparent 76%);
           mask-image: radial-gradient(74% 70% at 34% 44%, #000 8%, transparent 76%);
 
@@ -172,9 +174,9 @@
 .ei-hero-copy { max-width: 46rem; }
 
 /* The eyebrow is written here rather than reused from theme.css: .ei-eyebrow
-   is --ei-burnt, which is the orange that is allowed to be text on white and
-   drops to roughly 2.4:1 on this ground. On --ei-ink the safe accent is
-   --ei-orange itself, at 6.9:1 — the same swap the footer headings make. */
+   is --ei-crimson, which is the accent for type on a light ground and drops
+   to 1.6:1 on this one. On --ei-ink the safe accent is --ei-red-lift, at
+   6.3:1 — the same swap the footer headings make. */
 .ei-hero-eyebrow {
   display: flex;
   align-items: center;
@@ -185,14 +187,14 @@
   font-weight: 500;
   letter-spacing: .18em;
   text-transform: uppercase;
-  color: var(--ei-orange);
+  color: var(--ei-red-lift);
 }
 
 .ei-hero-eyebrow::before {
   content: "";
   width: 26px;
   height: 2px;
-  background: var(--ei-orange);
+  background: var(--ei-red-lift);
   flex: none;
 }
 
@@ -234,12 +236,12 @@
   width: 9px;
   height: 1.9em;
   flex: none;
-  border-block: 1px solid var(--ei-orange);
-  border-inline-start: 1px solid var(--ei-orange);
+  border-block: 1px solid var(--ei-red-lift);
+  border-inline-start: 1px solid var(--ei-red-lift);
 }
 .ei-hero-mark-rail--end {
   border-inline-start: 0;
-  border-inline-end: 1px solid var(--ei-orange);
+  border-inline-end: 1px solid var(--ei-red-lift);
 }
 
 /* The slot reserves BOTH dimensions. The sizer inside it is the longest name
@@ -298,7 +300,7 @@
   font-size: clamp(.66rem, 1.4vw, .78rem);
   font-weight: 500;
   letter-spacing: .16em;
-  color: var(--ei-orange);
+  color: var(--ei-red-lift);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   transition: opacity .18s var(--ei-ease-ui);
@@ -349,7 +351,7 @@
 .ei-hero-cue svg {
   width: 20px;
   height: 20px;
-  color: var(--ei-orange);
+  color: var(--ei-red-lift);
   animation: ei-hero-nudge 2.4s var(--ei-ease-ui) infinite;
 }
 
@@ -362,20 +364,21 @@
 /* ==========================================================================
    Narrow screens
 
-   Below 760px the video is skipped outright (see hero.js), so this is the
-   layout the drawn ground is designed for. The pool is pulled to the top of
-   the frame, where there is nothing over it, rather than sitting behind the
-   copy and eating its contrast.
+   The video plays here too now that it is 482 KB rather than 20.5 MB, but the
+   drawn ground is still what is on screen until it does — and all there is
+   under reduced motion. The pool is pulled to the top of the frame, where
+   there is nothing over it, rather than sitting behind the copy and eating
+   its contrast.
    ========================================================================== */
 
 @media (max-width: 759.98px) {
   .ei-hero-pool {
     background:
       radial-gradient(70% 46% at 62% 12%,
-        color-mix(in srgb, var(--ei-orange) 40%, transparent) 0%,
+        color-mix(in srgb, var(--ei-red) 40%, transparent) 0%,
         transparent 72%),
       radial-gradient(80% 50% at 20% 100%,
-        color-mix(in srgb, var(--ei-burnt) 28%, transparent) 0%,
+        color-mix(in srgb, var(--ei-crimson) 28%, transparent) 0%,
         transparent 74%);
   }
 

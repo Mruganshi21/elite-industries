@@ -25,8 +25,8 @@
    STACKING
    --------
    The masthead sits at z-index 200. That is above every band on the page and
-   deliberately below 1000, which is where the homepage intro title card lives:
-   the title card has to cover the masthead, not slide under it.
+   deliberately below 1000, which is left free for anything that has to cover
+   the masthead rather than slide under it — a dialog, say.
    ========================================================================== */
 
 
@@ -55,10 +55,11 @@
 }
 
 /* ---- Brand ---------------------------------------------------------------
-   The mark is the client's existing crate glyph, carried over verbatim. It is
-   the one orange element in the bar, so it carries the accent on its own and
-   the wordmark stays ink — an orange wordmark at this size would fail the
-   contrast rule at the top of theme.css. */
+   The client's logo, as a single image. It used to be a drawn crate glyph in
+   --ei-red beside the company name set in --ei-display, and the note here
+   explained why only the glyph took the accent. Both are gone: the logo
+   carries its own colour, and the contrast rule at the top of theme.css has
+   nothing to police in an image. */
 .ei-hd-brand {
   display: inline-flex;
   align-items: center;
@@ -69,22 +70,17 @@
 }
 .ei-hd-brand:hover { color: var(--ei-graphite); }
 
-.ei-hd-mark {
+/* Sized by height, not width: the masthead has a fixed bar height and the
+   logo has to sit inside it, so the height is the constraint and the width
+   follows the file's own ratio. The intrinsic width/height are on the element,
+   so `width: auto` here resolves against those rather than collapsing. */
+.ei-hd-logo {
   display: block;
-  color: var(--ei-orange);
-  transition: color var(--ei-dur-ui) var(--ei-ease-ui);
+  height: 40px;
+  width: auto;
+  transition: opacity var(--ei-dur-ui) var(--ei-ease-ui);
 }
-.ei-hd-brand:hover .ei-hd-mark { color: var(--ei-burnt); }
-
-.ei-hd-wordmark {
-  font-family: var(--ei-display);
-  font-weight: 700;
-  font-size: 1.06rem;
-  letter-spacing: .01em;
-  text-transform: uppercase;
-  line-height: 1.1;
-  white-space: nowrap;
-}
+.ei-hd-brand:hover .ei-hd-logo { opacity: .8; }
 
 /* ---- Tab row -------------------------------------------------------------
    margin-left:auto pushes the nav and the utility cluster to the right of the
@@ -129,7 +125,7 @@
   --ei-focus-offset: -2px;
   transition: color var(--ei-dur-ui) var(--ei-ease-ui);
 }
-.ei-hd-link:hover { color: var(--ei-burnt); }
+.ei-hd-link:hover { color: var(--ei-crimson); }
 
 /* The underline is the state marker, drawn for hover, open and current alike.
    Current holds it; hover and open are the same gesture arriving. */
@@ -140,7 +136,7 @@
   right: .55rem;
   bottom: calc((var(--ei-header-h) - 1.4rem) / 2 - .55rem);
   height: 2px;
-  background: var(--ei-orange);
+  background: var(--ei-red);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--ei-dur-ui) var(--ei-ease-ui);
@@ -149,7 +145,7 @@
 .ei-hd-link[aria-expanded="true"]::after { transform: scaleX(1); }
 
 /* Colour alone would not carry the current tab for a colour-blind visitor, and
-   orange text at this size fails contrast outright — so the marker is the rule
+   red text at this size sits too close to the ink around it — so the marker is the rule
    plus the weight, and the ink stays graphite. */
 .ei-hd-link.is-current { font-weight: 600; }
 .ei-hd-link.is-current::after { transform: scaleX(1); }
@@ -182,7 +178,7 @@
   max-width: calc(100vw - 2rem);
   background: var(--ei-white);
   border: 1px solid var(--ei-line);
-  border-top: 2px solid var(--ei-orange);
+  border-top: 2px solid var(--ei-red);
   border-radius: 0 0 var(--ei-r-card) var(--ei-r-card);
   box-shadow: var(--ei-shadow-lg);
 
@@ -228,8 +224,8 @@
     color var(--ei-dur-ui) var(--ei-ease-ui);
 }
 .ei-hd-panel-link:hover {
-  background: var(--ei-ember);
-  color: var(--ei-burnt);
+  background: var(--ei-blush);
+  color: var(--ei-crimson);
 }
 
 /* The "View all products" row. Ruled off and set in the mono utility register
@@ -246,7 +242,7 @@
   font-weight: 500;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--ei-burnt);
+  color: var(--ei-red);
 }
 .ei-hd-panel-all svg {
   width: 14px;
@@ -295,12 +291,12 @@
   color: var(--ei-graphite);
   white-space: nowrap;
 }
-.ei-hd-phone:hover { color: var(--ei-burnt); }
+.ei-hd-phone:hover { color: var(--ei-crimson); }
 .ei-hd-phone svg {
   width: 17px;
   height: 17px;
   flex: none;
-  color: var(--ei-orange);
+  color: var(--ei-red);
 }
 
 .ei-hd-burger {
@@ -319,7 +315,7 @@
     background var(--ei-dur-ui) var(--ei-ease-ui),
     border-color var(--ei-dur-ui) var(--ei-ease-ui);
 }
-.ei-hd-burger:hover { background: var(--ei-shell); border-color: var(--ei-orange); }
+.ei-hd-burger:hover { background: var(--ei-shell); border-color: var(--ei-red); }
 .ei-hd-burger svg { width: 22px; height: 22px; }
 
 /* The burger swaps glyph rather than morphing three bars — the sprite already
@@ -411,7 +407,7 @@
      a left rule instead, which is how a list marks its own position. */
   .ei-hd-link::after { display: none; }
   .ei-hd-link.is-current {
-    box-shadow: inset 3px 0 0 var(--ei-orange);
+    box-shadow: inset 3px 0 0 var(--ei-red);
     padding-left: .85rem;
   }
 
@@ -467,29 +463,32 @@
 }
 
 /* Locks the document while the slide-in panel is open. shell.js applies it
-   through a counter, so the nav and anything else that needs the lock — the
-   intro title card, a future dialog — cannot release it out from under
-   each other. */
+   through a counter, so the nav and anything else that needs the lock — a
+   future dialog, say — cannot release it out from under each other. */
 .ei-noscroll { overflow: hidden; }
 
 
 /* ==========================================================================
    Footer
 
-   Dark ground, orange top rule. Everything on this ground is white or an alpha
+   Dark ground, red top rule. Everything on this ground is white or an alpha
    white: the mid greys that work on the shell (--ei-steel, --ei-steel-soft)
-   drop below 4.5:1 here and must not be used.
+   drop below 4.5:1 here and must not be used. The accent is --ei-red-lift, not
+   --ei-red — the brand red is 3.7:1 on this ground, a graphics-floor figure.
+   --ei-red stays for the top rule and the hover fills, which are graphics.
    ========================================================================== */
 
 .ei-ft {
+  /* Dark ground: the focus ring lifts with the rest of the accent. */
+  --ei-focus: var(--ei-red-lift);
   background: var(--ei-ink);
-  border-top: 4px solid var(--ei-orange);
+  border-top: 4px solid var(--ei-red);
   color: rgba(255, 255, 255, .72);   /* ~9:1 on --ei-ink */
   font-size: .92rem;
 }
 
 .ei-ft a { color: var(--ei-white); }
-.ei-ft a:hover { color: var(--ei-orange); }
+.ei-ft a:hover { color: var(--ei-red-lift); }
 
 .ei-ft-top {
   display: grid;
@@ -509,21 +508,35 @@
 }
 .ei-ft-lockup:hover { color: var(--ei-white); }
 
-.ei-ft-mark { display: block; color: var(--ei-orange); }
-
-.ei-ft-wordmark {
-  font-family: var(--ei-display);
-  font-weight: 700;
-  font-size: 1.2rem;
-  letter-spacing: .01em;
-  text-transform: uppercase;
-  line-height: 1.1;
+/* Larger than the masthead's: the footer lockup is the last thing on the page
+   rather than a persistent bar, and it is not competing with a nav for room. */
+.ei-ft-logo {
+  display: block;
+  height: 52px;
+  width: auto;
+  transition: opacity var(--ei-dur-ui) var(--ei-ease-ui);
 }
+.ei-ft-lockup:hover .ei-ft-logo { opacity: .8; }
 
 .ei-ft-address {
   font-style: normal;
   line-height: 1.75;
   margin: 0 0 1.25rem;
+}
+
+/* The second address. Set back from the works above it so the two read as a
+   list of two places rather than as one run-on block — the label carries most
+   of that, and the muting keeps the works first in the eye. */
+.ei-ft-address--office { color: rgba(255, 255, 255, .62); }
+
+.ei-ft-address-label {
+  display: block;
+  font-family: var(--ei-mono);
+  font-size: .7rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .45);
+  margin-bottom: .15rem;
 }
 
 .ei-ft-lines {
@@ -543,7 +556,7 @@
   margin: 0 0 1.6rem;
   word-break: break-word;
 }
-.ei-ft-mail svg { width: 16px; height: 16px; flex: none; color: var(--ei-orange); }
+.ei-ft-mail svg { width: 16px; height: 16px; flex: none; color: var(--ei-red-lift); }
 
 .ei-ft-social {
   display: flex;
@@ -567,12 +580,12 @@
     border-color var(--ei-dur-ui) var(--ei-ease-ui),
     color var(--ei-dur-ui) var(--ei-ease-ui);
 }
-/* Graphite on orange, not white on orange — the fill is the one the primary
-   button uses, and the same contrast rule applies to the glyph on it. */
+/* White on red, the same pairing the primary button makes — 5.9:1 for the
+   glyph on the fill. */
 .ei-ft-social a:hover {
-  background: var(--ei-orange);
-  border-color: var(--ei-orange);
-  color: var(--ei-graphite);
+  background: var(--ei-red);
+  border-color: var(--ei-red);
+  color: var(--ei-white);
 }
 .ei-ft-social svg { width: 18px; height: 18px; }
 
@@ -591,7 +604,7 @@
   font-weight: 500;
   letter-spacing: .16em;
   text-transform: uppercase;
-  color: var(--ei-orange);   /* 6.9:1 on --ei-ink — orange is safe as text here */
+  color: var(--ei-red-lift);   /* 6.3:1 on --ei-ink — the brand red is 3.7:1 here */
   margin: 0 0 1rem;
 }
 
@@ -620,9 +633,9 @@
     color var(--ei-dur-ui) var(--ei-ease-ui);
 }
 .ei-ft-download:hover {
-  background: var(--ei-orange);
-  border-color: var(--ei-orange);
-  color: var(--ei-graphite);
+  background: var(--ei-red);
+  border-color: var(--ei-red);
+  color: var(--ei-white);
 }
 .ei-ft-download svg { width: 17px; height: 17px; flex: none; }
 
@@ -635,7 +648,7 @@
   font-size: .78rem;
   letter-spacing: .02em;
 }
-.ei-ft-hours svg { width: 15px; height: 15px; flex: none; color: var(--ei-orange); }
+.ei-ft-hours svg { width: 15px; height: 15px; flex: none; color: var(--ei-red-lift); }
 
 /* ---- Base bar ------------------------------------------------------------ */
 

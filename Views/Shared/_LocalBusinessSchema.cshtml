@@ -11,7 +11,10 @@
     Razor would HTML-encode into "&amp;" and thereby produce invalid JSON.
 *@
 @{
-    const string siteUrl = "https://www.eliteindustries.example";
+    // The client's live domain. Was a .example placeholder, which made every
+    // @id and product URL in this payload point at a hostname that cannot
+    // resolve. Change it here if the rebuilt site lands somewhere else.
+    const string siteUrl = "https://eliteind.in";
 
     var schema = new Dictionary<string, object?>
     {

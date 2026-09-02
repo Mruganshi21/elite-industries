@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" role="img">
   <title>Pp Corrugated Sheet</title>
-  <rect width="400" height="300" fill="#FFF1E6"/>
+  <rect width="400" height="300" fill="#FEECEB"/>
   <g stroke="#E4E1DC" stroke-width="1">
     <path d="M0 232h400"/>
   </g>
-  <g stroke="#F26A1B" stroke-width="2" stroke-linecap="round" opacity=".55">
+  <g stroke="#E4181F" stroke-width="2" stroke-linecap="round" opacity=".55">
     <path d="M18 18h20M18 18v20"/>
     <path d="M382 18h-20M382 18v20"/>
     <path d="M18 282h20M18 282v-20"/>
@@ -13,18 +13,18 @@
 
   <g stroke="#22262B" stroke-width="2.4" stroke-linejoin="round">
     <path d="M60 176 200 96l140 80-140 80z" fill="#FFFFFF"/>
-    <path d="M60 176v22l140 80v-22M340 176v22l-140 80" fill="#F26A1B" opacity=".9"/>
+    <path d="M60 176v22l140 80v-22M340 176v22l-140 80" fill="#E4181F" opacity=".9"/>
   </g>
   <!-- twin-wall flutes, read on the cut edge -->
-  <g stroke="#B8400E" stroke-width="1.6" opacity=".7">
+  <g stroke="#B30F15" stroke-width="1.6" opacity=".7">
     <path d="M78 186v22M96 197v22M114 207v22M132 218v22M150 228v22M168 239v22M186 249v22"/>
   </g>
-  <g stroke="#B8400E" stroke-width="1.6" opacity=".7">
+  <g stroke="#B30F15" stroke-width="1.6" opacity=".7">
     <path d="M322 186v22M304 197v22M286 207v22M268 218v22M250 228v22M232 239v22M214 249v22"/>
   </g>
   <!-- the lifted corner -->
-  <path d="M200 96 130 136l-24-14L176 82z" fill="#FFF1E6" stroke="#22262B" stroke-width="2.4" stroke-linejoin="round"/>
-  <g stroke="#F26A1B" stroke-width="1.8" opacity=".8">
+  <path d="M200 96 130 136l-24-14L176 82z" fill="#FEECEB" stroke="#22262B" stroke-width="2.4" stroke-linejoin="round"/>
+  <g stroke="#E4181F" stroke-width="1.8" opacity=".8">
     <path d="M140 118l-22-13M152 111l-22-13M164 104l-22-13"/>
   </g>
 </svg>

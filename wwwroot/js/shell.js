@@ -43,10 +43,9 @@
   /* Scroll lock                                                            */
   /* ====================================================================== */
   /*
-     A counter, not a flag. The nav is not the only thing that will want the
-     document held still — the homepage intro title card takes it too — and two
-     booleans racing means whichever releases first unlocks the page while the
-     other is still open. Published on window so anything else in the build
+     A counter, not a flag. The nav will not be the only thing that wants the
+     document held still, and two booleans racing means whichever releases
+     first unlocks the page while the other is still open. Published on window so anything else in the build
      shares this one counter instead of starting a second.
   */
 

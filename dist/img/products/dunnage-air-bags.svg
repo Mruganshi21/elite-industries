@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" role="img">
   <title>Dunnage Air Bags</title>
-  <rect width="400" height="300" fill="#FFF1E6"/>
+  <rect width="400" height="300" fill="#FEECEB"/>
   <g stroke="#E4E1DC" stroke-width="1">
     <path d="M0 232h400"/>
   </g>
-  <g stroke="#F26A1B" stroke-width="2" stroke-linecap="round" opacity=".55">
+  <g stroke="#E4181F" stroke-width="2" stroke-linecap="round" opacity=".55">
     <path d="M18 18h20M18 18v20"/>
     <path d="M382 18h-20M382 18v20"/>
     <path d="M18 282h20M18 282v-20"/>
@@ -27,8 +27,8 @@
   </g>
   <!-- the bag: bulged sides show it is under pressure -->
   <path d="M150 104h100c8 0 14 26 14 52s-6 52-14 52H150c-8 0-14-26-14-52s6-52 14-52z"
-        fill="#F26A1B" stroke="#B8400E" stroke-width="2.4" stroke-linejoin="round"/>
-  <g stroke="#B8400E" stroke-width="1.8" opacity=".5">
+        fill="#E4181F" stroke="#B30F15" stroke-width="2.4" stroke-linejoin="round"/>
+  <g stroke="#B30F15" stroke-width="1.8" opacity=".5">
     <path d="M168 116v128M200 112v134M232 116v128"/>
   </g>
   <!-- inflation valve -->

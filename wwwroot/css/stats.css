@@ -1,7 +1,7 @@
 /* ==========================================================================
    Elite Industries — homepage stats band
 
-   Four figures on the dark ground, framed top and bottom and divided by
+   Four figures on the brand red, framed top and bottom and divided by
    hairlines: an instrument plate bolted across the page, not four cards
    floating on it.
 
@@ -12,26 +12,54 @@
    products band below. No token is declared here; every colour, face, radius
    and easing comes from theme.css.
 
-   WHY THE GROUND IS INK
+   WHY THE GROUND IS RED
    ---------------------
-   The band above (#about) is --ei-shell and the closing CTA below will be deep
-   orange, so this band could be white or dark. White loses: --ei-shell and
-   --ei-white differ by about four percent, so two light bands meeting would
-   put the section boundary somewhere the eye cannot find it, and the page
-   would read as one long scroll with no measure in it.
+   The bands on both sides are --ei-shell — #about above, the featured products
+   below — so this band has to break the page or there is no break at all.
+   White loses: --ei-shell and --ei-white differ by about four percent, so
+   three light bands running together would put the section boundaries
+   somewhere the eye cannot find them and the page would read as one long
+   scroll with no measure in it.
 
-   Ink gives the page a beat — hero dark, about light, stats dark, products
-   light, CTA orange, footer dark — and it is the site's existing dark ground,
-   the same --ei-ink the hero and the footer already stand on, so it introduces
-   no new surface. It also buys the numerals real contrast: white on --ei-ink
-   is about 16:1 and --ei-orange on it about 6.9:1, where on white the accent
-   would be 3.06:1 and barred from anything but display sizes.
+   Ink would work, and is what this band used to be. Red does the same
+   structural job and one thing more: the page runs hero dark, about light,
+   STATS RED, products light, footer dark, so the loudest surface on the
+   homepage lands on the one band that is pure claim — the four figures the
+   company is asking to be judged on. It is a fill, which is exactly what THE
+   RED RULE in theme.css reserves --ei-red for; the primary button is the same
+   fill at a smaller size. Against the --ei-shell either side the ground is
+   4.34:1, so the boundary is unmissable.
 
-   COLOUR ON A DARK GROUND
-   -----------------------
-   --ei-steel and --ei-steel-soft are tuned for the shell and are NOT legible
-   here — see the ink notes in theme.css. Labels use the same alpha white the
-   footer uses in shell.css, which is roughly 9:1 on this ground.
+   Be honest about the cost: this IS a new surface. The hero and the footer
+   stand on --ei-ink and nothing else on the site is a full red band, so the
+   page now carries two dark grounds and one red one rather than one dark
+   ground reused three times. Every colour on the band had to be re-picked
+   from scratch as a result — not one of the ink values survived.
+
+   COLOUR ON A RED GROUND
+   ----------------------
+   --ei-red is bright and it eats whatever is put on it. The measured figures,
+   all against #E4181F:
+
+     white                    4.72:1   passes AA for text, with no margin
+     --ei-blush               4.14:1   graphics only, clears the 3:1 floor
+     rgba(255,255,255,.78)    3.28:1   graphics only — the hairlines
+     rgba(255,255,255,.72)    2.95:1   FAILS — what the labels used to be
+     --ei-graphite            3.22:1   FAILS — no dark type on this band
+     --ei-ink-line            2.47:1   FAILS — the old hairline, now muddy
+     --ei-red-lift            1.69:1   FAILS — red on red, barely drawn
+
+   So white is the ONLY colour type can be set in here, and there is nowhere
+   dimmer to go: the alpha white that gave the ink version its second tier is
+   9.5:1 on --ei-ink but 2.95:1 here, and even .97 alpha only just reaches
+   4.5:1. Every label on this band is therefore pure white, and the hierarchy
+   between figure and label is carried by size, weight and tracking instead of
+   by dimming the type — which is the only lever left.
+
+   --ei-red-lift is the accent for --ei-ink and --ei-graphite and for nothing
+   else; on this ground it is red on red. --ei-steel and --ei-steel-soft are
+   tuned for the shell and are equally out. Where the ink version reached for
+   lift, this one reaches for white or --ei-blush.
 
    THE BAND IS NOT SIZED HERE
    --------------------------
@@ -61,7 +89,13 @@
    ========================================================================== */
 
 .ei-stats {
-  background: var(--ei-ink);
+  /* Red ground: the ring cannot be any tone of red or it vanishes into the
+     band — --ei-red-lift, which this was, is 1.69:1 here. White is 4.72:1,
+     well over the 3:1 an indicator has to meet, and it is the one colour on
+     this band guaranteed to be seen. theme.css reads --ei-focus off the
+     nearest ancestor that sets it, so declaring it here is the whole fix. */
+  --ei-focus: var(--ei-white);
+  background: var(--ei-red);
   color: var(--ei-white);
 }
 
@@ -72,17 +106,25 @@
    No gap between cells. The dividers are real borders on the cells, so the
    four read as one ruled object; a grid gap would leave the hairlines floating
    with daylight either side and the plate would fall apart into cards.
+
+   The rules are an alpha white, not --ei-ink-line. That token is a dark
+   hairline mixed for the ink ground; on the red it is 2.47:1 and darker than
+   the band, which reads as grime rather than as a drawn line. .78 alpha white
+   is 3.28:1 and clears the 3:1 a structural rule owes. It is a louder hairline
+   than the ink version's 1.51:1 line, and that is not a miss: on a ground this
+   saturated a rule either carries or it is dirt, and the frame is the whole
+   reason the four figures read as one plate.
    ========================================================================== */
 
 .ei-stats-row {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  border-block: 1px solid var(--ei-ink-line);
+  border-block: 1px solid rgba(255, 255, 255, .78);
 }
 
 .ei-stats-cell {
   padding: clamp(1.75rem, 3.2vw, 2.5rem) clamp(1rem, 2.4vw, 2rem);
-  border-inline-start: 1px solid var(--ei-ink-line);
+  border-inline-start: 1px solid rgba(255, 255, 255, .78);
 }
 
 /* The outer edges are open. The frame is the two horizontal rules; closing the
@@ -94,13 +136,16 @@
    Cell contents
    ========================================================================== */
 
-/* The accent, and the only orange on this band. Stroked at the sprite's own
-   1.7 weight, so it sits at the same optical weight as every other icon on the
-   site rather than being scaled up into a heavier drawing. */
+/* Was --ei-red-lift, which is 1.69:1 on this ground — red on red, and gone.
+   An icon is a graphic and owes 3:1, so --ei-blush carries it at 4.14:1: a
+   warm off-white that stays one step behind the pure-white numeral instead of
+   competing with it. Stroked at the sprite's own 1.7 weight, so it sits at the
+   same optical weight as every other icon on the site rather than being scaled
+   up into a heavier drawing. */
 .ei-stats-icon {
   width: 30px;
   height: 30px;
-  color: var(--ei-orange);
+  color: var(--ei-blush);
   margin-bottom: clamp(1rem, 2vw, 1.4rem);
 }
 
@@ -113,26 +158,50 @@
   font-size: clamp(2.4rem, 4.4vw, 3.5rem);
   line-height: 1;
   letter-spacing: -.035em;
-  color: var(--ei-white);
+  color: var(--ei-white);   /* 4.72:1 on --ei-red */
 }
 
 /* Tabular figures, or the number physically changes width as it counts and the
    whole cell shuffles sideways for the length of the animation. */
 .ei-stats-figure { font-variant-numeric: tabular-nums; }
 
-/* Outside the counting element on purpose — reveal.js assigns to textContent,
-   so anything inside would be wiped on the first frame. Set smaller and raised
-   so it reads as a qualifier on the figure rather than as another digit. */
-.ei-stats-plus {
+/* The qualifier after the figure: "+" on three of the four cells, "years" on
+   the first. Outside the counting element on purpose — reveal.js assigns to
+   textContent, so anything inside would be wiped on the first frame. Set
+   smaller and raised so it reads as a qualifier on the figure rather than as
+   another digit.
+
+   White, not the icon's --ei-blush: .55em of the phone-size figure is about
+   15px, which is normal-size type by WCAG and owes 4.5:1 — blush is 4.14:1 and
+   would fail there. So the suffix is held apart from the digits by size and
+   baseline alone, which is what the two rules above were already doing. */
+.ei-stats-suffix {
   font-size: .55em;
   line-height: 1;
   margin-top: .12em;
   margin-inline-start: .1em;
-  color: var(--ei-orange);
+  color: var(--ei-white);
+}
+
+/* A word, not a sign. "+" is one glyph and sits fine on the figure's own
+   tracking; "years" is five and needs the negative letter-spacing taken off it,
+   or it sets tight enough to read as one shape. It also tucks closer — the
+   reference band runs the word straight off the last digit — and drops a touch
+   lower, because five lowercase letters hung at the "+" height read as
+   floating rather than as attached. */
+.ei-stats-suffix--word {
+  font-size: .42em;
+  letter-spacing: -.005em;
+  margin-top: .2em;
+  margin-inline-start: .04em;
 }
 
 /* The mono utility register: this is a label on a plate, stencilled, not a
-   caption. ~9:1 on --ei-ink, the same alpha white the footer uses. */
+   caption. Pure white, 4.72:1. The footer's rgba(255,255,255,.72) is 9.5:1 on
+   --ei-ink but 2.95:1 here, and .97 alpha is the first value that reaches
+   4.5:1 on the red — a step so small it buys nothing. There is no dimmer white
+   available on this band, so the label separates from the figure by face, size
+   and tracking rather than by tone. */
 .ei-stats-label {
   margin: 0;
   font-family: var(--ei-mono);
@@ -141,7 +210,7 @@
   letter-spacing: .16em;
   text-transform: uppercase;
   line-height: 1.5;
-  color: rgba(255, 255, 255, .72);
+  color: var(--ei-white);
 }
 
 
@@ -154,14 +223,15 @@
 
    The dividers have to be rebuilt for a 2x2: cells 1 and 3 now start a row, so
    they lose the leading border, and cells 3 and 4 gain a rule above them so
-   the plate stays ruled in both directions.
+   the plate stays ruled in both directions. Same .78 alpha white as the rules
+   above — 3.28:1 on --ei-red.
    ========================================================================== */
 
 @media (max-width: 999.98px) {
   .ei-stats-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
   .ei-stats-cell:nth-child(odd) { border-inline-start: 0; }
-  .ei-stats-cell:nth-child(n+3) { border-top: 1px solid var(--ei-ink-line); }
+  .ei-stats-cell:nth-child(n+3) { border-top: 1px solid rgba(255, 255, 255, .78); }
 }
 
 

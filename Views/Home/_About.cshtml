@@ -8,6 +8,15 @@
     deliberately carries no figures. The counters are the next band's work and
     stating them twice would make neither read as the headline.
 
+    THE COPY
+    --------
+    This is the client's own "Who We Are?" text, cut to the three sentences the
+    band has room for. The full version — every sentence of it, nothing added —
+    is the Overview tab of the About page, which is where "Learn more about us"
+    at the bottom of this block goes. The two are the same voice on purpose: a
+    visitor who follows the link should recognise what they just read, not meet
+    a different company. If the client sends new copy, edit both.
+
     THE ENTRANCE
     ------------
     .ei-reveal, plus the --left / --right variants, and nothing else. reveal.js
@@ -18,51 +27,52 @@
     THE ARTWORK
     -----------
     wwwroot/img/about-facility.svg is the client's existing illustration, reused
-    as briefed. It was drawn for the PREVIOUS palette — cool blue-greys and the
-    old #ee6a1e orange — and has since been recoloured onto this one: the grey
-    ramp remapped warm at matching lightness, #ee6a1e to --ei-orange, #cc5412 to
-    --ei-burnt. The kraft browns were left alone, because corrugate and timber
-    genuinely are that colour. The original is kept beside it as
-    about-facility.legacy-palette.svg.
+    as briefed. It was drawn for the ORIGINAL palette — cool blue-greys and an
+    #ee6a1e orange — and has since been recoloured onto this one: the orange
+    ramp to --ei-red / --ei-crimson, and the grey ramp held neutral at matching
+    lightness so it does not read as a wash of the accent. The kraft browns were
+    left alone, because corrugate and timber genuinely are that colour. The
+    original is kept beside it as about-facility.legacy-palette.svg.
 
     The white panel therefore no longer separates two colour families — it is
     now just a frame, giving the illustration a hard edge to end on rather than
-    fading into the warm --ei-shell ground. That is still worth having, so it
+    fading into the --ei-shell ground. That is still worth having, so it
     stays.
 *@
 
 <section class="ei-band ei-band--shell" id="about" aria-labelledby="ei-about-title">
     <div class="ei-shell ei-about-split">
 
-        @*  PLACEHOLDER COPY — pending client sign-off.
-
-            Written to be replaceable: every company fact in it comes from
-            CompanyProfile, and the two paragraphs are positioning rather than
-            claims, so nothing here has to be checked against a certificate.
-            Swap the prose, keep the interpolations.  *@
+        @*  CLIENT COPY. The year and the town are not written into the prose —
+            they come from CompanyProfile, which is where the client's
+            "Established in the year 2010 at Bharuch, Gujarat" is recorded, so
+            this paragraph and the works plate to the right of it cannot end up
+            disagreeing about either. Swap the prose, keep the interpolations. *@
         <div class="ei-about-copy ei-reveal ei-reveal--left">
 
             <p class="ei-eyebrow">Who we are</p>
 
-            <h2 class="ei-about-title" id="ei-about-title">Packaging built for the journey, not the shelf</h2>
+            @* The client's own claim, and the one line on the page that says
+               what the company is FOR rather than what it sells. *@
+            <h2 class="ei-about-title" id="ei-about-title">Export packaging is our key USP</h2>
 
             <p class="ei-lede ei-about-lede">
-                @CompanyProfile.Name has manufactured export packaging and material handling
-                products in @CompanyProfile.City since @CompanyProfile.FoundedYear — the films,
-                straps, seals and dunnage that keep a container's contents exactly where they
-                were loaded.
+                Established in @CompanyProfile.FoundedYear at @CompanyProfile.ShortAddress,
+                @CompanyProfile.Name is one of the most professional, progressive and punctual
+                enterprises in the Indian packaging and material handling industry.
             </p>
 
             <p class="ei-about-body">
-                Everything we make is specified against the leg it has to survive: monsoon
-                humidity in the hold, the compression of a stack six pallets deep, and a set of
-                hands at the far end that has never seen the load before. Retail packaging is
-                designed to be looked at. Ours is designed to arrive.
+                As a manufacturer and wholesaler of export packaging material for container and
+                cargo, we are determined to fulfil every urgent and large-quantity requirement
+                our customers bring us — across the packaging, material handling and insulation
+                domain.
             </p>
 
             <p class="ei-about-body">
-                We hold stock across ten product lines, ship to the port on the schedule the
-                exporter gives us, and certify what we send.
+                Manufacturing and distributing at scale lets us pass bulk discounts straight to
+                the customer, so supplies can be bought in smaller quantities at the lowest
+                possible price. Every order is backed by a 100% satisfaction guarantee.
             </p>
 
             <p class="ei-about-more">

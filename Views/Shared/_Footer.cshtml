@@ -22,22 +22,35 @@
     <div class="ei-shell ei-ft-top">
 
         <div class="ei-ft-brand">
-            <a class="ei-ft-lockup" asp-controller="Home" asp-action="Index" aria-label="@CompanyProfile.Name home">
-                <span class="ei-ft-mark" aria-hidden="true">
-                    <svg viewBox="0 0 44 44" width="46" height="46">
-                        <rect x="3" y="12" width="38" height="24" rx="2" fill="none" stroke="currentColor" stroke-width="2.6" />
-                        <path d="M12 12v24M22 12v24M32 12v24" stroke="currentColor" stroke-width="2.2" />
-                        <path d="M8 12 22 3l14 9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" />
-                    </svg>
-                </span>
-                <span class="ei-ft-wordmark">@CompanyProfile.Name</span>
+            @*  The reversed logo, because this ground is --ei-ink and the
+                type in the delivered file is near-black. Only the neutral ink
+                is knocked out to white; the diamond keeps the brand red. See
+                the note in wwwroot/img/README.md — this variant is ours, not
+                the client's, and an official reversed file supersedes it.  *@
+            <a class="ei-ft-lockup" asp-controller="Home" asp-action="Index">
+                <img class="ei-ft-logo"
+                     src="~/img/logo-light.png"
+                     asp-append-version="true"
+                     width="301" height="132"
+                     loading="lazy" decoding="async"
+                     alt="@CompanyProfile.Name" />
             </a>
 
+            @*  Two addresses, as on the client's own footer. The works is
+                first and is the one the schema.org markup carries; the office
+                is second and deliberately not repeated into that payload —
+                see the note on CompanyProfile.OfficeStreetAddress. *@
             <address class="ei-ft-address">
                 @CompanyProfile.LegalName<br />
                 @CompanyProfile.StreetAddress<br />
                 @CompanyProfile.City, @CompanyProfile.Region @CompanyProfile.PostalCode<br />
                 @CompanyProfile.Country
+            </address>
+
+            <address class="ei-ft-address ei-ft-address--office">
+                <span class="ei-ft-address-label">@CompanyProfile.OfficeLabel</span>
+                @CompanyProfile.OfficeStreetAddress<br />
+                @CompanyProfile.OfficeCity, @CompanyProfile.OfficeRegion
             </address>
 
             @* Both numbers are dialable. On a desktop that costs nothing; on a
@@ -117,7 +130,13 @@
     <div class="ei-ft-base">
         <div class="ei-shell ei-ft-base-inner">
             <span>&copy; @DateTime.Now.Year @CompanyProfile.LegalName. All rights reserved.</span>
-            <span class="ei-ft-standards">ISO 9001:2015 Certified &middot; ISPM-15 Registered</span>
+            @*  This slot held "ISO 9001:2015 Certified · ISPM-15 Registered" —
+                on every page of the site, in the one strip a buyer scans for
+                exactly that. Neither is claimed anywhere on eliteind.in and
+                neither could be verified, so it now carries what the client
+                does say. Put certifications back only against the certificates,
+                and name the issuing body when you do.  *@
+            <span class="ei-ft-standards">Export Packaging &middot; Any quantity, on time</span>
             @* An in-page jump, not a scripted scroll: it works with the script
                blocked, and honours the smooth-scroll setting theme.css already
                drops under prefers-reduced-motion. *@

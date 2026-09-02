@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" role="img">
   <title>Self Adhesive Tapes</title>
-  <rect width="400" height="300" fill="#FFF1E6"/>
+  <rect width="400" height="300" fill="#FEECEB"/>
   <g stroke="#E4E1DC" stroke-width="1">
     <path d="M0 232h400"/>
   </g>
-  <g stroke="#F26A1B" stroke-width="2" stroke-linecap="round" opacity=".55">
+  <g stroke="#E4181F" stroke-width="2" stroke-linecap="round" opacity=".55">
     <path d="M18 18h20M18 18v20"/>
     <path d="M382 18h-20M382 18v20"/>
     <path d="M18 282h20M18 282v-20"/>
@@ -13,19 +13,19 @@
 
   <!-- the roll, seen at a slight angle -->
   <g stroke="#22262B" stroke-width="2.4" stroke-linejoin="round">
-    <path d="M92 112h54v92H92z" fill="#F26A1B"/>
-    <ellipse cx="92" cy="158" rx="24" ry="46" fill="#F26A1B"/>
-    <ellipse cx="146" cy="158" rx="24" ry="46" fill="#B8400E"/>
-    <ellipse cx="146" cy="158" rx="10" ry="19" fill="#FFF1E6"/>
+    <path d="M92 112h54v92H92z" fill="#E4181F"/>
+    <ellipse cx="92" cy="158" rx="24" ry="46" fill="#E4181F"/>
+    <ellipse cx="146" cy="158" rx="24" ry="46" fill="#B30F15"/>
+    <ellipse cx="146" cy="158" rx="10" ry="19" fill="#FEECEB"/>
   </g>
-  <g stroke="#FFF1E6" stroke-width="1.6" opacity=".55">
+  <g stroke="#FEECEB" stroke-width="1.6" opacity=".55">
     <path d="M104 112h54M104 204h54M98 128h54M98 188h54"/>
   </g>
   <!-- the strip running off and lifting at the end -->
-  <path d="M146 194h108c22 0 38-8 52-26" fill="none" stroke="#F26A1B" stroke-width="20" stroke-linecap="round" opacity=".92"/>
-  <path d="M146 194h108c22 0 38-8 52-26" fill="none" stroke="#B8400E" stroke-width="1.6" opacity=".5"/>
+  <path d="M146 194h108c22 0 38-8 52-26" fill="none" stroke="#E4181F" stroke-width="20" stroke-linecap="round" opacity=".92"/>
+  <path d="M146 194h108c22 0 38-8 52-26" fill="none" stroke="#B30F15" stroke-width="1.6" opacity=".5"/>
   <!-- printed carton mark down the tape, which is half the point of it -->
-  <g fill="#FFF1E6" opacity=".9">
+  <g fill="#FEECEB" opacity=".9">
     <path d="M170 190h16v8h-16zM196 190h16v8h-16zM222 190h16v8h-16zM248 189h14v8h-14z"/>
   </g>
   <!-- the carton it is sealing -->

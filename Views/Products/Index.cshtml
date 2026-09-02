@@ -4,7 +4,9 @@
     ViewData["ActiveNav"] = "products";
     // TEMPORARY — this page still renders against site.css. See _Layout.
     ViewData["Legacy"] = true;
-    ViewData["Description"] = $"Export packaging and material handling products from {CompanyProfile.Name} — VCI film, ISPM-15 timber, strapping, lashing, desiccants, dunnage bags and edge protection, manufactured in {CompanyProfile.ShortAddress}.";
+    // Listed VCI film, ISPM-15 timber, lashing and desiccants until the copy
+    // was checked against eliteind.in. None of the four is in ProductCatalog.
+    ViewData["Description"] = $"Export packaging and material handling products from {CompanyProfile.Name} — PET and PP strapping, polyester composite strap, stretch wrapping film, P.P. corrugated sheet, dunnage air bags, paper edge boards, security seals, cable ties and self adhesive tapes, manufactured in {CompanyProfile.ShortAddress}.";
     ViewData["SeoTitle"] = $"Leading Provider of {CompanyProfile.ProductCategory} for Container Shipping | {CompanyProfile.Name}";
 
     // Set by ProductsController when the header search box submits ?q=. Null on
@@ -102,10 +104,13 @@
         <div class="cta-inner">
             <div>
                 <h2>Not sure which specification you need?</h2>
+                @* Offered to size a desiccant, pick a film gauge and rate a
+                   lashing — two of the three for products that are not in the
+                   catalogue. *@
                 <p>
-                    Tell us the cargo, the route and the transit time. We will size the
-                    desiccant, pick the film gauge and rate the lashing for you — and
-                    quote against it the same week.
+                    Tell us what is being shipped, how much of it and when it has to leave.
+                    We will pick the material and the size for the job — any quantity,
+                    urgent or large — and quote against it.
                 </p>
             </div>
             <div class="cta-actions">

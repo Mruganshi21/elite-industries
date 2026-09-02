@@ -1,7 +1,7 @@
 /* ==========================================================================
    Elite Industries — homepage about-us preview band
 
-   Two columns on a warm off-white ground: the copy, and the client's facility
+   Two columns on a neutral off-white ground: the copy, and the client's facility
    illustration set on a white panel with a stencilled plate over it.
 
    NAMESPACE
@@ -22,8 +22,8 @@
 
    WHY THE ARTWORK SITS ON WHITE
    -----------------------------
-   about-facility.svg was drawn against the previous palette — cool blue-greys
-   (#e8edf1, #cfd8e0, #aab6c2) and the old #ee6a1e orange — and has since been
+   about-facility.svg was drawn against an earlier palette — cool blue-greys
+   (#e8edf1, #cfd8e0, #aab6c2) and an #ee6a1e orange — and has since been
    recoloured onto this one, so the clash this panel was originally introduced
    to hide no longer exists.
 
@@ -111,8 +111,8 @@
 
 /* ---- The stencilled plate ------------------------------------------------
    Mono, uppercase, widely tracked: the register theme.css reserves for
-   shipping marks and spec rows. Graphite ground rather than orange — white on
-   --ei-orange is 3.06:1 and fails, and this is small text. */
+   shipping marks and spec rows. Graphite ground rather than red, so the plate
+   reads as a stamped label rather than as a second call to action. */
 
 .ei-about-plate {
   position: absolute;
@@ -137,9 +137,9 @@
   color: var(--ei-white);
 }
 
-/* --ei-orange on --ei-graphite is 4.99:1 — the one place on this band the
-   accent is allowed to be text. */
-.ei-about-plate-est { color: var(--ei-orange); }
+/* --ei-red-lift on --ei-graphite is 5.5:1 — the one place on this band the
+   accent is allowed to be text. --ei-red itself is 3.2:1 here. */
+.ei-about-plate-est { color: var(--ei-red-lift); }
 
 
 /* ==========================================================================

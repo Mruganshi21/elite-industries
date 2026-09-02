@@ -36,17 +36,26 @@
 <header class="ei-hd" id="siteHeader" data-hd>
     <div class="ei-shell ei-hd-inner">
 
-        @* The crate mark is the client's existing brand asset, carried across
-           unchanged from the previous build. Do not redraw it. *@
-        <a class="ei-hd-brand" asp-controller="Home" asp-action="Index" aria-label="@CompanyProfile.Name home">
-            <span class="ei-hd-mark" aria-hidden="true">
-                <svg viewBox="0 0 44 44" width="36" height="36">
-                    <rect x="3" y="12" width="38" height="24" rx="2" fill="none" stroke="currentColor" stroke-width="2.6" />
-                    <path d="M12 12v24M22 12v24M32 12v24" stroke="currentColor" stroke-width="2.2" />
-                    <path d="M8 12 22 3l14 9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" />
-                </svg>
-            </span>
-            <span class="ei-hd-wordmark">@CompanyProfile.Name</span>
+        @*  The client's logo. It replaces a drawn crate mark plus the
+            company name set in type — that pair was a stand-in, and the two
+            together said the name twice anyway.
+
+            width/height are the file's intrinsic pixels, so the box is
+            reserved before the image arrives and the masthead does not jolt
+            on load. The alt text is the company name, and the link's own
+            aria-label went with the change: an <img> alt inside an <a>
+            already names the link, and carrying both made a screen reader
+            announce the name twice.
+
+            NOT lazy-loaded and NOT async-decoded. It is the first thing in
+            the document and above the fold on every page, so either would
+            only hold it up.  *@
+        <a class="ei-hd-brand" asp-controller="Home" asp-action="Index">
+            <img class="ei-hd-logo"
+                 src="~/img/logo.png"
+                 asp-append-version="true"
+                 width="301" height="132"
+                 alt="@CompanyProfile.Name" />
         </a>
 
         <nav class="ei-hd-nav" id="ei-hd-nav" aria-label="Main" data-hd-nav>

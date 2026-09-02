@@ -13,16 +13,28 @@
    from colliding while both are on the page. Do not add an unprefixed token
    here, and do not read a legacy token from a rebuilt component.
 
-   THE ORANGE RULE — read before using a colour
-   --------------------------------------------
-   --ei-orange is 3.06:1 on white. That is enough for large display type, rules,
-   icons and fills; it is NOT enough for body copy or a link.
-     - orange on white  -> only at 24px+ bold, or as a non-text fill
-     - --ei-burnt on white -> 5.6:1, this is the orange for text and links
-     - white on --ei-orange -> 3.06:1, fails; do not do it
-     - --ei-graphite on --ei-orange -> 4.99:1, passes
-   Dark type on safety orange is also the industrial signage vernacular, which
-   is why the primary button is built that way rather than white-on-orange.
+   THE RED RULE — read before using a colour
+   -----------------------------------------
+   --ei-red is the brand red, taken exactly from eliteind.in's --theme-color.
+   It is BRIGHT, and it is the accent everywhere on a light ground: fills,
+   rules, icons AND type. It clears AA, but only just, and the margin is what
+   sets --ei-shell.
+     - --ei-red on white        -> 4.72:1, passes
+     - --ei-red on --ei-shell   -> 4.52:1, passes — and this is WHY --ei-shell
+                                   is #FAFAFA and not the darker off-white it
+                                   used to be. Do not darken it without
+                                   rechecking every accent that sits on it.
+     - white on --ei-red        -> 4.72:1, passes; this is the primary button
+     - --ei-crimson on white    -> 7.0:1; the HOVER shade, not the resting one
+     - --ei-graphite on --ei-red-> 3.2:1, FAILS; never put dark type on the red
+     - --ei-red on --ei-ink     -> 3.7:1; clears the 3:1 graphics floor only
+   So: --ei-red is the resting accent, --ei-crimson is what it deepens to on
+   hover. On --ei-ink or --ei-graphite both are too dark to read and the accent
+   becomes --ei-red-lift.
+
+   The one place the margin runs out is a ground darker than --ei-shell. Icons
+   are graphics and owe 3:1 rather than 4.5:1, so an icon may sit anywhere the
+   red is legible at all; a label beside it may not.
 
    TYPE ROLES
    ----------
@@ -35,16 +47,24 @@
 
 :root {
   /* ---- Brand ---------------------------------------------------------- */
-  --ei-orange:      #F26A1B;   /* the accent: fills, rules, icons, big numerals */
-  --ei-burnt:       #B8400E;   /* hover / emphasis / any orange that is TEXT */
-  --ei-burnt-deep:  #93330B;   /* pressed state */
-  --ei-ember:       #FFF1E6;   /* pale wash for tinted surfaces */
-  --ei-ember-line:  #FBD9C0;   /* hairline on a tinted surface */
+  --ei-red:          #E4181F;   /* the brand red, from eliteind.in --theme-color */
+  --ei-crimson:      #B30F15;   /* the accent AS TEXT, and the primary button's hover */
+  --ei-crimson-deep: #8C0A10;   /* pressed / text hover */
+  /* The accent again, lifted for dark grounds. --ei-red is 3.0:1 on --ei-ink
+     and unreadable there; this is 6.3:1 on ink and 5.4:1 on --ei-ink-2. Use it
+     for every accent that sits on ink or graphite — footer headings, the hero
+     eyebrow, the stat icons — and nowhere else: it is 2.5:1 on white. */
+  --ei-red-lift:     #FF6B62;
+  --ei-blush:        #FEECEB;   /* pale wash for tinted surfaces */
+  --ei-blush-line:   #F9CDCA;   /* hairline on a tinted surface */
 
   /* ---- Ground --------------------------------------------------------- */
+  /* Neutral, not warm. The cream the orange palette sat on pulled the whole
+     page toward the accent; with red the ground is kept off-hue so the red is
+     the only warm thing on the screen and reads as a mark rather than a tint. */
   --ei-white:       #FFFFFF;
-  --ei-shell:       #F7F5F2;   /* off-white, the alternating band */
-  --ei-line:        #E4E1DC;   /* hairline on white or shell */
+  --ei-shell:       #FAFAFA;   /* off-white, the alternating band */
+  --ei-line:        #E4E1E1;   /* hairline on white or shell */
 
   /* ---- Ink ------------------------------------------------------------ */
   --ei-graphite:    #22262B;   /* body + headings. Never pure black. */
@@ -147,11 +167,11 @@ p { margin: 0 0 1.2em; }
 p:last-child { margin-bottom: 0; }
 
 a {
-  color: var(--ei-burnt);            /* 5.6:1 — the orange that is allowed to be text */
+  color: var(--ei-red);                /* 4.5:1 on shell — see THE RED RULE */
   text-decoration: none;
   transition: color var(--ei-dur-ui) var(--ei-ease-ui);
 }
-a:hover { color: var(--ei-burnt-deep); }
+a:hover { color: var(--ei-crimson); }
 
 strong, b { font-weight: 600; }
 
@@ -164,20 +184,20 @@ strong, b { font-weight: 600; }
   font-weight: 500;
   letter-spacing: .18em;
   text-transform: uppercase;
-  color: var(--ei-burnt);
+  color: var(--ei-red);
   margin: 0 0 1.1rem;
   display: flex;
   align-items: center;
   gap: .7rem;
 }
 
-/* The short orange rule that leads an eyebrow. Decorative, so it is drawn
+/* The short red rule that leads an eyebrow. Decorative, so it is drawn
    here rather than added as an element in every section's markup. */
 .ei-eyebrow::before {
   content: "";
   width: 26px;
   height: 2px;
-  background: var(--ei-orange);
+  background: var(--ei-red);
   flex: none;
 }
 
@@ -219,9 +239,9 @@ strong, b { font-weight: 600; }
 /* ==========================================================================
    Buttons
 
-   Primary is orange with graphite type — see THE ORANGE RULE above. Hover
-   flips to burnt with white type, so the state change is a genuine inversion
-   rather than a shade darker.
+   Primary is red with white type — see THE RED RULE above. Hover deepens to
+   crimson rather than inverting: at 5.9:1 the white is already carrying the
+   button, and flipping it would cost contrast instead of gaining it.
    ========================================================================== */
 
 .ei-btn {
@@ -250,24 +270,25 @@ strong, b { font-weight: 600; }
 .ei-btn:active { transform: translateY(1px); }
 
 .ei-btn--primary {
-  background: var(--ei-orange);
-  color: var(--ei-graphite);
-  border-color: var(--ei-orange);
+  background: var(--ei-red);
+  color: var(--ei-white);
+  border-color: var(--ei-red);
 }
 .ei-btn--primary:hover {
-  background: var(--ei-burnt);
-  border-color: var(--ei-burnt);
+  background: var(--ei-crimson);
+  border-color: var(--ei-crimson);
   color: var(--ei-white);
 }
+.ei-btn--primary:active { background: var(--ei-crimson-deep); border-color: var(--ei-crimson-deep); }
 
 .ei-btn--outline {
   background: transparent;
-  color: var(--ei-burnt);
-  border-color: var(--ei-orange);
+  color: var(--ei-red);
+  border-color: var(--ei-red);
 }
 .ei-btn--outline:hover {
-  background: var(--ei-burnt);
-  border-color: var(--ei-burnt);
+  background: var(--ei-crimson);
+  border-color: var(--ei-crimson);
   color: var(--ei-white);
 }
 
@@ -277,7 +298,7 @@ strong, b { font-weight: 600; }
   color: var(--ei-graphite);
   border-color: var(--ei-white);
 }
-.ei-btn--light:hover { background: var(--ei-ember); border-color: var(--ei-ember); }
+.ei-btn--light:hover { background: var(--ei-blush); border-color: var(--ei-blush); color: var(--ei-red); }
 
 .ei-btn--ghost {
   background: transparent;
@@ -297,7 +318,7 @@ strong, b { font-weight: 600; }
   font-size: .92rem;
   font-weight: 600;
   letter-spacing: .01em;
-  color: var(--ei-burnt);
+  color: var(--ei-red);
   position: relative;
   padding-bottom: .3rem;
 }
@@ -307,11 +328,12 @@ strong, b { font-weight: 600; }
   left: 0; bottom: 0;
   height: 2px;
   width: 100%;
-  background: var(--ei-orange);
+  background: var(--ei-red);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--ei-dur-ui) var(--ei-ease-ui);
 }
+.ei-link:hover { color: var(--ei-crimson); }
 .ei-link:hover::after { transform: scaleX(1); }
 .ei-link svg { width: 1.05em; height: 1.05em; transition: transform var(--ei-dur-ui) var(--ei-ease-ui); }
 .ei-link:hover svg { transform: translateX(4px); }
@@ -323,16 +345,20 @@ strong, b { font-weight: 600; }
    One visible ring for every interactive element on the page. Section files
    must not override this — if a control needs a different offset, set
    --ei-focus-offset on that control rather than redeclaring the outline.
+
+   --ei-red is 3.7:1 on --ei-ink — over the 3:1 floor, but not by enough to
+   spend on the one indicator a keyboard user has. A band on ink sets
+   --ei-focus to --ei-red-lift on its own root; the rule below reads it.
    ========================================================================== */
 
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-  outline: 3px solid var(--ei-orange);
+  outline: 3px solid var(--ei-focus, var(--ei-red));
   outline-offset: var(--ei-focus-offset, 3px);
   border-radius: var(--ei-r);
 }
 
-/* Anything sitting on an orange ground needs a ring that is not orange. */
-.ei-on-orange :where(a, button):focus-visible { outline-color: var(--ei-graphite); }
+/* Anything sitting on a red ground needs a ring that is not red. */
+.ei-on-red :where(a, button):focus-visible { outline-color: var(--ei-white); }
 
 .ei-skip {
   position: absolute;

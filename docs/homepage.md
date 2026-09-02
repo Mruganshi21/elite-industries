@@ -107,11 +107,12 @@ that switches all of it off. If you add motion, add it there too.
 
 - `wwwroot/css/hero.css` and `wwwroot/js/hero.js` — the old video-background
   hero. Superseded; nothing else referenced them.
-- The `<video>` element and its loading policy. `wwwroot/video/hero.mp4`
-  (20.5 MB) is still on disk and `CompanyProfile.HeroVideoPath` still points at
-  it, but nothing renders it. Delete both once you are happy with the new hero,
-  or repoint `HeroVideoPath` at real facility footage and reinstate a video
-  layer behind `.hero-bg`.
+- The homepage intro title card — `Views/Home/_Intro.cshtml`,
+  `wwwroot/css/intro.css`, `wwwroot/js/intro.js`. The page opens straight on the
+  hero and its clip is now the hero background.
+- `wwwroot/video/hero.mp4` (20.5 MB) is still on disk but nothing renders it;
+  `CompanyProfile.HeroVideoPath` points at the 482 KB intro clip instead. See
+  `wwwroot/video/README.md`.
 
 ## If you change the catalogue
 

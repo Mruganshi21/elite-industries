@@ -5,12 +5,11 @@
 
      1. The rotating shipping mark — the ten catalogue names crossfading one
         into the next under the wordmark.
-     2. The background video — 20.5 MB of it, which is why most of this file
-        is about deciding whether to fetch it at all.
+     2. The background video — the 482 KB clip that used to open the homepage
+        as a full-screen title card, now the ground of this band.
 
    Loaded with `defer` from the Scripts section, so it runs after the document
-   is parsed and after intro.js (which is parser-blocking, and has therefore
-   already made its own decision by the time this file exists).
+   is parsed.
 
    PROGRESSIVE
    -----------
@@ -32,20 +31,18 @@
   /* Video loading policy                                                   */
   /* ====================================================================== */
   /*
-     Every threshold that governs the 20.5 MB fetch is in this one function and
-     these three constants, so tuning it is a single edit rather than a hunt.
-     The reasoning behind each is in wwwroot/video/README.md.
+     Every condition that governs the fetch is in this one function, so tuning
+     it is a single edit rather than a hunt. The reasoning is in
+     wwwroot/video/README.md.
+
+     There used to be a viewport-width gate and a downlink floor here. Both were
+     about hero.mp4 being 20.5 MB — 20 MB over mobile data is not a fair default,
+     and it would still be arriving long after the visitor had scrolled past the
+     band. The clip is now 482 KB, smaller than the fonts this page already
+     fetches, so a phone and a middling connection both get it. What is left is
+     the two cases that are about what the visitor asked for rather than about
+     the size of the file.
   */
-
-  /* Below this the video is not offered at all: 20 MB over mobile data is not
-     a fair default, and a 16:9 clip cropped to a portrait viewport is mostly
-     the middle of the frame anyway. Matches the breakpoint in hero.css that
-     restyles the drawn ground for exactly this case. */
-  var MIN_VIEWPORT_W = 760;
-
-  /* Megabits per second. Under this the clip would still be arriving long
-     after the visitor has scrolled past the band it belongs to. */
-  var MIN_DOWNLINK = 1.5;
 
   /* requestIdleCallback can wait indefinitely on a busy main thread. This caps
      it, and doubles as the plain-setTimeout delay where it is unavailable. */
@@ -53,7 +50,6 @@
 
   function shouldSkipVideo() {
     if (reduceMotion) { return true; }
-    if (window.innerWidth < MIN_VIEWPORT_W) { return true; }
 
     var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     if (!conn) { return false; }
@@ -62,15 +58,10 @@
        overrides it. */
     if (conn.saveData) { return true; }
 
+    /* Half a megabyte on 2G is still most of a minute. Everything above 2G
+       gets the clip. */
     var effective = conn.effectiveType || '';
     if (effective === 'slow-2g' || effective === '2g') { return true; }
-
-    /* downlink is 0 when the browser has no estimate yet — treated as unknown
-       rather than as "infinitely slow", or a fresh page load on a fast
-       connection would skip the video on the strength of a missing number. */
-    if (typeof conn.downlink === 'number' && conn.downlink > 0 && conn.downlink < MIN_DOWNLINK) {
-      return true;
-    }
 
     return false;
   }
@@ -136,10 +127,9 @@
       hero.classList.add('is-video-playing');
     });
 
-    /* Both, for the same reason intro.js listens twice: a failing <source>
-       fires on the <source>, not on the <video>. Here the consequence is only
-       that the crossfade never starts and the drawn ground stays — which is a
-       perfectly good hero, so there is nothing to do but not add the class. */
+    /* A failed fetch only means the crossfade never starts and the drawn
+       ground stays — which is a perfectly good hero, so there is nothing to do
+       here but not add the class. */
     video.addEventListener('error', function () {});
 
     video.src = src;
@@ -281,46 +271,21 @@
   /* Start                                                                  */
   /* ====================================================================== */
   /*
-     Held until the intro title card has lifted. Starting underneath it would
-     spend the whole clip cycling names nobody can see, and the visitor would
-     arrive at the hero mid-list rather than at 01 / 10.
-
-     intro.js marks the document while the card is up and clears the mark on
-     teardown, so the state is unambiguous by the time this deferred file runs:
-     the attribute is there and the event is still coming, or it was never set
-     and there is nothing to wait for.
+     Immediate. The hero is the first thing on the page — there is no title
+     card in front of it any more — so there is nothing to wait for, and the
+     visitor arrives at the mark on 01 / 10 rather than part-way through it.
   */
 
-  /* If the card somehow never reports back, the hero starts anyway. It is a
-     backstop for a case intro.js is already built to prevent, not a schedule. */
-  var INTRO_BACKSTOP_MS = 9000;
+  if (rotationCanRun()) {
+    startRotation();
 
-  var started = false;
-
-  function start() {
-    if (started) { return; }
-    started = true;
-
-    if (rotationCanRun()) {
-      startRotation();
-
-      /* Nothing is burning frames for a tab nobody is looking at — and a
-         rotation left running in the background arrives back on screen at an
-         arbitrary point in the list. */
-      document.addEventListener('visibilitychange', function () {
-        if (document.hidden) { stopRotation(); } else { startRotation(); }
-      });
-    }
-
-    /* Scheduled last, so the 20 MB fetch is never queued while the intro clip
-       is still decoding. */
-    scheduleVideo();
+    /* Nothing is burning frames for a tab nobody is looking at — and a
+       rotation left running in the background arrives back on screen at an
+       arbitrary point in the list. */
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { stopRotation(); } else { startRotation(); }
+    });
   }
 
-  if (document.documentElement.hasAttribute('data-ei-intro-running')) {
-    document.addEventListener('intro:done', start, { once: true });
-    window.setTimeout(start, INTRO_BACKSTOP_MS);
-  } else {
-    start();
-  }
+  scheduleVideo();
 })();

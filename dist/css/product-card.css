@@ -26,7 +26,7 @@
    THE ILLUSTRATIONS ALREADY HAVE A GROUND
    ---------------------------------------
    Every wwwroot/img/products/*.svg is 400x300 and paints its own full-bleed
-   --ei-ember wash with orange registration marks in the corners. So the thumb
+   --ei-blush wash with red registration marks in the corners. So the thumb
    needs no tint of its own — it would be painted over. What it does need is a
    fixed aspect-ratio, so that a future asset drawn at another size cannot
    break the row's common baseline.
@@ -73,7 +73,7 @@
 .ei-pcard:focus-within {
   transform: translateY(-4px);
   box-shadow: var(--ei-shadow-lg);
-  border-color: var(--ei-orange);
+  border-color: var(--ei-red);
 }
 
 
@@ -131,7 +131,7 @@
 }
 
 /* --ei-graphite until it is pointed at. The name is the link, and a grid of
-   six burnt-orange headings would turn the whole band orange; the card carries
+   six crimson headings would turn the whole band red; the card carries
    its accent in the hairline and the cue arrow instead. */
 .ei-pcard-link {
   color: var(--ei-graphite);
@@ -141,7 +141,7 @@
   z-index: 1;
 }
 
-.ei-pcard:hover .ei-pcard-link { color: var(--ei-burnt); }
+.ei-pcard:hover .ei-pcard-link { color: var(--ei-crimson); }
 
 /* The hit area: the whole card, from one link. See the note in the partial for
    why this rather than an anchor around the <article>. */
@@ -152,8 +152,8 @@
   z-index: 2;
 }
 
-/* --ei-steel, 5.9:1 on white. This is body copy, so it may not be --ei-orange
-   — see THE ORANGE RULE at the top of theme.css. */
+/* --ei-steel, 5.9:1 on white. Body copy stays grey: the red is the accent,
+   and a paragraph set in it would spend the emphasis it is there to carry. */
 .ei-pcard-where {
   margin: 0;
   font-size: .92rem;
@@ -170,7 +170,7 @@
   display: block;
   margin-top: auto;
   padding-top: 1.1rem;
-  color: var(--ei-burnt);
+  color: var(--ei-red);
 }
 
 .ei-pcard-cue svg {

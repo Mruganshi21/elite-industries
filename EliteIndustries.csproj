@@ -6,4 +6,24 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <!--
+    tools/export_static.py publishes into ./artifacts/static-publish, which is
+    INSIDE the project directory. Without these exclusions the SDK globs that
+    output back in as project content, so the next publish copies the previous
+    publish into itself: artifacts/static-publish/artifacts/static-publish/...
+    one level deeper every run, until the paths get long enough that the build
+    fails outright with MSB3030. Both directories are build output and neither
+    is ever project source, so neither is a candidate for any glob.
+  -->
+  <ItemGroup>
+    <Content Remove="artifacts/**" />
+    <Compile Remove="artifacts/**" />
+    <EmbeddedResource Remove="artifacts/**" />
+    <None Remove="artifacts/**" />
+    <Content Remove="dist/**" />
+    <Compile Remove="dist/**" />
+    <EmbeddedResource Remove="dist/**" />
+    <None Remove="dist/**" />
+  </ItemGroup>
+
 </Project>

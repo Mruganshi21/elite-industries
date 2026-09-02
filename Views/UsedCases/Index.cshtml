@@ -1,11 +1,37 @@
+@model IReadOnlyList<EliteIndustries.Models.Industry>
 @using EliteIndustries.Models
+@using EliteIndustries.Services
+@*
+    Used Cases — the sectors the company supplies.
+
+    WHAT THIS REPLACED
+    ------------------
+    Three long written-up case studies: a tier-one automotive supplier shipping
+    castings Nhava Sheva to Bremerhaven, a 340-container programme with a
+    cost-per-container figure, a supplier caught sub-contracting an ISPM-15
+    heat treatment. All of it invented, none of it from the client, and the
+    page said in as many words that "figures come from the consignment records
+    we keep" — which turned fiction into a claim about our own records.
+
+    The client's own Used Cases section is seventeen sectors, each listing the
+    products that serve it. That is what this page is now. Every pairing comes
+    from IndustryCatalog, which was transcribed from those pages; see the
+    remarks on that class for the two places where the client's product naming
+    is finer-grained than this catalogue.
+
+    A sector here is a heading and a product list, not a link: the client's
+    seventeen sector pages have no prose of their own to justify a page each,
+    and seventeen stubs would be worse than one honest listing. If the client
+    supplies sector copy, this is the point to grow detail pages from — the
+    slugs are already on the model and already unique.
+*@
 @{
     ViewData["Title"] = "Used Cases";
     ViewData["ActiveNav"] = "usedcases";
     // TEMPORARY — this page still renders against site.css. See _Layout.
     ViewData["Legacy"] = true;
-    ViewData["SeoTitle"] = $"Export Packaging Case Studies for Container Shipping | {CompanyProfile.Name}";
-    ViewData["Description"] = $"Representative applications of {CompanyProfile.Name} export packaging — corrosion protection, moisture control and cargo securing specified for real export lanes, with measured outcomes.";
+    ViewData["SeoTitle"] = $"Export Packaging by Industry | {CompanyProfile.Name}";
+    ViewData["Description"] = $"The industries {CompanyProfile.Name} supplies — from agriculture, ports and textiles to solar, pharmaceuticals and HVAC — and the export packaging and material handling products each one is served by.";
 }
 
 <section class="page-header">
@@ -16,8 +42,7 @@
         </ol>
         <h1>Used Cases</h1>
         <p>
-            How the catalogue gets specified on real export lanes — the problem,
-            what we supplied, and what changed as a result.
+            The sectors we supply, and what each one is packed with.
         </p>
     </div>
 </section>
@@ -25,356 +50,77 @@
 <section class="section-sm">
     <div class="shell">
         <div class="section-head center">
-            <span class="eyebrow center-line">Applications</span>
-            <h2>Packing specified for the voyage</h2>
+            <span class="eyebrow center-line">Industries served</span>
+            <h2>@Model.Count industries, @ProductCatalog.ForNav.Count product lines</h2>
             <p>
-                The examples below are representative of work we do repeatedly. Clients
-                are described by sector rather than by name. Figures come from the
-                consignment records we keep for each programme.
+                Export packaging is our key USP, and the requirement changes with the
+                cargo — a pallet of tiles, a crate of solar modules and a drum of
+                chemicals are three different load problems. Every product listed
+                against a sector below is one we supply into it.
             </p>
         </div>
     </div>
 </section>
 
-<!-- =============================== case 01 ================================ -->
 <section class="section" style="padding-top:0">
-    <div class="shell split wide-left reveal">
-        <div>
-            <span class="eyebrow">Automotive Components</span>
-            <h2>Bare machined castings arriving flecked with rust</h2>
-            <p>
-                <strong>The challenge.</strong> A tier-one automotive supplier was
-                shipping machined iron castings from Nhava Sheva to Bremerhaven — a
-                26-day door-to-door transit crossing the equator twice. Parts left the
-                plant clean and arrived with surface corrosion in the bores. The oil
-                dip they were using had to be degreased on arrival, which the customer
-                had begun charging back.
-            </p>
-            <p>
-                <strong>What we supplied.</strong> We moved them off oil entirely and
-                onto 100-micron VCI gusseted bags, one casting per bag, heat-sealed,
-                with a desiccant sachet sized to the bag volume rather than the
-                container. Pallets were unitised in pre-stretched film and strapped
-                over laminated edge boards so the stacks could be double-tiered.
-            </p>
-            <p>
-                <strong>The outcome.</strong> Corrosion rejections went from an average
-                of 4.2% of each consignment to nil across the following 14 months.
-                Because the parts no longer needed degreasing, the customer dropped the
-                chargeback and cut a step out of their own goods-inward process.
-            </p>
-
-            <ul class="check-list">
-                <li>VCI Anti-Corrosion Film — 100 micron gusseted bags</li>
-                <li><a asp-controller="Products" asp-action="Detail" asp-route-slug="stretch-wrapping-film">Stretch &amp; Shrink Film</a> — pre-stretched, 17 micron</li>
-                <li><a asp-controller="Products" asp-action="Detail" asp-route-slug="paper-edge-boards">Edge &amp; Corner Protection</a> — 50 mm laminated angle</li>
-            </ul>
-        </div>
-
-        <div>
-            <div class="media-frame" style="background:var(--navy);padding:3rem 2rem;text-align:center;color:#fff">
-                <b style="display:block;font-family:var(--font-display);font-size:4.4rem;line-height:1;color:var(--orange)">0%</b>
-                <span style="display:block;letter-spacing:.16em;text-transform:uppercase;font-size:.8rem;margin-top:.6rem;opacity:.85">
-                    Corrosion rejections
-                </span>
-                <p style="margin:1.4rem 0 0;font-size:.93rem;color:rgba(255,255,255,.7)">
-                    Down from 4.2% per consignment, sustained across 14 months and
-                    approximately 380 containers.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- =============================== case 02 ================================ -->
-<section class="section section-alt">
-    <div class="shell split wide-right reveal">
-        <div>
-            <div class="media-frame" style="background:var(--white);padding:2.6rem 2rem;border:1px solid var(--border)">
-                <span class="eyebrow">At a glance</span>
-                <table class="spec-table">
-                    <tr><th>Lane</th><td>Mundra &rarr; Jebel Ali</td></tr>
-                    <tr><th>Transit</th><td>9 days port to port</td></tr>
-                    <tr><th>Equipment</th><td>40 ft HC, FCL</td></tr>
-                    <tr><th>Cargo</th><td>Groundnut in jute bags</td></tr>
-                    <tr><th>Desiccant load</th><td>8 &times; 1 kg poles</td></tr>
-                    <tr><th>Claims after</th><td>None in 340 containers</td></tr>
-                </table>
-            </div>
-        </div>
-
-        <div>
-            <span class="eyebrow">Agricultural Commodities</span>
-            <h2>Container rain soaking the top tier of every load</h2>
-            <p>
-                <strong>The challenge.</strong> A Gujarat-based agri exporter kept losing
-                the top two tiers of groundnut bags to moisture. The cargo was dry at
-                loading — the water was coming out of the cargo itself, condensing on
-                the container roof overnight and dripping back down. Two claims in one
-                quarter had put their buyer relationship at risk.
-            </p>
-            <p>
-                <strong>What we supplied.</strong> We calculated the moisture load from
-                the commodity's own water content and the container volume rather than
-                using a rule of thumb, which gave eight 1 kg calcium chloride poles per
-                40 ft high cube — roughly double what they had been using. We also
-                changed the placement, hanging them along the side rails instead of
-                bunching them at the doors, and added kraft dunnage bags to stop the
-                stack shifting into the walls.
-            </p>
-            <p>
-                <strong>The outcome.</strong> No moisture claim has been raised in the
-                340 containers shipped since. The desiccant cost per container went up
-                by about &#8377;900; the claims it displaced were running to several
-                lakh a quarter.
-            </p>
-
-            <ul class="check-list">
-                <li>Container Desiccants — 1 kg hanging poles</li>
-                <li><a asp-controller="Products" asp-action="Detail" asp-route-slug="dunnage-air-bags">Dunnage Air Bags</a> — Level 3 kraft, 300 mm gaps</li>
-            </ul>
-        </div>
-    </div>
-</section>
-
-<!-- ============================== stats band ============================== -->
-<section class="stats-bar">
     <div class="shell">
-        <div class="stats-grid">
-            <div class="stat">
-                <b data-count-to="18">18</b>
-                <span>Countries Served</span>
-            </div>
-            <div class="stat">
-                <b data-count-to="2400" data-count-suffix="+">2,400+</b>
-                <span>Consignments Packed</span>
-            </div>
-            <div class="stat">
-                <b data-count-to="48" data-count-suffix="h">48h</b>
-                <span>Standard Dispatch</span>
-            </div>
-            <div class="stat">
-                <b data-count-to="99" data-count-suffix="%">99%</b>
-                <span>Claim-Free Shipments</span>
-            </div>
+
+        @*  One card per sector. The card is not a link — see the note at the
+            top of this file — so the products inside it are the links, and they
+            go to the detail page that already exists for each.  *@
+        <div class="grid cols-3 reveal">
+            @foreach (var industry in Model)
+            {
+                var products = IndustryCatalog.ProductsFor(industry);
+
+                <div class="info-card" id="@industry.Slug">
+                    <h3>
+                        @industry.Name
+                        @if (industry.Expansion is not null)
+                        {
+                            @* Spelled out because the client spells it out, and
+                               because HVAC alone is not obvious to everyone. *@
+                            <span class="muted">(@industry.Expansion)</span>
+                        }
+                    </h3>
+
+                    @if (products.Count > 0)
+                    {
+                        <ul class="check-list">
+                            @foreach (var product in products)
+                            {
+                                <li>
+                                    <a asp-controller="Products" asp-action="Detail" asp-route-slug="@product.Slug">@product.Name</a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            }
         </div>
     </div>
 </section>
 
-<!-- =============================== case 03 ================================ -->
-<section class="section">
-    <div class="shell split wide-left reveal">
-        <div>
-            <span class="eyebrow">Capital Equipment</span>
-            <h2>A textile machine turned back at the border</h2>
-            <p>
-                <strong>The challenge.</strong> A machinery builder had a consignment
-                held at the port of entry because the timber case carried no valid
-                ISPM-15 mark — their previous supplier had sub-contracted the heat
-                treatment and the certificate did not match the stamp. The machine sat
-                for eleven days while it was resolved, and the installation crew was
-                already on site.
-            </p>
-            <p>
-                <strong>What we supplied.</strong> We build and treat in our own
-                registered chamber, so the stamp and the certificate come from the same
-                place. For this programme we designed a sea-worthy case with a
-                bolt-down steel cradle, VCI-lined internal wrap for the exposed
-                spindles, and lifting points positioned from the machine's actual centre
-                of gravity rather than the geometric centre.
-            </p>
-            <p>
-                <strong>The outcome.</strong> Twenty-two machines have shipped on this
-                specification with no border hold and no transit damage. The case
-                drawings are now issued with the machine's own documentation set.
-            </p>
-
-            <ul class="check-list">
-                <li>ISPM-15 Pallets &amp; Crates — sea-worthy case with cradle</li>
-                <li>VCI Anti-Corrosion Film — 150 micron internal liner</li>
-                <li>Lashing &amp; Cargo Securing — one-way composite, 2,500 daN</li>
-            </ul>
-        </div>
-
-        <div>
-            <div class="media-frame" style="background:var(--navy);padding:3rem 2rem;text-align:center;color:#fff">
-                <b style="display:block;font-family:var(--font-display);font-size:4.4rem;line-height:1;color:var(--orange)">22</b>
-                <span style="display:block;letter-spacing:.16em;text-transform:uppercase;font-size:.8rem;margin-top:.6rem;opacity:.85">
-                    Machines shipped
-                </span>
-                <p style="margin:1.4rem 0 0;font-size:.93rem;color:rgba(255,255,255,.7)">
-                    No border holds, no transit damage, since moving the case build and
-                    the heat treatment under one roof.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- =============================== case 04 ================================ -->
-<section class="section section-alt">
-    <div class="shell split wide-right reveal">
-        <div>
-            <div class="media-frame" style="background:var(--white);padding:2.6rem 2rem;border:1px solid var(--border)">
-                <span class="eyebrow">At a glance</span>
-                <table class="spec-table">
-                    <tr><th>Lane</th><td>Tuticorin &rarr; Felixstowe</td></tr>
-                    <tr><th>Transit</th><td>24 days</td></tr>
-                    <tr><th>Equipment</th><td>40 ft, FCL</td></tr>
-                    <tr><th>Cargo</th><td>Baled garments on pallets</td></tr>
-                    <tr><th>Change</th><td>Blown &rarr; pre-stretched film</td></tr>
-                    <tr><th>Film saved</th><td>34% by weight</td></tr>
-                </table>
-            </div>
-        </div>
-
-        <div>
-            <span class="eyebrow">Textiles &amp; Apparel</span>
-            <h2>Cutting film weight without losing the load</h2>
-            <p>
-                <strong>The challenge.</strong> A garment exporter was wrapping pallets
-                with heavy blown film applied by hand, using far more material than the
-                load needed while still getting stack lean in transit. Their buyer had
-                also started asking for packaging weight figures as part of a
-                sustainability report, and nobody could produce them.
-            </p>
-            <p>
-                <strong>What we supplied.</strong> We moved them to a 17-micron
-                pre-stretched film with a defined wrap pattern — two base wraps, a
-                spiral up, two top wraps — and supplied edge boards on the four
-                verticals so the strap could be tensioned properly. We also gave them
-                the per-pallet film weight so the reporting question answered itself.
-            </p>
-            <p>
-                <strong>The outcome.</strong> Film consumption dropped 34% by weight per
-                pallet. Stack lean on arrival stopped being reported. The wrap pattern
-                is now written into their packing instruction rather than left to
-                whoever is on the machine.
-            </p>
-
-            <ul class="check-list">
-                <li><a asp-controller="Products" asp-action="Detail" asp-route-slug="stretch-wrapping-film">Stretch &amp; Shrink Film</a> — 17 micron pre-stretched</li>
-                <li><a asp-controller="Products" asp-action="Detail" asp-route-slug="paper-edge-boards">Edge &amp; Corner Protection</a> — 35 mm recycled board angle</li>
-            </ul>
-        </div>
-    </div>
-</section>
-
-<!-- =============================== case 05 ================================ -->
-<section class="section">
-    <div class="shell split wide-left reveal">
-        <div>
-            <span class="eyebrow">Project Cargo</span>
-            <h2>Securing an out-of-gauge load on a flat rack</h2>
-            <p>
-                <strong>The challenge.</strong> A fabricator needed to move a 14-tonne
-                pressure vessel on a 40 ft flat rack from Hazira to Rotterdam. Their
-                freight forwarder wanted a securing plan referenced to the CTU Code
-                before the booking would be confirmed, and the fabricator had no one in
-                house who could produce one.
-            </p>
-            <p>
-                <strong>What we supplied.</strong> We calculated the restraint forces
-                for the declared sea area, specified 32 mm one-way composite lashing at
-                8,000 daN with matched ratchet tensioners, and supplied timber cradles
-                cut to the vessel's contour. The plan was issued as a marked drawing
-                showing every lashing angle and anchor point.
-            </p>
-            <p>
-                <strong>The outcome.</strong> The booking was confirmed on first
-                submission. The vessel arrived with no movement recorded against the
-                cradle witness marks, and the same plan has since been reused for four
-                further units of the same design.
-            </p>
-
-            <ul class="check-list">
-                <li>Lashing &amp; Cargo Securing — 32 mm composite, 8,000 daN</li>
-                <li>ISPM-15 Pallets &amp; Crates — contour-cut timber cradles</li>
-                <li>Steel Strapping &amp; Seals — 25 mm, cradle banding</li>
-            </ul>
-        </div>
-
-        <div>
-            <div class="media-frame" style="background:var(--navy);padding:3rem 2rem;text-align:center;color:#fff">
-                <b style="display:block;font-family:var(--font-display);font-size:4.4rem;line-height:1;color:var(--orange)">14t</b>
-                <span style="display:block;letter-spacing:.16em;text-transform:uppercase;font-size:.8rem;margin-top:.6rem;opacity:.85">
-                    Out-of-gauge unit
-                </span>
-                <p style="margin:1.4rem 0 0;font-size:.93rem;color:rgba(255,255,255,.7)">
-                    Securing plan accepted by the forwarder on first submission, and
-                    reused on four further units since.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- =============================== case 06 ================================ -->
-<section class="section section-alt">
-    <div class="shell split wide-right reveal">
-        <div>
-            <div class="media-frame" style="background:var(--white);padding:2.6rem 2rem;border:1px solid var(--border)">
-                <span class="eyebrow">At a glance</span>
-                <table class="spec-table">
-                    <tr><th>Lane</th><td>Nhava Sheva &rarr; Santos</td></tr>
-                    <tr><th>Transit</th><td>31 days</td></tr>
-                    <tr><th>Equipment</th><td>20 ft, FCL</td></tr>
-                    <tr><th>Cargo</th><td>Drummed intermediates</td></tr>
-                    <tr><th>Issue</th><td>Drum-to-drum abrasion</td></tr>
-                    <tr><th>Result</th><td>Zero leaks in 96 containers</td></tr>
-                </table>
-            </div>
-        </div>
-
-        <div>
-            <span class="eyebrow">Chemical &amp; Pharmaceutical</span>
-            <h2>Stopping drums from working loose in transit</h2>
-            <p>
-                <strong>The challenge.</strong> A chemical intermediates producer was
-                shipping 200-litre drums to Brazil on a 31-day transit. Drums were
-                arriving scuffed through to bare metal where they had rubbed against
-                each other, and on two occasions a seam had started to weep — a
-                containment problem, not just a cosmetic one.
-            </p>
-            <p>
-                <strong>What we supplied.</strong> Level 4 woven polypropylene dunnage
-                bags between every drum row, sized to the actual 180 mm gap rather than
-                stuffed in, plus steel strapping over corner protection to hold the
-                palletised rows as single blocks. We had their packers measure the gaps
-                on three loads before we specified anything.
-            </p>
-            <p>
-                <strong>The outcome.</strong> No leak and no significant abrasion across
-                the 96 containers shipped since. The measurement step is now part of
-                their loading checklist.
-            </p>
-
-            <ul class="check-list">
-                <li><a asp-controller="Products" asp-action="Detail" asp-route-slug="dunnage-air-bags">Dunnage Air Bags</a> — Level 4 woven PP</li>
-                <li>Steel Strapping &amp; Seals — 19 mm, 1,800 kgf</li>
-                <li><a asp-controller="Products" asp-action="Detail" asp-route-slug="paper-edge-boards">Edge &amp; Corner Protection</a> — PP angle, wet environment</li>
-            </ul>
-        </div>
-    </div>
-</section>
-
-<!-- ================================ cta band =============================== -->
 <section class="cta-band">
-    <div class="shell cta-inner">
-        <div>
-            <span class="eyebrow">Your lane next</span>
-            <h2>Tell us what keeps arriving damaged</h2>
-            <p>
-                Send us the cargo, the route and the transit time. We will specify the
-                packing against it and put the numbers behind the recommendation.
-            </p>
-        </div>
-        <div class="cta-actions">
-            <a class="btn btn-primary btn-lg" asp-controller="Contact" asp-action="Index">Request a Quote</a>
-            <a class="btn btn-ghost-light btn-lg" href="@CompanyProfile.BrochurePath" download>
-                <svg width="18" height="18" aria-hidden="true"><use href="#i-download" /></svg>
-                Download Brochure
-            </a>
+    <div class="shell">
+        <div class="cta-inner reveal">
+            <div>
+                <h2>Not sure which applies?</h2>
+                <p>
+                    Tell us what is being shipped, how much of it and when it has to leave, and
+                    we will quote the material for the job — any quantity, urgent or large.
+                </p>
+            </div>
+            <div class="cta-actions">
+                <a class="btn btn-light btn-lg" href="tel:@CompanyProfile.PhonePrimaryHref">
+                    <svg width="18" height="18" aria-hidden="true"><use href="#i-phone" /></svg>
+                    @CompanyProfile.PhonePrimary
+                </a>
+                <a class="btn btn-ghost-light btn-lg" asp-controller="Contact" asp-action="Index">
+                    Contact Us
+                    <svg width="18" height="18" aria-hidden="true"><use href="#i-arrow-right" /></svg>
+                </a>
+            </div>
         </div>
     </div>
 </section>

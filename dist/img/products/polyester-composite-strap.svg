@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300" role="img">
   <title>Polyester Composite Strap</title>
-  <rect width="400" height="300" fill="#FFF1E6"/>
+  <rect width="400" height="300" fill="#FEECEB"/>
   <g stroke="#E4E1DC" stroke-width="1">
     <path d="M0 232h400"/>
   </g>
-  <g stroke="#F26A1B" stroke-width="2" stroke-linecap="round" opacity=".55">
+  <g stroke="#E4181F" stroke-width="2" stroke-linecap="round" opacity=".55">
     <path d="M18 18h20M18 18v20"/>
     <path d="M382 18h-20M382 18v20"/>
     <path d="M18 282h20M18 282v-20"/>
@@ -15,22 +15,22 @@
     <ellipse cx="168" cy="150" rx="86" ry="86"/>
     <ellipse cx="168" cy="150" rx="34" ry="34"/>
   </g>
-  <path d="M168 64a86 86 0 0 1 0 172 86 86 0 0 1 0-172z" fill="#F26A1B" opacity=".18"/>
-  <g fill="none" stroke="#F26A1B" stroke-width="3" opacity=".9">
+  <path d="M168 64a86 86 0 0 1 0 172 86 86 0 0 1 0-172z" fill="#E4181F" opacity=".18"/>
+  <g fill="none" stroke="#E4181F" stroke-width="3" opacity=".9">
     <ellipse cx="168" cy="150" rx="74" ry="74"/>
     <ellipse cx="168" cy="150" rx="62" ry="62"/>
     <ellipse cx="168" cy="150" rx="50" ry="50"/>
     <ellipse cx="168" cy="150" rx="42" ry="42"/>
   </g>
   <!-- the tail running off the coil, through a buckle -->
-  <path d="M240 122c40 6 64 20 96 20" fill="none" stroke="#F26A1B" stroke-width="12" stroke-linecap="round"/>
-  <path d="M240 122c40 6 64 20 96 20" fill="none" stroke="#B8400E" stroke-width="1.6" opacity=".6"/>
+  <path d="M240 122c40 6 64 20 96 20" fill="none" stroke="#E4181F" stroke-width="12" stroke-linecap="round"/>
+  <path d="M240 122c40 6 64 20 96 20" fill="none" stroke="#B30F15" stroke-width="1.6" opacity=".6"/>
   <g fill="#FFFFFF" stroke="#22262B" stroke-width="2.4" stroke-linejoin="round">
     <path d="M306 124h34v36h-34z"/>
     <path d="M314 132h18v20h-18z"/>
   </g>
   <!-- filament texture, the thing that makes it composite -->
-  <g stroke="#B8400E" stroke-width="1.2" opacity=".55" stroke-linecap="round">
+  <g stroke="#B30F15" stroke-width="1.2" opacity=".55" stroke-linecap="round">
     <path d="M246 126c34 6 56 18 86 18M246 132c34 6 56 18 86 18M246 138c34 6 56 18 86 18"/>
   </g>
 </svg>

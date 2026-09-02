@@ -3,17 +3,25 @@
 @*
     Homepage stats band.
 
-    Four figures on the dark ground, divided by hairlines — a spec plate, not
+    Four figures on the brand red, divided by hairlines — a spec plate, not
     four cards. It follows the about preview deliberately: that band says who
     the company is and carries no numbers at all, so this one can be nothing
-    but numbers and the two do not compete.
+    but numbers and the two do not compete. The ground is red because the bands
+    either side are both --ei-shell and one of the three has to break the page;
+    the reasoning and every contrast figure live in wwwroot/css/stats.css.
 
     WHERE THE FIGURES COME FROM
     ---------------------------
     All four read from Models/CompanyProfile.cs and nothing is hard-coded here.
-    YearsOfExperience is computed from FoundedYear and is real. The other three
-    are PLACEHOLDERS — see the comment block above them in CompanyProfile.cs.
-    That file is the one place to change them; this band follows automatically.
+    Three are the client's own, from the counters on eliteind.in; the years is
+    computed from FoundedYear. That file is the one place to change any of
+    them and this band follows automatically.
+
+    The order, the labels and the "years" set against the first figure all
+    match the client's band. The one thing not copied from it is the number
+    inside that first figure: theirs reads 14, which was true when the page was
+    written and is not now. YearsOfExperience derives it instead, so this one
+    cannot go stale the same way.
 
     THE COUNT-UP
     ------------
@@ -35,8 +43,9 @@
          visitor with no JS both read the true number rather than a zero.
 
     There is no suffix support in reveal.js: it assigns to textContent, so
-    anything inside the counting element is wiped on the first frame. The "+"
-    is therefore a sibling, outside it.
+    anything inside the counting element is wiped on the first frame. The
+    suffix — "+" on three of the four, "years" on the first — is therefore a
+    sibling, outside it.
 *@
 @{
     // en-IN, to match the locale reveal.js formats with. If those two ever
@@ -48,18 +57,19 @@
     // one has to already exist in _Icons.cshtml:
     //   award     — the years, the only earned figure of the four
     //   container — a consignment packed and shipped
-    //   globe     — clients, who are exporters selling into other markets
     //   users     — the people on the floor
+    //   globe     — clients, who are exporters selling into other markets
     //
-    // Approximate is marked with a "+", exact is not. Years is computed and
-    // therefore exact; the three placeholders are round numbers standing in
-    // for real ones, so they carry the "+" and claim only "at least".
+    // Order and labels are the client's own, in the client's own sequence.
+    // The suffix is the client's too: the three counted figures carry "+" and
+    // claim only "at least", and the years carries the word instead, because
+    // "16+ Experience" says nothing and "16 years" says the whole thing.
     var stats = new[]
     {
-        ("i-award",     CompanyProfile.YearsOfExperience, "Years of Experience", false),
-        ("i-container", CompanyProfile.ProjectsCompleted, "Projects Completed",  true),
-        ("i-globe",     CompanyProfile.HappyClients,      "Happy Clients",       true),
-        ("i-users",     CompanyProfile.Employees,         "Employees",           true)
+        ("i-award",     CompanyProfile.YearsOfExperience, "Experience",        "years"),
+        ("i-container", CompanyProfile.ProjectsCompleted, "Complete Projects", "+"),
+        ("i-users",     CompanyProfile.Employees,         "Works Employed",    "+"),
+        ("i-globe",     CompanyProfile.HappyClients,      "Happy Clients",     "+")
     };
 }
 
@@ -74,7 +84,7 @@
     <div class="ei-shell">
         <div class="ei-stats-row">
             @{ var step = 0; }
-            @foreach (var (icon, value, label, approx) in stats)
+            @foreach (var (icon, value, label, suffix) in stats)
             {
                 @* 90ms apart: the four cells arrive left to right as one
                    movement rather than together as a block. *@
@@ -85,10 +95,7 @@
                     <p class="ei-stats-value">
                         @* data-count-to is the bare integer; the text is the
                            grouped final figure. See the note at the top. *@
-                        <span class="ei-stats-figure" data-count-to="@value">@value.ToString("N0", inr)</span>@if (approx)
-                        {
-                            <span class="ei-stats-plus">+</span>
-                        }
+                        <span class="ei-stats-figure" data-count-to="@value">@value.ToString("N0", inr)</span><span class="ei-stats-suffix @(suffix == "+" ? "" : "ei-stats-suffix--word")">@suffix</span>
                     </p>
 
                     <p class="ei-stats-label">@label</p>

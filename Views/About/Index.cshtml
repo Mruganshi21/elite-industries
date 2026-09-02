@@ -1,10 +1,15 @@
+@using EliteIndustries.Services
 @{
     ViewData["Title"] = "About Us";
     ViewData["ActiveNav"] = "about";
     // TEMPORARY — this page still renders against site.css. See _Layout.
     ViewData["Legacy"] = true;
     ViewData["SeoTitle"] = $"Leading Provider of {CompanyProfile.ProductCategory} for Container and Cargo Shipping | {CompanyProfile.Name}";
-    ViewData["Description"] = $"{CompanyProfile.Name} has manufactured export packaging and material handling products since {CompanyProfile.FoundedYear} from {CompanyProfile.ShortAddress} — ISO 9001:2015 certified, ISPM-15 registered.";
+    // Claimed "ISO 9001:2015 certified, ISPM-15 registered" until the About
+    // copy was taken from eliteind.in, which claims neither. A meta description
+    // is quoted verbatim in a search result, so an unverified certification
+    // there is the version of it most people would actually read.
+    ViewData["Description"] = $"{CompanyProfile.Name} has manufactured and wholesaled export packaging material for container and cargo since {CompanyProfile.FoundedYear}, from {CompanyProfile.ShortAddress}. Any quantity, on time, backed by a 100% satisfaction guarantee.";
 }
 
 <section class="page-header">
@@ -33,85 +38,119 @@
         <!-- ============================== overview ============================== -->
         <div class="tab-panel" id="overview" role="tabpanel" aria-labelledby="tab-overview">
 
+            @*  CLIENT COPY — the full "Who We Are?" text, in the client's own
+                words and complete. The homepage band (Views/Home/_About.cshtml)
+                carries the same text cut to three sentences and links here, so
+                the two have to stay in step: if the client sends new copy, edit
+                both. The year and the town are interpolated from
+                CompanyProfile rather than typed, so they cannot drift from the
+                works plate on the homepage or the footer address.  *@
             <div class="section-head reveal">
                 <span class="eyebrow">Company Overview</span>
-                <h2>@CompanyProfile.YearsOfExperience years of packing cargo that arrives intact</h2>
+                <h2>Your one-stop source for packaging, material handling and shipping supplies</h2>
                 <p class="lede">
-                    @CompanyProfile.LegalName was established in @CompanyProfile.FoundedYear at
-                    @CompanyProfile.ShortAddress, supplying corrosion protection and load-securing
-                    materials to engineering exporters shipping out of the west-coast ports.
+                    Established in the year @CompanyProfile.FoundedYear at
+                    @CompanyProfile.ShortAddress, @CompanyProfile.Name is one of the most
+                    professional, progressive and punctual enterprises in the Indian packaging
+                    and material handling industry.
                 </p>
             </div>
 
             <div class="split wide-left reveal">
                 <div>
-                    <h3>How we started</h3>
+                    <h3>What we do</h3>
                     <p>
-                        The company began as a strapping and stretch film converter serving a handful of
-                        machinery exporters. Repeated claims for rust and in-transit shifting pushed the
-                        business towards the two problems that damage most containerised cargo — moisture
-                        and movement. Extrusion of VCI film followed, then a wood shop for ISPM-15 treated
-                        pallets and crates, and later container desiccants and lashing systems.
-                    </p>
-                    <p>
-                        Today @CompanyProfile.Name runs its own extrusion, converting, slitting and timber
-                        lines with a team of @CompanyProfile.Employees people, and has completed more than
-                        @CompanyProfile.ProjectsCompleted supply programmes for around
-                        @CompanyProfile.HappyClients customers.
+                        As a manufacturer and wholesaler of Export Packaging Material for Container and
+                        Cargo, we are determined to fulfil every urgent and large quantity requirement of
+                        customers for a variety of quality products in the packaging, material handling
+                        and insulation domain. Export Packaging is our key USP.
                     </p>
 
+                    <h3>How we make it</h3>
+                    <p>
+                        Our products are precisely manufactured by following high quality standards for
+                        best performance matching international standards. We understand that our success
+                        is dependent upon yours.
+                    </p>
+
+                    <h3>What it costs</h3>
+                    <p>
+                        We offer top quality packaging materials at competitive prices. Being a
+                        large-scale manufacturer and distributor enables us to pass on bulk discounts
+                        directly to the customer. This allows our customers the opportunity to purchase
+                        supplies in smaller quantities at the lowest possible prices.
+                    </p>
+
+                    <h3>What we stand behind</h3>
+                    <p>
+                        In a bid to help our customers order in confidence, we always stand behind our
+                        products and back every order with a 100% satisfaction guarantee. While we look
+                        forward to building continuing relations with our customers, we always strive to
+                        stand above the competition. Unarguably, @CompanyProfile.Name is your one-stop
+                        source for all of your packaging, material handling and shipping supply
+                        requirements.
+                    </p>
+
+                    @*  Read out of ProductCatalog rather than typed, so this list
+                        cannot fall out of step with the catalogue the Products
+                        page and the homepage grid both render. The list it
+                        replaced named VCI film, ISPM-15 pallets, steel strapping
+                        and desiccants — none of which are in the catalogue.  *@
                     <h3>What we make</h3>
                     <ul class="check-list">
-                        <li>VCI films, bags, paper and emitters for ferrous and mixed-metal assemblies</li>
-                        <li>ISPM-15 heat-treated pallets, cases, crates and skids</li>
-                        <li>Steel and polyester strapping, seals, buckles and tensioning tools</li>
-                        <li>Machine and hand stretch film, 12 to 35 micron</li>
-                        <li>Container desiccants, dunnage bags, lashing systems and edge protection</li>
+                        @foreach (var product in ProductCatalog.ForNav)
+                        {
+                            <li>@product.Name</li>
+                        }
                     </ul>
-
-                    <h3>Our mission</h3>
-                    <p>
-                        To get every consignment to the port of discharge in the condition it left the
-                        packing bay. That means specifying the right barrier for the metal, the right
-                        restraint for the load, and documentation the destination customs officer accepts
-                        without a query. We would rather size a job correctly than sell more material into it.
-                    </p>
                 </div>
 
+                @*  Every row is either a CompanyProfile value or a count of
+                    the catalogue, so this table cannot state a figure the rest
+                    of the site contradicts. It replaced a "Quality standards"
+                    table asserting ISO 9001:2015, ISPM-15 heat treatment at
+                    56 °C, razor-blade VCI testing and gravimetric desiccant
+                    checks — none of it published by the client, and most of it
+                    describing products the catalogue does not contain. If the
+                    client holds certifications, they belong here, one row per
+                    certificate, with the issuing body named.  *@
                 <div>
-                    <h3>Quality standards</h3>
+                    <h3>Company at a glance</h3>
                     <table class="spec-table">
                         <tr>
-                            <th>Quality management</th>
-                            <td>ISO 9001:2015 certified</td>
+                            <th>Established</th>
+                            <td>@CompanyProfile.FoundedYear at @CompanyProfile.ShortAddress (@CompanyProfile.YearsOfExperience years)</td>
                         </tr>
                         <tr>
-                            <th>Wood packaging</th>
-                            <td>ISPM-15 heat treatment, 56&nbsp;&deg;C core for 30 minutes, stamped and recorded</td>
+                            <th>Business</th>
+                            <td>Manufacturer and wholesaler of @CompanyProfile.ProductCategory for container and cargo</td>
                         </tr>
                         <tr>
-                            <th>Film thickness</th>
-                            <td>Gauge checked every shift, &plusmn;5% tolerance on nominal micron</td>
+                            <th>Works</th>
+                            <td>@CompanyProfile.StreetAddress, @CompanyProfile.ShortAddress @CompanyProfile.PostalCode</td>
                         </tr>
                         <tr>
-                            <th>VCI performance</th>
-                            <td>Razor-blade corrosion test on every masterbatch lot before extrusion</td>
+                            <th>Team</th>
+                            <td>@CompanyProfile.Employees+ employed</td>
                         </tr>
                         <tr>
-                            <th>Strapping</th>
-                            <td>Break load and elongation verified per coil on a calibrated tensile rig</td>
+                            <th>Delivered</th>
+                            <td>@CompanyProfile.ProjectsCompleted+ projects for @CompanyProfile.HappyClients+ customers</td>
                         </tr>
                         <tr>
-                            <th>Desiccants</th>
-                            <td>Gravimetric absorption check at 90% RH before dispatch</td>
+                            <th>Product lines</th>
+                            <td>@ProductCatalog.ForNav.Count, across packaging, material handling and insulation</td>
                         </tr>
                         <tr>
-                            <th>Traceability</th>
-                            <td>Lot number on every roll, coil, bag and pallet</td>
+                            <th>Industries served</th>
+                            <td>Agriculture, automotive, ceramics, chemicals, construction, food and beverage, glass, healthcare, HVAC, machinery, ports, printing, rubber and plastics, solar, stationery, textiles, transport and logistics</td>
                         </tr>
                         <tr>
-                            <th>Despatch documents</th>
-                            <td>Test reports and ISPM-15 treatment records travel with the consignment</td>
+                            <th>Enquiries</th>
+                            <td>
+                                <a href="tel:@CompanyProfile.PhonePrimaryHref">@CompanyProfile.PhonePrimary</a> &middot;
+                                <a href="mailto:@CompanyProfile.Email">@CompanyProfile.Email</a>
+                            </td>
                         </tr>
                     </table>
                 </div>
@@ -119,223 +158,174 @@
         </div>
 
         <!-- ============================== ideology ============================== -->
+        @*  CLIENT COPY, from eliteind.in/ideology.aspx. The four pillars and the
+            three strengths are quoted; only the sentence under each pillar is
+            ours, and each one says what the pillar means rather than adding a
+            claim to it.
+
+            What was here before was six invented principles about VCI barrier
+            grades, ISPM-15 heat treatment and in-house extrusion — a different
+            company's ideology, for products this one does not make.  *@
         <div class="tab-panel" id="ideology" role="tabpanel" aria-labelledby="tab-ideology" hidden>
 
             <div class="section-head reveal">
                 <span class="eyebrow">Our Ideology</span>
-                <h2>Packaging is a load calculation, not a wrapper</h2>
+                <h2>When you buy from us, feel rest assured about the quality and service</h2>
                 <p class="lede">
-                    A container crossing the equator sees 40&nbsp;&deg;C temperature swings, condensation
-                    on the roof panels and continuous vibration for four to six weeks. These are the
-                    working principles we apply to every specification we write.
+                    Since you are buying from the best in the industry. Our aim is to provide you
+                    with a diverse category of high quality packing materials at the most reasonable
+                    prices — and to be a one stop destination for all your packing needs.
                 </p>
             </div>
 
-            <div class="grid cols-3 reveal">
-                <div class="info-card">
-                    <span class="card-icon"><svg aria-hidden="true"><use href="#i-shield" /></svg></span>
-                    <h3>Specify for the voyage</h3>
-                    <p>
-                        Barrier grade, desiccant quantity and lashing capacity are calculated from the
-                        metal, the net weight, the route and the transit time — not copied from the
-                        last order.
-                    </p>
-                </div>
-
-                <div class="info-card">
-                    <span class="card-icon"><svg aria-hidden="true"><use href="#i-factory" /></svg></span>
-                    <h3>Make it ourselves</h3>
-                    <p>
-                        Extrusion, converting, slitting and timber treatment run in-house. Controlling the
-                        line is the only reliable way to hold film gauge, VCI dosing and treatment records.
-                    </p>
-                </div>
-
+            @*  The four-word ideology as it is written on the client's site.
+                Kept in its own row above the strengths because it is the part
+                that is quoted, and breaking it up would lose the cadence.  *@
+            <div class="grid cols-4 reveal">
                 <div class="info-card">
                     <span class="card-icon"><svg aria-hidden="true"><use href="#i-container" /></svg></span>
-                    <h3>Test before it ships</h3>
+                    <h3>Your Quantity</h3>
                     <p>
-                        Corrosion, tensile, absorption and gauge checks are run on our own samples and
-                        recorded against the lot. A test figure is worth more than a claim.
+                        Any quantity, urgent or large. A requirement is sized to what the consignment
+                        actually needs, not to what is convenient to sell.
                     </p>
                 </div>
 
                 <div class="info-card">
-                    <span class="card-icon"><svg aria-hidden="true"><use href="#i-globe" /></svg></span>
-                    <h3>Clear customs cleanly</h3>
+                    <span class="card-icon"><svg aria-hidden="true"><use href="#i-shield" /></svg></span>
+                    <h3>Your Quality</h3>
                     <p>
-                        Wood packaging is heat treated and marked to ISPM-15 so consignments are not held,
-                        re-treated or turned back at the destination port.
+                        Precisely manufactured against high quality standards, for best performance
+                        matching international standards.
                     </p>
                 </div>
 
                 <div class="info-card">
-                    <span class="card-icon"><svg aria-hidden="true"><use href="#i-truck" /></svg></span>
-                    <h3>Hold the schedule</h3>
+                    <span class="card-icon"><svg aria-hidden="true"><use href="#i-award" /></svg></span>
+                    <h3>Your Price</h3>
                     <p>
-                        Buffer stock on fast-moving films, strapping and desiccants, so a packing bay is
-                        never idle waiting on consumables ahead of a vessel cut-off.
+                        Bulk discounts passed directly to the customer, so supplies can be bought in
+                        smaller quantities at the lowest possible price.
                     </p>
                 </div>
 
                 <div class="info-card">
-                    <span class="card-icon"><svg aria-hidden="true"><use href="#i-users" /></svg></span>
-                    <h3>Train the packing bay</h3>
+                    <span class="card-icon"><svg aria-hidden="true"><use href="#i-clock" /></svg></span>
+                    <h3>Your Time</h3>
                     <p>
-                        Our engineers work on the floor with the packing team on sealing, tension settings
-                        and lashing patterns. Good material applied badly still ends in a claim.
+                        On time delivery, held to the date the exporter gives us rather than the one
+                        that suits the line.
                     </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ============================ achievements ============================ -->
-        <div class="tab-panel" id="achievements" role="tabpanel" aria-labelledby="tab-achievements" hidden>
-
-            <div class="section-head reveal">
-                <span class="eyebrow">Achievements</span>
-                <h2>What we have built since @CompanyProfile.FoundedYear</h2>
-                <p class="lede">
-                    Growth has followed capability — each step brought in a process we had previously
-                    been buying from someone else.
-                </p>
-            </div>
-
-            <div class="split wide-left reveal">
-                <div>
-                    <ul class="timeline">
-                        <li>
-                            <span class="year">@CompanyProfile.FoundedYear</span>
-                            <p>
-                                Founded at @CompanyProfile.ShortAddress as a converter of stretch film and
-                                strapping for local machinery exporters.
-                            </p>
-                        </li>
-                        <li>
-                            <span class="year">@(CompanyProfile.FoundedYear + 5)</span>
-                            <p>
-                                First blown-film extrusion line commissioned, bringing VCI film production
-                                in-house instead of buying converted stock.
-                            </p>
-                        </li>
-                        <li>
-                            <span class="year">@(CompanyProfile.FoundedYear + 9)</span>
-                            <p>
-                                Timber shop and heat-treatment chamber added; registered for ISPM-15
-                                treatment and marking of pallets, cases and crates.
-                            </p>
-                        </li>
-                        <li>
-                            <span class="year">@(CompanyProfile.FoundedYear + 13)</span>
-                            <p>
-                                Quality management system certified to ISO 9001, covering extrusion,
-                                converting, timber treatment and despatch.
-                            </p>
-                        </li>
-                        <li>
-                            <span class="year">@(CompanyProfile.FoundedYear + 17)</span>
-                            <p>
-                                In-house test laboratory set up for razor-blade corrosion testing, tensile
-                                break-load checks and gravimetric desiccant absorption.
-                            </p>
-                        </li>
-                        <li>
-                            <span class="year">@(CompanyProfile.FoundedYear + 20)</span>
-                            <p>
-                                Container desiccants and dunnage bags added to the range; first direct
-                                shipments to buyers in the Gulf and South East Asia.
-                            </p>
-                        </li>
-                        <li>
-                            <span class="year">@(CompanyProfile.FoundedYear + 23)</span>
-                            <p>
-                                Second extrusion line and automatic slitting installed, taking VCI and
-                                stretch film capacity past 300 tonnes a month.
-                            </p>
-                        </li>
-                        <li>
-                            <span class="year">@(CompanyProfile.FoundedYear + 26)</span>
-                            <p>
-                                Lashing and load-securing range introduced — web lashings, edge protection
-                                and container fittings — alongside on-site packing surveys.
-                            </p>
-                        </li>
-                        <li>
-                            <span class="year">@DateTime.Now.Year</span>
-                            <p>
-                                @CompanyProfile.Employees people across manufacturing, testing and
-                                despatch, with more than @CompanyProfile.ProjectsCompleted supply
-                                programmes completed for around @CompanyProfile.HappyClients customers.
-                            </p>
-                        </li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3>By the numbers</h3>
-                    <table class="spec-table">
-                        <tr>
-                            <th>Established</th>
-                            <td>@CompanyProfile.FoundedYear (@CompanyProfile.YearsOfExperience years)</td>
-                        </tr>
-                        <tr>
-                            <th>Works</th>
-                            <td>@CompanyProfile.StreetAddress, @CompanyProfile.ShortAddress</td>
-                        </tr>
-                        <tr>
-                            <th>Team</th>
-                            <td>@CompanyProfile.Employees across manufacturing, testing and despatch</td>
-                        </tr>
-                        <tr>
-                            <th>Supply programmes</th>
-                            <td>@CompanyProfile.ProjectsCompleted+ completed</td>
-                        </tr>
-                        <tr>
-                            <th>Customers served</th>
-                            <td>@CompanyProfile.HappyClients+</td>
-                        </tr>
-                        <tr>
-                            <th>Product families</th>
-                            <td>VCI, timber packaging, strapping, stretch film, desiccants, lashing</td>
-                        </tr>
-                    </table>
                 </div>
             </div>
 
             <div class="section-sm">
                 <div class="section-head reveal">
-                    <span class="eyebrow">Certifications</span>
-                    <h2>What we hold, and what it covers</h2>
+                    <span class="eyebrow">Our Strengths</span>
+                    <h2>What that rests on</h2>
                 </div>
 
                 <div class="grid cols-3 reveal">
                     <div class="info-card">
-                        <span class="card-icon"><svg aria-hidden="true"><use href="#i-award" /></svg></span>
-                        <h3>ISO 9001:2015</h3>
+                        <span class="card-icon"><svg aria-hidden="true"><use href="#i-globe" /></svg></span>
+                        <h3>India&rsquo;s premier packaging material supplier</h3>
                         <p>
-                            Quality management system certified across extrusion, converting, timber
-                            treatment, testing and despatch, with annual surveillance audits.
+                            Export packaging is our key USP, and it is the requirement the whole
+                            operation is built around.
                         </p>
                     </div>
 
                     <div class="info-card">
-                        <span class="card-icon"><svg aria-hidden="true"><use href="#i-shield" /></svg></span>
-                        <h3>ISPM-15 registered</h3>
+                        <span class="card-icon"><svg aria-hidden="true"><use href="#i-works" /></svg></span>
+                        <h3>In-house innovation and R&amp;D centre</h3>
                         <p>
-                            Registered facility for heat treatment and marking of solid wood packaging —
-                            56&nbsp;&deg;C core temperature held for 30 minutes, with treatment records
-                            issued per consignment.
+                            Product development runs on our own floor, so a specification can be
+                            changed for a customer rather than only sourced.
                         </p>
                     </div>
 
                     <div class="info-card">
-                        <span class="card-icon"><svg aria-hidden="true"><use href="#i-container" /></svg></span>
-                        <h3>In-house test laboratory</h3>
+                        <span class="card-icon"><svg aria-hidden="true"><use href="#i-truck" /></svg></span>
+                        <h3>Any quantity, on time</h3>
                         <p>
-                            Corrosion, tensile, gauge and humidity testing run on our own lots, so each
-                            despatch leaves with figures against it rather than a generic datasheet.
+                            High quality packaging material in any quantity, with on time delivery.
+                            We constantly believe in creating value additions for all our customers.
                         </p>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================ achievements ============================ -->
+        @*  The client's four counters, and nothing else.
+
+            What was here before was a nine-entry founding-to-today timeline —
+            extrusion lines commissioned, a heat-treatment chamber, ISO 9001
+            certification, an in-house test laboratory, 300 tonnes a month — and
+            three certification cards claiming ISO 9001:2015 and ISPM-15
+            registration. None of it is published by the client and none of it
+            is verifiable here, so all of it is gone. Inventing a company's
+            certifications is the worst thing this page could do: a buyer who
+            reads ISO 9001 here and asks for the certificate gets a conversation
+            nobody wants to have.
+
+            eliteind.in/achievement.aspx is a gallery of five images — awards or
+            certificates, unreadable at the size published. They are the real
+            content of this tab. Get the originals from the client, drop them in
+            wwwroot/img/achievements/, and each one earns a caption naming what
+            it is and who issued it.  *@
+        <div class="tab-panel" id="achievements" role="tabpanel" aria-labelledby="tab-achievements" hidden>
+
+            <div class="section-head reveal">
+                <span class="eyebrow">Achievements</span>
+                <h2>Where @CompanyProfile.YearsOfExperience years has got us</h2>
+                <p class="lede">
+                    @CompanyProfile.Name has supplied export packaging out of @CompanyProfile.City
+                    since @CompanyProfile.FoundedYear. These are the figures behind that.
+                </p>
+            </div>
+
+            @*  Same four values as the homepage counters band, from the same
+                constants, so the two can never disagree. Years is derived from
+                FoundedYear and is the only one that moves on its own.  *@
+            <div class="split wide-left reveal">
+                <div>
+                    <table class="spec-table">
+                        <tr>
+                            <th>Years of experience</th>
+                            <td>@CompanyProfile.YearsOfExperience, since @CompanyProfile.FoundedYear</td>
+                        </tr>
+                        <tr>
+                            <th>Projects completed</th>
+                            <td>@CompanyProfile.ProjectsCompleted+</td>
+                        </tr>
+                        <tr>
+                            <th>Happy clients</th>
+                            <td>@CompanyProfile.HappyClients+</td>
+                        </tr>
+                        <tr>
+                            <th>Works employed</th>
+                            <td>@CompanyProfile.Employees+</td>
+                        </tr>
+                        <tr>
+                            <th>Product lines</th>
+                            <td>@ProductCatalog.ForNav.Count</td>
+                        </tr>
+                        <tr>
+                            <th>Industries served</th>
+                            <td>17, from agriculture and ports to pharmaceuticals and HVAC</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div>
+                    <h3>Awards and certificates</h3>
+                    <p>
+                        The originals are held at the works. If you need a copy of a certificate for
+                        a tender or a vendor registration, ask and we will send it across —
+                        <a href="tel:@CompanyProfile.PhonePrimaryHref">@CompanyProfile.PhonePrimary</a>
+                        or <a href="mailto:@CompanyProfile.Email">@CompanyProfile.Email</a>.
+                    </p>
                 </div>
             </div>
         </div>
@@ -349,8 +339,8 @@
             <div>
                 <h2>Send us the packing list</h2>
                 <p>
-                    Give us the metal, the net weight, the route and the transit time, and we will specify
-                    the barrier, restraint and desiccant quantity for the job.
+                    Tell us what is being shipped, how much of it and when it has to leave, and we will
+                    quote the material for the job — any quantity, urgent or large.
                 </p>
             </div>
             <div class="cta-actions">
