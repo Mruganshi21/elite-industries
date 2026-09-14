@@ -74,9 +74,12 @@
         <p class="ei-pcard-where">@Model.WhereUsed</p>
 
         @* Decorative: the destination is already named by the link above, and
-           the arrow is a hover affordance rather than a second control. *@
+           the cue is a hover affordance rather than a second control. *@
         <span class="ei-pcard-cue" aria-hidden="true">
-            <svg focusable="false"><use href="#i-arrow-right" /></svg>
+            <span class="ei-pcard-cue-text">View details</span>
+            <span class="ei-pcard-cue-icon">
+                <svg focusable="false"><use href="#i-arrow-right" /></svg>
+            </span>
         </span>
     </div>
 </article>

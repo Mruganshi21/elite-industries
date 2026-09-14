@@ -1,20 +1,58 @@
 @using EliteIndustries.Services
 @model EliteIndustries.Models.Product
+@*
+    Product detail page.
+
+    Rebuilt onto theme.css: no ViewData["Legacy"], so site.css and site.js do
+    not load. It reuses the Products listing hero (products-page.css) and the
+    shared product card (product-card.css); its own styles are
+    wwwroot/css/product-detail.css (.ei-pd-*). No script of its own.
+
+    WHERE EVERYTHING COMES FROM
+    ---------------------------
+    Every word on the page is the Product from ProductCatalog, CompanyProfile,
+    or IndustryCatalog. "Used in" lists the sectors whose client Used Cases
+    page names this product; for the two products no sector names, the section
+    is left out rather than guessed (see the note in IndustryCatalog).
+
+    The closing call-to-action band that used to end this page promised
+    quotes "within one business day, with the certificates and load data
+    attached" — neither is something the client says. It is gone; the shared
+    footer opens with a call to action on every page.
+*@
 @{
     ViewData["Title"] = Model.Name;
     ViewData["ActiveNav"] = "products";
-    // TEMPORARY — this page still renders against site.css. See _Layout.
-    ViewData["Legacy"] = true;
     ViewData["SeoTitle"] = Model.SeoTitle;
     ViewData["Description"] = Model.Summary;
 
-    var related = ProductCatalog.All.Where(p => p.Slug != Model.Slug).Take(3).ToList();
+    var all = ProductCatalog.All;
+    var index = all.ToList().FindIndex(p => p.Slug == Model.Slug);
+    var prev = all[(index - 1 + all.Count) % all.Count];
+    var next = all[(index + 1) % all.Count];
+
+    // Same category first, then the rest of the catalogue in order.
+    var related = all
+        .Where(p => p.Slug != Model.Slug)
+        .OrderBy(p => p.Category == Model.Category ? 0 : 1)
+        .Take(3)
+        .ToList();
+
+    var industries = IndustryCatalog.All
+        .Where(i => i.ProductSlugs.Contains(Model.Slug))
+        .ToList();
+
+    var appIcons = new[] { "i-container", "i-pallet", "i-crate", "i-truck" };
 
     // JSON-safe (and correctly escaped) string literal, quotes included.
     string JsonString(string value) => System.Text.Json.JsonSerializer.Serialize(value);
 }
 
 @section Head {
+    <link rel="stylesheet" href="~/css/product-card.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/products-page.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/product-detail.css" asp-append-version="true" />
+
     <script type="application/ld+json">
     {
       "@@context": "https://schema.org",
@@ -35,147 +73,186 @@
     </script>
 }
 
-<section class="page-header">
-    <div class="shell">
-        <ol class="breadcrumb">
-            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-            <li><a asp-controller="Products" asp-action="Index">Products</a></li>
-            <li aria-current="page">@Model.Name</li>
-        </ol>
-        <h1>@Model.Name</h1>
-        <p>@Model.Summary</p>
-    </div>
-</section>
+@* ================================ Hero ================================ *@
+<section class="ei-pl-hero" aria-labelledby="ei-pd-title">
+    <div class="ei-shell ei-pd-hero-inner">
 
-<section class="section">
-    <div class="shell">
-        <div class="split wide-right reveal">
+        <div>
+            <ol class="ei-pl-crumbs">
+                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                <li><a asp-controller="Products" asp-action="Index">Products</a></li>
+                <li aria-current="page">@Model.Name</li>
+            </ol>
 
-            <div>
-                <div class="media-frame">
-                    <img src="@Model.ImagePath" alt="@Model.Name" width="900" height="900" />
-                </div>
-            </div>
+            <p class="ei-pl-hero-eyebrow">@Model.Category</p>
+            <h1 class="ei-pl-hero-title" id="ei-pd-title">@Model.Name</h1>
+            <p class="ei-pd-hero-lede">@Model.Summary</p>
 
-            <div>
-                <span class="eyebrow">@Model.Category</span>
-                <h2>@Model.Name</h2>
-
-                @foreach (var paragraph in Model.Description)
-                {
-                    <p>@paragraph</p>
-                }
-
-                <div class="cta-actions">
-                    <a class="btn btn-primary btn-lg" asp-controller="Contact" asp-action="Index">
-                        Request a Quote
-                        <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow-right" /></svg>
-                    </a>
-                    <a class="btn btn-outline btn-lg" href="@CompanyProfile.BrochurePath" download>
-                        <svg width="16" height="16" aria-hidden="true"><use href="#i-download" /></svg>
-                        Download Brochure
-                    </a>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<section class="section section-alt">
-    <div class="shell">
-        <div class="split reveal">
-
-            <div>
-                <h3>Specifications</h3>
-                <table class="spec-table">
-                    <tbody>
-                    @foreach (var spec in Model.Specifications)
+            @if (Model.Specifications.Length > 0)
+            {
+                <ul class="ei-pd-facts">
+                    @foreach (var spec in Model.Specifications.Take(3))
                     {
-                        <tr>
-                            <th scope="row">@spec.Label</th>
-                            <td>@spec.Value</td>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
-            </div>
-
-            <div>
-                <h3>Applications</h3>
-                <p>Typically specified for @Model.UseCase and jobs of this kind:</p>
-                <ul class="check-list">
-                    @foreach (var application in Model.Applications)
-                    {
-                        <li>@application</li>
+                        <li><small>@spec.Label</small><strong>@spec.Value</strong></li>
                     }
                 </ul>
-                <p class="muted">
-                    Working to a specification we have not listed? Send us the drawing or
-                    the transit conditions and we will quote against them.
-                </p>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<section class="section">
-    <div class="shell">
-
-        <div class="section-head reveal">
-            <span class="eyebrow">Related products</span>
-            <h2>Often packed alongside</h2>
-            <p>
-                Most consignments use two or three of these together — protection inside
-                the wrap, securing outside it.
-            </p>
-        </div>
-
-        <div class="grid cols-3 reveal">
-            @foreach (var p in related)
-            {
-                <a class="product-card" asp-controller="Products" asp-action="Detail" asp-route-slug="@p.Slug">
-                    <div class="product-thumb">
-                        <img src="@p.ImagePath" alt="@p.Name" loading="lazy" width="600" height="600" />
-                        <span class="product-tag">@p.Category</span>
-                    </div>
-                    <div class="product-body">
-                        <h3>@p.Name</h3>
-                        <p>@p.Summary</p>
-                        <span class="product-link">
-                            View Details
-                            <svg aria-hidden="true"><use href="#i-arrow-right" /></svg>
-                        </span>
-                    </div>
-                </a>
             }
+
+            <div class="ei-pd-actions">
+                <a class="ei-pd-btn ei-pd-btn--solid" asp-controller="Contact" asp-action="Index">
+                    Request a quote
+                    <svg aria-hidden="true"><use href="#i-arrow-right" /></svg>
+                </a>
+                <a class="ei-pd-btn" href="@CompanyProfile.BrochurePath" download>
+                    <svg aria-hidden="true"><use href="#i-download" /></svg>
+                    Download brochure
+                </a>
+            </div>
         </div>
 
+        <figure class="ei-pd-visual">
+            <div class="ei-pd-visual-card">
+                <img src="@Url.Content("~" + Model.ImagePath)" width="400" height="300"
+                     alt="Illustration of @Model.Name" fetchpriority="high" />
+            </div>
+            <span class="ei-pd-visual-num" aria-hidden="true">@((index + 1).ToString("00")) / @all.Count.ToString("00")</span>
+            <figcaption class="ei-pd-visual-cat">
+                <svg aria-hidden="true"><use href="#i-crate" /></svg>
+                For @Model.UseCase
+            </figcaption>
+        </figure>
     </div>
 </section>
 
-<section class="cta-band reveal">
-    <div class="shell">
-        <div class="cta-inner">
-            <div>
-                <h2>Get a quote on @Model.Name</h2>
-                <p>
-                    Give us the quantity, the destination and the transit time. Quotations
-                    go out within one business day, with the certificates and load data
-                    attached.
-                </p>
-            </div>
-            <div class="cta-actions">
-                <a class="btn btn-light btn-lg" asp-controller="Contact" asp-action="Index">
-                    Request a Quote
-                    <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow-right" /></svg>
-                </a>
-                <a class="btn btn-ghost-light btn-lg" href="mailto:@CompanyProfile.Email">
-                    <svg width="16" height="16" aria-hidden="true"><use href="#i-mail" /></svg>
-                    @CompanyProfile.Email
-                </a>
+@* ===================== Description + specifications ===================== *@
+<section class="ei-band ei-pd-overview" aria-labelledby="ei-pd-about-title">
+    <div class="ei-shell ei-pd-overview-grid">
+
+        <div class="ei-pd-copy ei-reveal ei-reveal--left">
+            <p class="ei-eyebrow">Product overview</p>
+            <h2 id="ei-pd-about-title">What it is and how it works</h2>
+
+            @foreach (var paragraph in Model.Description)
+            {
+                <p>@paragraph</p>
+            }
+
+            <div class="ei-pd-usecase">
+                <span class="ei-pd-usecase-icon" aria-hidden="true"><svg><use href="#i-container" /></svg></span>
+                <div>
+                    <small>Typically specified for</small>
+                    <strong>@Model.UseCase</strong>
+                </div>
             </div>
         </div>
+
+        @if (Model.Specifications.Length > 0)
+        {
+            <aside class="ei-pd-specs ei-reveal ei-reveal--right" style="--d:120ms" aria-labelledby="ei-pd-specs-title">
+                <div class="ei-pd-specs-head">
+                    <svg aria-hidden="true"><use href="#i-shield" /></svg>
+                    <h2 id="ei-pd-specs-title">Specifications</h2>
+                </div>
+                <dl class="ei-pd-specs-list">
+                    @foreach (var spec in Model.Specifications)
+                    {
+                        <div>
+                            <dt>@spec.Label</dt>
+                            <dd>@spec.Value</dd>
+                        </div>
+                    }
+                </dl>
+                <p class="ei-pd-specs-foot">
+                    Working to a specification we have not listed?
+                    <a asp-controller="Contact" asp-action="Index">Send us the details</a>
+                    and we will quote against them.
+                </p>
+            </aside>
+        }
+    </div>
+</section>
+
+@* ============================ Applications ============================ *@
+@if (Model.Applications.Length > 0)
+{
+    <section class="ei-band ei-band--shell ei-pd-apps" aria-labelledby="ei-pd-apps-title">
+        <div class="ei-shell">
+            <div class="ei-band-head ei-reveal">
+                <p class="ei-eyebrow">Applications</p>
+                <h2 id="ei-pd-apps-title">Where it gets used</h2>
+            </div>
+
+            <ul class="ei-pd-apps-grid">
+                @for (var i = 0; i < Model.Applications.Length; i++)
+                {
+                    <li class="ei-pd-app ei-reveal" style="--d:@(i * 80)ms">
+                        <span class="ei-pd-app-icon" aria-hidden="true"><svg><use href="#@appIcons[i % appIcons.Length]" /></svg></span>
+                        <h3>@Model.Applications[i]</h3>
+                    </li>
+                }
+            </ul>
+
+            @if (industries.Count > 0)
+            {
+                <div class="ei-pd-industries ei-reveal" style="--d:120ms">
+                    <div>
+                        <p class="ei-pd-industries-eyebrow">Industries</p>
+                        <h2>Bought by @industries.Count @(industries.Count == 1 ? "sector" : "sectors")</h2>
+                        <p>Each links to how that industry uses it.</p>
+                    </div>
+                    <ul class="ei-pd-ind-list">
+                        @foreach (var industry in industries)
+                        {
+                            <li>
+                                <a class="ei-pd-ind" asp-controller="UsedCases" asp-action="Index" asp-fragment="@industry.Slug">@industry.Name</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+
+        </div>
+    </section>
+}
+
+@* ============================== Related ============================== *@
+<section class="ei-band ei-pd-related" aria-labelledby="ei-pd-related-title">
+    <div class="ei-shell">
+        <div class="ei-pd-related-head ei-reveal">
+            <div>
+                <p class="ei-eyebrow">Related products</p>
+                <h2 id="ei-pd-related-title">Often packed alongside</h2>
+                <p>
+                    Most consignments use two or three of these together — protection inside the
+                    wrap, securing outside it.
+                </p>
+            </div>
+            <a class="ei-pd-related-all" asp-controller="Products" asp-action="Index">
+                All products
+                <svg aria-hidden="true"><use href="#i-arrow-right" /></svg>
+            </a>
+        </div>
+
+        <ul class="ei-pd-related-grid">
+            @for (var i = 0; i < related.Count; i++)
+            {
+                <li class="ei-reveal" style="--d:@(i * 80)ms">
+                    <partial name="_ProductCard" model="related[i]" />
+                </li>
+            }
+        </ul>
+
+        <nav class="ei-pd-pager" aria-label="More products">
+            <a class="ei-pd-pager-prev" asp-controller="Products" asp-action="Detail" asp-route-slug="@prev.Slug">
+                <span class="ei-pd-pager-arrow" aria-hidden="true"><svg><use href="#i-arrow-right" /></svg></span>
+                <img src="@Url.Content("~" + prev.ImagePath)" width="400" height="300" alt="" loading="lazy" />
+                <span><small>Previous</small><strong>@prev.Name</strong></span>
+            </a>
+            <a class="ei-pd-pager-next" asp-controller="Products" asp-action="Detail" asp-route-slug="@next.Slug">
+                <span><small>Next</small><strong>@next.Name</strong></span>
+                <img src="@Url.Content("~" + next.ImagePath)" width="400" height="300" alt="" loading="lazy" />
+                <span class="ei-pd-pager-arrow" aria-hidden="true"><svg><use href="#i-arrow-right" /></svg></span>
+            </a>
+        </nav>
     </div>
 </section>

@@ -1,358 +1,398 @@
 @using EliteIndustries.Services
+@using System.Globalization
+@*
+    About page — Overview, Ideology, Achievements.
+
+    Rebuilt onto theme.css: this view no longer sets ViewData["Legacy"], so
+    site.css and site.js do not load here. Its styles are wwwroot/css/about-page.css
+    (.ei-ab-*) and its tabs are wwwroot/js/about-page.js.
+
+    THE TABS
+    --------
+    Three panels on one page, as before, because the header's About dropdown
+    and the homepage "Know more" link deep-link into them by fragment
+    (#overview, #ideology, #achievements). about-page.js opens the panel named
+    by the hash on load and on hashchange. Without the script every panel is
+    visible — the `hidden` attributes are added by the script, not the markup —
+    so the page degrades to one long page rather than to two unreachable tabs.
+
+    THE COPY
+    --------
+    Unchanged from the previous version of this page: the client's own "Who We
+    Are?" text on Overview, the four-word ideology and three strengths from
+    eliteind.in/ideology.aspx, and only the client's own figures on
+    Achievements. Every figure comes from CompanyProfile or a catalogue count.
+    Nothing here claims a certification; see the note on the awards card.
+
+    The bottom call-to-action band this page used to end on is gone — the
+    shared footer now opens with the same call to action on every page.
+*@
 @{
     ViewData["Title"] = "About Us";
     ViewData["ActiveNav"] = "about";
-    // TEMPORARY — this page still renders against site.css. See _Layout.
-    ViewData["Legacy"] = true;
     ViewData["SeoTitle"] = $"Leading Provider of {CompanyProfile.ProductCategory} for Container and Cargo Shipping | {CompanyProfile.Name}";
-    // Claimed "ISO 9001:2015 certified, ISPM-15 registered" until the About
-    // copy was taken from eliteind.in, which claims neither. A meta description
-    // is quoted verbatim in a search result, so an unverified certification
-    // there is the version of it most people would actually read.
+    // A meta description is quoted verbatim in a search result, so it claims
+    // nothing the client does not.
     ViewData["Description"] = $"{CompanyProfile.Name} has manufactured and wholesaled export packaging material for container and cargo since {CompanyProfile.FoundedYear}, from {CompanyProfile.ShortAddress}. Any quantity, on time, backed by a 100% satisfaction guarantee.";
+
+    var inr = CultureInfo.GetCultureInfo("en-IN");
+
+    var figures = new[]
+    {
+        ("i-award",     CompanyProfile.YearsOfExperience, "Years of experience", ""),
+        ("i-container", CompanyProfile.ProjectsCompleted, "Projects completed",  "+"),
+        ("i-globe",     CompanyProfile.HappyClients,      "Happy clients",       "+"),
+        ("i-users",     CompanyProfile.Employees,         "Works employed",      "+")
+    };
+
+    var overviewPoints = new[]
+    {
+        ("i-container", "What we do",
+         "As a manufacturer and wholesaler of Export Packaging Material for Container and Cargo, we are determined to fulfil every urgent and large quantity requirement of customers for a variety of quality products in the packaging, material handling and insulation domain. Export Packaging is our key USP."),
+        ("i-works", "How we make it",
+         "Our products are precisely manufactured by following high quality standards for best performance matching international standards. We understand that our success is dependent upon yours."),
+        ("i-pallet", "What it costs",
+         "We offer top quality packaging materials at competitive prices. Being a large-scale manufacturer and distributor enables us to pass on bulk discounts directly to the customer. This allows our customers the opportunity to purchase supplies in smaller quantities at the lowest possible prices."),
+        ("i-shield", "What we stand behind",
+         $"In a bid to help our customers order in confidence, we always stand behind our products and back every order with a 100% satisfaction guarantee. While we look forward to building continuing relations with our customers, we always strive to stand above the competition. Unarguably, {CompanyProfile.Name} is your one-stop source for all of your packaging, material handling and shipping supply requirements.")
+    };
+
+    // The client's four-word ideology. The headings are quoted; the sentence
+    // under each says what the word means rather than adding a claim to it.
+    var pillars = new[]
+    {
+        ("i-container", "Quantity", "Any quantity, urgent or large. A requirement is sized to what the consignment actually needs, not to what is convenient to sell."),
+        ("i-shield",    "Quality",  "Precisely manufactured against high quality standards, for best performance matching international standards."),
+        ("i-award",     "Price",    "Bulk discounts passed directly to the customer, so supplies can be bought in smaller quantities at the lowest possible price."),
+        ("i-clock",     "Time",     "On time delivery, held to the date the exporter gives us rather than the one that suits the line.")
+    };
+
+    var strengths = new[]
+    {
+        ("i-globe", "India’s premier packaging material supplier", "Export packaging is our key USP, and it is the requirement the whole operation is built around."),
+        ("i-works", "In-house innovation and R&D centre", "Product development runs on our own floor, so a specification can be changed for a customer rather than only sourced."),
+        ("i-truck", "Any quantity, on time", "High quality packaging material in any quantity, with on time delivery. We constantly believe in creating value additions for all our customers.")
+    };
 }
 
-<section class="page-header">
-    <div class="shell">
-        <ol class="breadcrumb">
+@section Head {
+    <link rel="stylesheet" href="~/css/about-page.css" asp-append-version="true" />
+}
+
+@* ============================== Page hero ============================== *@
+<section class="ei-ab-hero" aria-labelledby="ei-ab-title">
+    <img class="ei-ab-hero-bg" src="~/img/about-facility.jpeg" asp-append-version="true"
+         width="1600" height="1200" alt="" fetchpriority="high" />
+
+    <div class="ei-shell ei-ab-hero-inner">
+        <ol class="ei-ab-crumbs">
             <li><a asp-controller="Home" asp-action="Index">Home</a></li>
             <li aria-current="page">About Us</li>
         </ol>
-        <h1>About Us</h1>
-        <p>Manufacturer and wholesaler of export packaging and material handling products for container and cargo shipping since @CompanyProfile.FoundedYear.</p>
+
+        <p class="ei-ab-hero-eyebrow">About @CompanyProfile.Name</p>
+        <h1 class="ei-ab-hero-title" id="ei-ab-title">
+            Export packaging, made in <span>@CompanyProfile.City</span> since @CompanyProfile.FoundedYear.
+        </h1>
+        <p class="ei-ab-hero-lede">
+            Manufacturer and wholesaler of export packaging and material handling products for
+            container and cargo shipping — any quantity, on time.
+        </p>
+
+        <ul class="ei-ab-hero-stats">
+            @foreach (var (icon, value, label, suffix) in figures)
+            {
+                <li>
+                    <span class="ei-ab-hero-stat-icon" aria-hidden="true"><svg><use href="#@icon" /></svg></span>
+                    <span class="ei-ab-hero-stat-text">
+                        <strong>@value.ToString("N0", inr)@suffix</strong>
+                        <small>@label</small>
+                    </span>
+                </li>
+            }
+        </ul>
     </div>
 </section>
 
-<section class="section">
-    <div class="shell">
-
-        <div class="tabs" role="tablist" aria-label="About @CompanyProfile.Name">
-            <button class="tab" type="button" role="tab" id="tab-overview"
-                    aria-controls="overview" aria-selected="true" tabindex="0">Overview</button>
-            <button class="tab" type="button" role="tab" id="tab-ideology"
-                    aria-controls="ideology" aria-selected="false" tabindex="-1">Ideology</button>
-            <button class="tab" type="button" role="tab" id="tab-achievements"
-                    aria-controls="achievements" aria-selected="false" tabindex="-1">Achievements</button>
+@* ================================ Tabs ================================= *@
+<div class="ei-ab-tabbar" data-ab-tabbar>
+    <div class="ei-shell">
+        <div class="ei-ab-tabs" role="tablist" aria-label="About @CompanyProfile.Name" data-ab-tabs>
+            <button class="ei-ab-tab" type="button" role="tab" id="tab-overview"
+                    aria-controls="overview" aria-selected="true">
+                <svg aria-hidden="true"><use href="#i-works" /></svg>
+                Overview
+            </button>
+            <button class="ei-ab-tab" type="button" role="tab" id="tab-ideology"
+                    aria-controls="ideology" aria-selected="false" tabindex="-1">
+                <svg aria-hidden="true"><use href="#i-shield" /></svg>
+                Ideology
+            </button>
+            <button class="ei-ab-tab" type="button" role="tab" id="tab-achievements"
+                    aria-controls="achievements" aria-selected="false" tabindex="-1">
+                <svg aria-hidden="true"><use href="#i-award" /></svg>
+                Achievements
+            </button>
         </div>
+    </div>
+</div>
 
-        <!-- ============================== overview ============================== -->
-        <div class="tab-panel" id="overview" role="tabpanel" aria-labelledby="tab-overview">
+@* ============================== Overview ============================== *@
+<div class="ei-ab-panel" id="overview" role="tabpanel" aria-labelledby="tab-overview" tabindex="-1">
 
-            @*  CLIENT COPY — the full "Who We Are?" text, in the client's own
-                words and complete. The homepage band (Views/Home/_About.cshtml)
-                carries the same text cut to three sentences and links here, so
-                the two have to stay in step: if the client sends new copy, edit
-                both. The year and the town are interpolated from
-                CompanyProfile rather than typed, so they cannot drift from the
-                works plate on the homepage or the footer address.  *@
-            <div class="section-head reveal">
-                <span class="eyebrow">Company Overview</span>
+    <section class="ei-band ei-ab-intro">
+        <div class="ei-shell ei-ab-split">
+            <div class="ei-ab-intro-copy ei-reveal ei-reveal--left">
+                <p class="ei-eyebrow">Company overview</p>
                 <h2>Your one-stop source for packaging, material handling and shipping supplies</h2>
-                <p class="lede">
-                    Established in the year @CompanyProfile.FoundedYear at
-                    @CompanyProfile.ShortAddress, @CompanyProfile.Name is one of the most
-                    professional, progressive and punctual enterprises in the Indian packaging
-                    and material handling industry.
+                <p class="ei-lede">
+                    Established in the year @CompanyProfile.FoundedYear at @CompanyProfile.ShortAddress,
+                    @CompanyProfile.Name is one of the most professional, progressive and punctual
+                    enterprises in the Indian packaging and material handling industry.
                 </p>
+
+                <ul class="ei-ab-badges">
+                    <li><svg aria-hidden="true"><use href="#i-shield" /></svg> 100% satisfaction guarantee</li>
+                    <li><svg aria-hidden="true"><use href="#i-truck" /></svg> Any quantity, on time</li>
+                    <li><svg aria-hidden="true"><use href="#i-globe" /></svg> Export packaging specialists</li>
+                </ul>
             </div>
 
-            <div class="split wide-left reveal">
-                <div>
-                    <h3>What we do</h3>
-                    <p>
-                        As a manufacturer and wholesaler of Export Packaging Material for Container and
-                        Cargo, we are determined to fulfil every urgent and large quantity requirement of
-                        customers for a variety of quality products in the packaging, material handling
-                        and insulation domain. Export Packaging is our key USP.
-                    </p>
-
-                    <h3>How we make it</h3>
-                    <p>
-                        Our products are precisely manufactured by following high quality standards for
-                        best performance matching international standards. We understand that our success
-                        is dependent upon yours.
-                    </p>
-
-                    <h3>What it costs</h3>
-                    <p>
-                        We offer top quality packaging materials at competitive prices. Being a
-                        large-scale manufacturer and distributor enables us to pass on bulk discounts
-                        directly to the customer. This allows our customers the opportunity to purchase
-                        supplies in smaller quantities at the lowest possible prices.
-                    </p>
-
-                    <h3>What we stand behind</h3>
-                    <p>
-                        In a bid to help our customers order in confidence, we always stand behind our
-                        products and back every order with a 100% satisfaction guarantee. While we look
-                        forward to building continuing relations with our customers, we always strive to
-                        stand above the competition. Unarguably, @CompanyProfile.Name is your one-stop
-                        source for all of your packaging, material handling and shipping supply
-                        requirements.
-                    </p>
-
-                    @*  Read out of ProductCatalog rather than typed, so this list
-                        cannot fall out of step with the catalogue the Products
-                        page and the homepage grid both render. The list it
-                        replaced named VCI film, ISPM-15 pallets, steel strapping
-                        and desiccants — none of which are in the catalogue.  *@
-                    <h3>What we make</h3>
-                    <ul class="check-list">
-                        @foreach (var product in ProductCatalog.ForNav)
-                        {
-                            <li>@product.Name</li>
-                        }
-                    </ul>
+            <figure class="ei-ab-photo ei-reveal ei-reveal--right" style="--d:120ms">
+                <div class="ei-ab-photo-frame">
+                    <img src="~/img/about-facility.jpeg" asp-append-version="true"
+                         width="1600" height="1200" loading="lazy" decoding="async"
+                         alt="The @CompanyProfile.Name works: red-and-white steel warehouse sheds with covered loading bays." />
                 </div>
-
-                @*  Every row is either a CompanyProfile value or a count of
-                    the catalogue, so this table cannot state a figure the rest
-                    of the site contradicts. It replaced a "Quality standards"
-                    table asserting ISO 9001:2015, ISPM-15 heat treatment at
-                    56 °C, razor-blade VCI testing and gravimetric desiccant
-                    checks — none of it published by the client, and most of it
-                    describing products the catalogue does not contain. If the
-                    client holds certifications, they belong here, one row per
-                    certificate, with the issuing body named.  *@
-                <div>
-                    <h3>Company at a glance</h3>
-                    <table class="spec-table">
-                        <tr>
-                            <th>Established</th>
-                            <td>@CompanyProfile.FoundedYear at @CompanyProfile.ShortAddress (@CompanyProfile.YearsOfExperience years)</td>
-                        </tr>
-                        <tr>
-                            <th>Business</th>
-                            <td>Manufacturer and wholesaler of @CompanyProfile.ProductCategory for container and cargo</td>
-                        </tr>
-                        <tr>
-                            <th>Works</th>
-                            <td>@CompanyProfile.StreetAddress, @CompanyProfile.ShortAddress @CompanyProfile.PostalCode</td>
-                        </tr>
-                        <tr>
-                            <th>Team</th>
-                            <td>@CompanyProfile.Employees+ employed</td>
-                        </tr>
-                        <tr>
-                            <th>Delivered</th>
-                            <td>@CompanyProfile.ProjectsCompleted+ projects for @CompanyProfile.HappyClients+ customers</td>
-                        </tr>
-                        <tr>
-                            <th>Product lines</th>
-                            <td>@ProductCatalog.ForNav.Count, across packaging, material handling and insulation</td>
-                        </tr>
-                        <tr>
-                            <th>Industries served</th>
-                            <td>Agriculture, automotive, ceramics, chemicals, construction, food and beverage, glass, healthcare, HVAC, machinery, ports, printing, rubber and plastics, solar, stationery, textiles, transport and logistics</td>
-                        </tr>
-                        <tr>
-                            <th>Enquiries</th>
-                            <td>
-                                <a href="tel:@CompanyProfile.PhonePrimaryHref">@CompanyProfile.PhonePrimary</a> &middot;
-                                <a href="mailto:@CompanyProfile.Email">@CompanyProfile.Email</a>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
+                <figcaption class="ei-ab-photo-tag">
+                    <strong>@CompanyProfile.YearsOfExperience+</strong>
+                    <span>years in export packaging</span>
+                </figcaption>
+            </figure>
         </div>
+    </section>
 
-        <!-- ============================== ideology ============================== -->
-        @*  CLIENT COPY, from eliteind.in/ideology.aspx. The four pillars and the
-            three strengths are quoted; only the sentence under each pillar is
-            ours, and each one says what the pillar means rather than adding a
-            claim to it.
+    @*  CLIENT COPY — the full "Who We Are?" text. The homepage band
+        (Views/Home/_About.cshtml) carries a two-sentence cut of it and links
+        here; if the client sends new copy, edit both.  *@
+    <section class="ei-band ei-band--shell ei-ab-points">
+        <div class="ei-shell">
+            <div class="ei-band-head ei-reveal">
+                <p class="ei-eyebrow">Who we are</p>
+                <h2>Built around the consignment, not the catalogue</h2>
+            </div>
 
-            What was here before was six invented principles about VCI barrier
-            grades, ISPM-15 heat treatment and in-house extrusion — a different
-            company's ideology, for products this one does not make.  *@
-        <div class="tab-panel" id="ideology" role="tabpanel" aria-labelledby="tab-ideology" hidden>
+            <ol class="ei-ab-point-grid">
+                @{ var p = 0; }
+                @foreach (var (icon, title, text) in overviewPoints)
+                {
+                    <li class="ei-ab-point ei-reveal" style="--d:@(p * 90)ms">
+                        <span class="ei-ab-point-num" aria-hidden="true">@((p + 1).ToString("00"))</span>
+                        <span class="ei-ab-disc" aria-hidden="true"><svg><use href="#@icon" /></svg></span>
+                        <h3>@title</h3>
+                        <p>@text</p>
+                    </li>
+                    p++;
+                }
+            </ol>
+        </div>
+    </section>
 
-            <div class="section-head reveal">
-                <span class="eyebrow">Our Ideology</span>
+    <section class="ei-band ei-ab-range">
+        <div class="ei-shell ei-ab-range-grid">
+
+            @*  Read out of ProductCatalog, so this list cannot fall out of step
+                with the catalogue the Products page and homepage render.  *@
+            <div class="ei-ab-range-products ei-reveal ei-reveal--left">
+                <p class="ei-eyebrow">What we make</p>
+                <h2>@ProductCatalog.ForNav.Count product lines, one supplier</h2>
+                <ul class="ei-ab-chips">
+                    @foreach (var product in ProductCatalog.ForNav)
+                    {
+                        <li>
+                            <a class="ei-ab-chip" asp-controller="Products" asp-action="Detail" asp-route-slug="@product.Slug">
+                                @product.Name
+                                <svg aria-hidden="true"><use href="#i-arrow-right" /></svg>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            @*  Every row is a CompanyProfile value or a catalogue count, so this
+                card cannot state a figure the rest of the site contradicts. If
+                the client holds certifications, they belong here, one row per
+                certificate, with the issuing body named.  *@
+            <aside class="ei-ab-glance ei-reveal ei-reveal--right" style="--d:120ms" aria-labelledby="ei-ab-glance-title">
+                <h2 class="ei-ab-glance-title" id="ei-ab-glance-title">Company at a glance</h2>
+                <dl class="ei-ab-glance-list">
+                    <div>
+                        <dt><svg aria-hidden="true"><use href="#i-award" /></svg> Established</dt>
+                        <dd>@CompanyProfile.FoundedYear at @CompanyProfile.ShortAddress</dd>
+                    </div>
+                    <div>
+                        <dt><svg aria-hidden="true"><use href="#i-container" /></svg> Business</dt>
+                        <dd>Manufacturer and wholesaler of @CompanyProfile.ProductCategory for container and cargo</dd>
+                    </div>
+                    <div>
+                        <dt><svg aria-hidden="true"><use href="#i-pin" /></svg> Works</dt>
+                        <dd>@CompanyProfile.StreetAddress, @CompanyProfile.ShortAddress @CompanyProfile.PostalCode</dd>
+                    </div>
+                    <div>
+                        <dt><svg aria-hidden="true"><use href="#i-users" /></svg> Team</dt>
+                        <dd>@CompanyProfile.Employees+ employed</dd>
+                    </div>
+                    <div>
+                        <dt><svg aria-hidden="true"><use href="#i-phone" /></svg> Enquiries</dt>
+                        <dd>
+                            <a href="tel:@CompanyProfile.PhonePrimaryHref">@CompanyProfile.PhonePrimary</a><br />
+                            <a href="mailto:@CompanyProfile.Email">@CompanyProfile.Email</a>
+                        </dd>
+                    </div>
+                </dl>
+            </aside>
+        </div>
+    </section>
+</div>
+
+@* ============================== Ideology ============================== *@
+@*  CLIENT COPY, from eliteind.in/ideology.aspx. The four pillars and the three
+    strengths are quoted; only the sentence under each pillar is ours.  *@
+<div class="ei-ab-panel" id="ideology" role="tabpanel" aria-labelledby="tab-ideology" tabindex="-1">
+
+    <section class="ei-band ei-ab-ideology">
+        <div class="ei-shell">
+            <div class="ei-band-head is-centred ei-reveal">
+                <p class="ei-eyebrow is-centred">Our ideology</p>
                 <h2>When you buy from us, feel rest assured about the quality and service</h2>
-                <p class="lede">
-                    Since you are buying from the best in the industry. Our aim is to provide you
-                    with a diverse category of high quality packing materials at the most reasonable
-                    prices — and to be a one stop destination for all your packing needs.
+                <p class="ei-lede">
+                    Since you are buying from the best in the industry. Our aim is to provide you with a
+                    diverse category of high quality packing materials at the most reasonable prices —
+                    and to be a one stop destination for all your packing needs.
                 </p>
             </div>
 
-            @*  The four-word ideology as it is written on the client's site.
-                Kept in its own row above the strengths because it is the part
-                that is quoted, and breaking it up would lose the cadence.  *@
-            <div class="grid cols-4 reveal">
-                <div class="info-card">
-                    <span class="card-icon"><svg aria-hidden="true"><use href="#i-container" /></svg></span>
-                    <h3>Your Quantity</h3>
-                    <p>
-                        Any quantity, urgent or large. A requirement is sized to what the consignment
-                        actually needs, not to what is convenient to sell.
-                    </p>
-                </div>
-
-                <div class="info-card">
-                    <span class="card-icon"><svg aria-hidden="true"><use href="#i-shield" /></svg></span>
-                    <h3>Your Quality</h3>
-                    <p>
-                        Precisely manufactured against high quality standards, for best performance
-                        matching international standards.
-                    </p>
-                </div>
-
-                <div class="info-card">
-                    <span class="card-icon"><svg aria-hidden="true"><use href="#i-award" /></svg></span>
-                    <h3>Your Price</h3>
-                    <p>
-                        Bulk discounts passed directly to the customer, so supplies can be bought in
-                        smaller quantities at the lowest possible price.
-                    </p>
-                </div>
-
-                <div class="info-card">
-                    <span class="card-icon"><svg aria-hidden="true"><use href="#i-clock" /></svg></span>
-                    <h3>Your Time</h3>
-                    <p>
-                        On time delivery, held to the date the exporter gives us rather than the one
-                        that suits the line.
-                    </p>
-                </div>
-            </div>
-
-            <div class="section-sm">
-                <div class="section-head reveal">
-                    <span class="eyebrow">Our Strengths</span>
-                    <h2>What that rests on</h2>
-                </div>
-
-                <div class="grid cols-3 reveal">
-                    <div class="info-card">
-                        <span class="card-icon"><svg aria-hidden="true"><use href="#i-globe" /></svg></span>
-                        <h3>India&rsquo;s premier packaging material supplier</h3>
-                        <p>
-                            Export packaging is our key USP, and it is the requirement the whole
-                            operation is built around.
-                        </p>
-                    </div>
-
-                    <div class="info-card">
-                        <span class="card-icon"><svg aria-hidden="true"><use href="#i-works" /></svg></span>
-                        <h3>In-house innovation and R&amp;D centre</h3>
-                        <p>
-                            Product development runs on our own floor, so a specification can be
-                            changed for a customer rather than only sourced.
-                        </p>
-                    </div>
-
-                    <div class="info-card">
-                        <span class="card-icon"><svg aria-hidden="true"><use href="#i-truck" /></svg></span>
-                        <h3>Any quantity, on time</h3>
-                        <p>
-                            High quality packaging material in any quantity, with on time delivery.
-                            We constantly believe in creating value additions for all our customers.
-                        </p>
-                    </div>
-                </div>
-            </div>
+            <ul class="ei-ab-pillars">
+                @{ var q = 0; }
+                @foreach (var (icon, word, text) in pillars)
+                {
+                    <li class="ei-ab-pillar ei-reveal" style="--d:@(q * 90)ms">
+                        <span class="ei-ab-disc" aria-hidden="true"><svg><use href="#@icon" /></svg></span>
+                        <h3><small>Your</small> @word</h3>
+                        <p>@text</p>
+                    </li>
+                    q++;
+                }
+            </ul>
         </div>
+    </section>
 
-        <!-- ============================ achievements ============================ -->
-        @*  The client's four counters, and nothing else.
+    <section class="ei-ab-strengths">
+        <div class="ei-shell">
+            <div class="ei-ab-strengths-head ei-reveal">
+                <p class="ei-ab-dark-eyebrow">Our strengths</p>
+                <h2>What that rests on</h2>
+            </div>
 
-            What was here before was a nine-entry founding-to-today timeline —
-            extrusion lines commissioned, a heat-treatment chamber, ISO 9001
-            certification, an in-house test laboratory, 300 tonnes a month — and
-            three certification cards claiming ISO 9001:2015 and ISPM-15
-            registration. None of it is published by the client and none of it
-            is verifiable here, so all of it is gone. Inventing a company's
-            certifications is the worst thing this page could do: a buyer who
-            reads ISO 9001 here and asks for the certificate gets a conversation
-            nobody wants to have.
+            <ul class="ei-ab-strength-grid">
+                @{ var r = 0; }
+                @foreach (var (icon, title, text) in strengths)
+                {
+                    <li class="ei-ab-strength ei-reveal" style="--d:@(r * 110)ms">
+                        <span class="ei-ab-strength-num" aria-hidden="true">@((r + 1).ToString("00"))</span>
+                        <span class="ei-ab-disc" aria-hidden="true"><svg><use href="#@icon" /></svg></span>
+                        <h3>@title</h3>
+                        <p>@text</p>
+                    </li>
+                    r++;
+                }
+            </ul>
+        </div>
+    </section>
+</div>
 
-            eliteind.in/achievement.aspx is a gallery of five images — awards or
-            certificates, unreadable at the size published. They are the real
-            content of this tab. Get the originals from the client, drop them in
-            wwwroot/img/achievements/, and each one earns a caption naming what
-            it is and who issued it.  *@
-        <div class="tab-panel" id="achievements" role="tabpanel" aria-labelledby="tab-achievements" hidden>
+@* ============================ Achievements ============================ *@
+@*  The client's four counters, the catalogue counts, and nothing else. No
+    timeline and no certification claims: none are published by the client.
 
-            <div class="section-head reveal">
-                <span class="eyebrow">Achievements</span>
+    eliteind.in/achievement.aspx is a gallery of five award or certificate
+    images, unreadable at the size published. Get the originals, drop them in
+    wwwroot/img/achievements/, and give each a caption naming what it is and
+    who issued it — that is the real content still missing from this tab.  *@
+<div class="ei-ab-panel" id="achievements" role="tabpanel" aria-labelledby="tab-achievements" tabindex="-1">
+
+    <section class="ei-band ei-ab-achieve">
+        <div class="ei-shell">
+            <div class="ei-band-head is-centred ei-reveal">
+                <p class="ei-eyebrow is-centred">Achievements</p>
                 <h2>Where @CompanyProfile.YearsOfExperience years has got us</h2>
-                <p class="lede">
+                <p class="ei-lede">
                     @CompanyProfile.Name has supplied export packaging out of @CompanyProfile.City
                     since @CompanyProfile.FoundedYear. These are the figures behind that.
                 </p>
             </div>
 
-            @*  Same four values as the homepage counters band, from the same
-                constants, so the two can never disagree. Years is derived from
-                FoundedYear and is the only one that moves on its own.  *@
-            <div class="split wide-left reveal">
-                <div>
-                    <table class="spec-table">
-                        <tr>
-                            <th>Years of experience</th>
-                            <td>@CompanyProfile.YearsOfExperience, since @CompanyProfile.FoundedYear</td>
-                        </tr>
-                        <tr>
-                            <th>Projects completed</th>
-                            <td>@CompanyProfile.ProjectsCompleted+</td>
-                        </tr>
-                        <tr>
-                            <th>Happy clients</th>
-                            <td>@CompanyProfile.HappyClients+</td>
-                        </tr>
-                        <tr>
-                            <th>Works employed</th>
-                            <td>@CompanyProfile.Employees+</td>
-                        </tr>
-                        <tr>
-                            <th>Product lines</th>
-                            <td>@ProductCatalog.ForNav.Count</td>
-                        </tr>
-                        <tr>
-                            <th>Industries served</th>
-                            <td>17, from agriculture and ports to pharmaceuticals and HVAC</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div>
-                    <h3>Awards and certificates</h3>
-                    <p>
-                        The originals are held at the works. If you need a copy of a certificate for
-                        a tender or a vendor registration, ask and we will send it across —
-                        <a href="tel:@CompanyProfile.PhonePrimaryHref">@CompanyProfile.PhonePrimary</a>
-                        or <a href="mailto:@CompanyProfile.Email">@CompanyProfile.Email</a>.
-                    </p>
-                </div>
-            </div>
+            @*  Same values as the homepage counters, from the same constants.
+                data-count-to is the bare integer and the text is the final
+                figure, as reveal.js requires (see Views/Home/_Stats.cshtml). *@
+            <ul class="ei-ab-counters">
+                @{ var c = 0; }
+                @foreach (var (icon, value, label, suffix) in figures)
+                {
+                    <li class="ei-ab-counter ei-reveal" style="--d:@(c * 90)ms">
+                        <span class="ei-ab-disc" aria-hidden="true"><svg><use href="#@icon" /></svg></span>
+                        <p class="ei-ab-counter-value">
+                            <span class="ei-ab-counter-figure" data-count-to="@value">@value.ToString("N0", inr)</span><span class="ei-ab-counter-suffix">@suffix</span>
+                        </p>
+                        <p class="ei-ab-counter-label">@label</p>
+                    </li>
+                    c++;
+                }
+            </ul>
         </div>
+    </section>
 
-    </div>
-</section>
-
-<section class="cta-band">
-    <div class="shell">
-        <div class="cta-inner reveal">
-            <div>
-                <h2>Send us the packing list</h2>
-                <p>
-                    Tell us what is being shipped, how much of it and when it has to leave, and we will
-                    quote the material for the job — any quantity, urgent or large.
+    <section class="ei-band ei-band--shell ei-ab-reach">
+        <div class="ei-shell ei-ab-reach-grid">
+            <div class="ei-reveal ei-reveal--left">
+                <p class="ei-eyebrow">Industries served</p>
+                <h2>@IndustryCatalog.All.Count sectors buy from us</h2>
+                <p class="ei-ab-reach-text">
+                    From farms and ports to textiles and stationery — each one packed with the
+                    @ProductCatalog.ForNav.Count product lines we manufacture.
                 </p>
+                <ul class="ei-ab-chips ei-ab-chips--soft">
+                    @foreach (var industry in IndustryCatalog.All)
+                    {
+                        <li>
+                            <a class="ei-ab-chip" asp-controller="UsedCases" asp-action="Index" asp-fragment="@industry.Slug">@industry.Name</a>
+                        </li>
+                    }
+                </ul>
             </div>
-            <div class="cta-actions">
-                <a class="btn btn-light btn-lg" href="@CompanyProfile.BrochurePath" download>
-                    <svg width="18" height="18" aria-hidden="true"><use href="#i-download" /></svg>
-                    Download Brochure
-                </a>
-                <a class="btn btn-ghost-light btn-lg" asp-controller="Contact" asp-action="Index">
-                    Contact Us
-                    <svg width="18" height="18" aria-hidden="true"><use href="#i-arrow-right" /></svg>
-                </a>
-            </div>
+
+            <aside class="ei-ab-awards ei-reveal ei-reveal--right" style="--d:120ms" aria-labelledby="ei-ab-awards-title">
+                <span class="ei-ab-awards-icon" aria-hidden="true"><svg><use href="#i-award" /></svg></span>
+                <h2 id="ei-ab-awards-title">Awards and certificates</h2>
+                <p>
+                    The originals are held at the works. If you need a copy of a certificate for a
+                    tender or a vendor registration, ask and we will send it across.
+                </p>
+                <div class="ei-ab-awards-actions">
+                    <a class="ei-ab-awards-btn" href="tel:@CompanyProfile.PhonePrimaryHref">
+                        <svg aria-hidden="true"><use href="#i-phone" /></svg>
+                        @CompanyProfile.PhonePrimary
+                    </a>
+                    <a class="ei-ab-awards-btn ei-ab-awards-btn--ghost" href="mailto:@CompanyProfile.Email">
+                        <svg aria-hidden="true"><use href="#i-mail" /></svg>
+                        Email us
+                    </a>
+                </div>
+            </aside>
         </div>
-    </div>
-</section>
+    </section>
+</div>
+
+@section Scripts {
+    <script src="~/js/about-page.js" asp-append-version="true" defer></script>
+}

@@ -3,7 +3,10 @@
 @*
     Masthead.
 
-    One row: brand left, the five signed-off tabs and the phone number right.
+    A warm gradient contact strip over one row: brand left, the five signed-off
+    tabs and the brochure button right, closed along the bottom by the strap —
+    a red-to-amber band with a slow run of light along it. The current tab is
+    marked by a gradient underline under its label (shell.css), no script.
     The address block and the language picker that used to live up here are
     gone — the client dropped the language switcher and the search overlay, and
     the address belongs in the footer. The top of the page is navigation only.
@@ -34,6 +37,50 @@
 }
 
 <header class="ei-hd" id="siteHeader" data-hd>
+
+    @*  The contact strip. A warm gradient band above the bar carrying the
+        things a buyer looks for before they look at the menu: the address to
+        write to, the number to ring, the hours, and the social pages. It is
+        what folds away once the page scrolls (shell.css), and it is not
+        rendered visible below 1000px — the call button and the slide-in
+        panel carry the same details there. *@
+    <div class="ei-hd-top">
+        <div class="ei-shell ei-hd-top-inner">
+            <ul class="ei-hd-top-info">
+                <li>
+                    <a class="ei-hd-top-item" href="mailto:@CompanyProfile.Email">
+                        <span class="ei-hd-chip"><svg aria-hidden="true"><use href="#i-mail" /></svg></span>
+                        @CompanyProfile.Email
+                    </a>
+                </li>
+                <li>
+                    <a class="ei-hd-top-item" href="tel:@CompanyProfile.PhonePrimaryHref">
+                        <span class="ei-hd-chip"><svg aria-hidden="true"><use href="#i-phone" /></svg></span>
+                        <span class="ei-hd-top-label">@CompanyProfile.PhoneLabel</span>
+                        <strong>@CompanyProfile.PhonePrimary</strong>
+                    </a>
+                </li>
+                <li class="ei-hd-top-hours">
+                    <span class="ei-hd-top-item">
+                        <span class="ei-hd-chip"><svg aria-hidden="true"><use href="#i-clock" /></svg></span>
+                        @CompanyProfile.BusinessHours
+                    </span>
+                </li>
+            </ul>
+
+            <div class="ei-hd-top-end">
+                <span class="ei-hd-top-badge">
+                    <svg aria-hidden="true"><use href="#i-award" /></svg>
+                    Trusted since @CompanyProfile.FoundedYear
+                </span>
+                <ul class="ei-hd-top-social">
+                    <li><a href="@CompanyProfile.LinkedIn" target="_blank" rel="noopener" aria-label="@CompanyProfile.Name on LinkedIn"><svg aria-hidden="true"><use href="#i-linkedin" /></svg></a></li>
+                    <li><a href="@CompanyProfile.Facebook" target="_blank" rel="noopener" aria-label="@CompanyProfile.Name on Facebook"><svg aria-hidden="true"><use href="#i-facebook" /></svg></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <div class="ei-shell ei-hd-inner">
 
         @*  The client's logo. It replaces a drawn crate mark plus the
@@ -115,10 +162,7 @@
                                     </li>
                                 }
                                 <li class="ei-hd-panel-all">
-                                    <a class="ei-hd-panel-link" asp-controller="Products" asp-action="Index">
-                                        View all products
-                                        <svg aria-hidden="true"><use href="#i-arrow-right" /></svg>
-                                    </a>
+                                    <a class="ei-hd-panel-link" asp-controller="Products" asp-action="Index">View all products</a>
                                 </li>
                             </ul>
                         </div>
@@ -148,13 +192,35 @@
                     <svg aria-hidden="true"><use href="#i-phone" /></svg>
                     @CompanyProfile.PhonePrimary
                 </a>
+                <a class="ei-hd-mail" href="mailto:@CompanyProfile.Email">
+                    <svg aria-hidden="true"><use href="#i-mail" /></svg>
+                    @CompanyProfile.Email
+                </a>
+                <a class="ei-hd-cta" href="@CompanyProfile.BrochurePath" download>
+                    <svg aria-hidden="true"><use href="#i-download" /></svg>
+                    Download Brochure
+                </a>
             </div>
         </nav>
 
         <div class="ei-hd-utils">
-            <a class="ei-hd-phone" href="tel:@CompanyProfile.PhonePrimaryHref">
+            @* The number moved up into the contact strip; the bar's right-hand
+               slot is the brochure, the one thing on eliteind.in's masthead
+               that is an action rather than a destination. The short label
+               takes over when the tab row is tight for room. *@
+            <a class="ei-hd-cta" href="@CompanyProfile.BrochurePath" download>
+                <span class="ei-hd-cta-icon"><svg aria-hidden="true"><use href="#i-download" /></svg></span>
+                <span class="ei-hd-cta-long">Download Brochure</span>
+                <span class="ei-hd-cta-short">Brochure</span>
+            </a>
+
+            @* The phone bar's one-tap call. Below 1000px the number above is
+               hidden for room, and a buyer on a phone should not have to open
+               the menu to ring the works. The accessible name carries the
+               number, since the button itself shows only the glyph. *@
+            <a class="ei-hd-call" href="tel:@CompanyProfile.PhonePrimaryHref"
+               aria-label="Call @CompanyProfile.PhonePrimary">
                 <svg aria-hidden="true"><use href="#i-phone" /></svg>
-                @CompanyProfile.PhonePrimary
             </a>
 
             @* The label, not just the state, flips on open — a screen reader

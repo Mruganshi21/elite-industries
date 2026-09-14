@@ -5,7 +5,7 @@
 
     A running order and nothing else. Each band is a partial with its own
     stylesheet; put markup in the partial, not here. The hero is first — the
-    page opens on it directly. The remaining band (the closing CTA) is a
+    page opens on it directly, and it carries the page's only <h1>. The remaining band (the closing CTA) is a
     separate piece of work and lands in below the products grid.
 
     Deliberately does NOT set ViewData["Legacy"]: site.css must never load on
@@ -38,9 +38,8 @@
     <link rel="stylesheet" href="~/css/products.css" asp-append-version="true" />
 }
 
-@* The homepage opens straight on the hero — there is no intro title card in
-   front of it. The clip that used to play there is now the hero background;
-   see CompanyProfile.HeroVideoPath. *@
+@* The homepage opens straight on the hero: a single image, the export
+   packaging infographic, with no overlay and no script. *@
 <partial name="_Hero" />
 
 <partial name="_About" />
@@ -50,7 +49,3 @@
 @* Handed ProductCatalog.Featured(6) by HomeController. The band renders
    whatever it is given and does not re-slice it. *@
 <partial name="_Products" model="Model" />
-
-@section Scripts {
-    <script src="~/js/hero.js" asp-append-version="true" defer></script>
-}

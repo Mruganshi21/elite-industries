@@ -1,8 +1,9 @@
 /* ==========================================================================
    Elite Industries — homepage products band
 
-   The band only: its ground, the grid the cards are laid out in, and the row
-   that carries the way out to the full listing.
+   The band only: its ground, the split head with the way out to the full
+   listing, the grid the cards are laid out in, and which colour each card
+   takes.
 
    NAMESPACE
    ---------
@@ -16,8 +17,8 @@
 
    WHY THE GROUND IS SHELL
    -----------------------
-   The band above (.ei-stats) is --ei-ink and the closing CTA below is deep
-   red, so this one has to be light. The cards are white with a hairline, so
+   The band above (.ei-stats) is white with cards on it, so this one steps
+   down to shell. The cards are white with a hairline, so
    --ei-white loses: white cards on a white band dissolve into it and the
    hairline ends up doing all the work of holding six objects apart.
 
@@ -34,11 +35,85 @@
 
    MOTION
    ------
-   None is declared in this file. The entrance is .ei-reveal on the cells,
-   which theme.css defines and reveal.js drives; the card's hover lives in
-   product-card.css and carries its own reduced-motion block. There is
-   deliberately no reduced-motion query here.
+   The entrance is .ei-reveal on the cells, which theme.css defines and
+   reveal.js drives; the card's hover lives in product-card.css. The only
+   motion here is the "View all" pill's hover, a transition the global
+   reduced-motion block in theme.css already stills.
    ========================================================================== */
+
+
+/* ==========================================================================
+   The band
+
+   Shell ground with a soft warm glow in the top-right corner, so the band
+   carries the same colours as the stats cards above it without a fill.
+   ========================================================================== */
+
+.ei-feat {
+  background:
+    radial-gradient(45% 55% at 100% 0%, rgba(242, 107, 29, .09), transparent 70%),
+    radial-gradient(35% 45% at 0% 100%, rgba(228, 24, 31, .06), transparent 70%),
+    var(--ei-shell);
+}
+
+
+/* ==========================================================================
+   The head
+
+   Two columns: eyebrow and title left, lede and the "View all" pill right,
+   bottom-aligned so the pill sits level with the foot of the title.
+   ========================================================================== */
+
+.ei-feat-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(1.25rem, 4vw, 4rem);
+  align-items: end;
+  margin: 0 0 clamp(2.25rem, 4vw, 3.25rem);
+}
+
+.ei-feat-head h2 { margin: 0; }
+
+.ei-feat-head-side {
+  display: grid;
+  gap: 1.25rem;
+  justify-items: start;
+}
+
+.ei-feat-all {
+  display: inline-flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .45rem .5rem .45rem 1.25rem;
+  border-radius: 999px;
+  background: linear-gradient(110deg, var(--ei-crimson), var(--ei-red) 50%, var(--ei-ember)) 0 0 / 200% 100%;
+  box-shadow: 0 10px 22px -12px rgba(228, 24, 31, .7);
+  font-family: var(--ei-display);
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--ei-white);
+  transition:
+    background-position .45s var(--ei-ease-ui),
+    box-shadow var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-feat-all:hover {
+  background-position: 100% 0;
+  box-shadow: 0 14px 26px -12px rgba(194, 65, 12, .75);
+  color: var(--ei-white);
+}
+.ei-feat-all-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--ei-white);
+  color: var(--ei-crimson);
+  transition: transform .35s var(--ei-ease-rise);
+}
+.ei-feat-all-icon svg { width: 15px; height: 15px; }
+.ei-feat-all:hover .ei-feat-all-icon { transform: translateX(4px); }
 
 
 /* ==========================================================================
@@ -61,6 +136,9 @@
   list-style: none;
   margin: 0;
   padding: 0;
+
+  /* The card numbers its thumbnail from this counter (product-card.css). */
+  counter-reset: ei-pcard;
 }
 
 /* The cell exists to carry the entrance and to give the card something to
@@ -68,16 +146,10 @@
    to the full height of the row. */
 .ei-feat-cell { display: flex; }
 
-
-/* ==========================================================================
-   The way out
-   ========================================================================== */
-
-.ei-feat-more {
-  display: flex;
-  justify-content: center;
-  margin-top: clamp(2.25rem, 4vw, 3.25rem);
-}
+/* The caller picks each card's colour: red, orange, amber, round again. The
+   card reads --ei-pcard-a (the dark end, safe for text) and --ei-pcard-b. */
+.ei-feat-cell:nth-child(3n + 2) { --ei-pcard-a: var(--ei-ember); --ei-pcard-b: var(--ei-orange); }
+.ei-feat-cell:nth-child(3n + 3) { --ei-pcard-a: var(--ei-ember); --ei-pcard-b: var(--ei-amber); }
 
 
 /* ==========================================================================
@@ -90,6 +162,7 @@
 
 @media (max-width: 999.98px) {
   .ei-feat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ei-feat-head { grid-template-columns: minmax(0, 1fr); align-items: start; }
 }
 
 
@@ -109,8 +182,4 @@
     grid-template-columns: minmax(0, 1fr);
     grid-auto-rows: auto;
   }
-
-  /* Full width, because a centred pill under a full-width column reads as
-     unfinished rather than as centred. */
-  .ei-feat-more .ei-btn { width: 100%; }
 }

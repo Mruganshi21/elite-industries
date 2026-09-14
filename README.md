@@ -87,11 +87,12 @@ the hero. `Views/Home/_Intro.cshtml`, `wwwroot/css/intro.css` and
 `wwwroot/js/intro.js` were deleted with it, and nothing writes the
 `ei.intro.seen` session key any more.
 
-That clip is now the hero background — `CompanyProfile.HeroVideoPath` points at
-it. It replaced `wwwroot/video/hero.mp4`, a 20.5 MB screen recording of
-**signode.com** that the brief supplied as an animation-style reference, browser
-toolbar and bookmarks bar included. It was reference material, not footage. The
-file is still on disk and nothing renders it — see `wwwroot/video/README.md`.
+That clip then became the hero background, and has since been retired too: the
+hero is now a single image, `wwwroot/img/hero-export-packaging.jpeg`, and no
+video is rendered anywhere. The clip had replaced `wwwroot/video/hero.mp4`, a
+20.5 MB screen recording of **signode.com** that the brief supplied as an animation-style reference, browser
+toolbar and bookmarks bar included. It was reference material, not footage. Both
+files are still on disk and nothing renders them — see `wwwroot/video/README.md`.
 
 ## Layout of the source
 

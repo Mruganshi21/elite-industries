@@ -1,0 +1,955 @@
+/* ==========================================================================
+   Elite Industries — About page
+
+   Hero on the works photograph, a sticky pill tab bar, and three panels:
+   Overview, Ideology, Achievements. Same visual language as the homepage and
+   the shell — white rounded cards, warm red / orange / amber accents carried
+   by icon discs, bars and chips, dark ink for the one heavy band.
+
+   NAMESPACE
+   ---------
+   .ei-ab and .ei-ab-* only. Shared primitives (.ei-shell, .ei-band,
+   .ei-eyebrow, .ei-lede, .ei-reveal) come from theme.css and are used, never
+   restyled, here.
+
+   CONTRAST
+   --------
+   On white/shell: headings --ei-graphite, copy --ei-steel, accent text
+   --ei-crimson or --ei-ember (5:1+). On the dark hero and strengths band: text
+   is white or alpha white, accent text is --ei-red-lift or --ei-amber (both
+   6:1+ on ink). --ei-orange and --ei-amber on light grounds are graphics only.
+
+   MOTION
+   ------
+   Entrances are .ei-reveal; counters are [data-count-to] (reveal.js). Hovers
+   here are transitions, which the global reduced-motion block in theme.css
+   already stills.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   Shared bits
+   ========================================================================== */
+
+/* Round gradient icon disc. Colour pair set per item with --ab-a / --ab-b. */
+.ei-ab-disc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  flex: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--ab-a, var(--ei-crimson)), var(--ab-b, var(--ei-red)));
+  box-shadow: 0 10px 22px -12px var(--ab-b, var(--ei-red));
+  color: var(--ei-white);
+  transition: transform .45s var(--ei-ease-rise);
+}
+.ei-ab-disc svg { width: 24px; height: 24px; }
+
+/* Colour cycle for any list of cards on this page. */
+.ei-ab-point-grid > :nth-child(4n + 2),
+.ei-ab-pillars > :nth-child(4n + 2),
+.ei-ab-counters > :nth-child(4n + 2),
+.ei-ab-strength-grid > :nth-child(3n + 2) { --ab-a: var(--ei-ember); --ab-b: var(--ei-orange); }
+
+.ei-ab-point-grid > :nth-child(4n + 3),
+.ei-ab-pillars > :nth-child(4n + 3),
+.ei-ab-counters > :nth-child(4n + 3),
+.ei-ab-strength-grid > :nth-child(3n + 3) { --ab-a: var(--ei-ember); --ab-b: var(--ei-amber); }
+
+.ei-ab-point-grid > :nth-child(4n + 4),
+.ei-ab-pillars > :nth-child(4n + 4),
+.ei-ab-counters > :nth-child(4n + 4) { --ab-a: var(--ei-crimson); --ab-b: var(--ei-ember); }
+
+/* Lists used as grids. */
+.ei-ab-hero-stats,
+.ei-ab-badges,
+.ei-ab-point-grid,
+.ei-ab-chips,
+.ei-ab-pillars,
+.ei-ab-strength-grid,
+.ei-ab-counters {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Card hover lift — needs .is-in to beat theme.css's reveal transform. */
+.ei-ab-point.ei-reveal.is-in:hover,
+.ei-ab-pillar.ei-reveal.is-in:hover,
+.ei-ab-counter.ei-reveal.is-in:hover,
+.ei-ab-strength.ei-reveal.is-in:hover {
+  transform: translateY(-6px);
+  transition: transform .35s var(--ei-ease-rise), box-shadow .35s var(--ei-ease-rise);
+}
+.ei-ab-point:hover .ei-ab-disc,
+.ei-ab-pillar:hover .ei-ab-disc,
+.ei-ab-counter:hover .ei-ab-disc,
+.ei-ab-strength:hover .ei-ab-disc { transform: rotate(-8deg) scale(1.06); }
+
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+
+.ei-ab-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--ei-ink);
+  color: var(--ei-white);
+  padding-block: clamp(3.5rem, 8vw, 6.5rem) clamp(2.5rem, 5vw, 3.5rem);
+}
+
+.ei-ab-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+}
+
+/* Ink from the left for the text, a warm wash from the right for colour. */
+.ei-ab-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(22, 25, 29, .94) 0%, rgba(22, 25, 29, .82) 45%, rgba(22, 25, 29, .45) 100%),
+    linear-gradient(0deg, rgba(179, 15, 21, .35), transparent 60%);
+}
+
+/* The strap along the foot, drifting as on the masthead. */
+.ei-ab-hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 5px;
+  background: linear-gradient(90deg,
+      var(--ei-crimson), var(--ei-red), var(--ei-orange), var(--ei-amber),
+      var(--ei-orange), var(--ei-red), var(--ei-crimson)) 0 0 / 200% 100%;
+  animation: ei-hd-strap 14s linear infinite;
+}
+
+.ei-ab-hero-inner { position: relative; }
+
+.ei-ab-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1.75rem;
+  padding: 0;
+  list-style: none;
+  font-size: .85rem;
+  color: rgba(255, 255, 255, .7);
+}
+.ei-ab-crumbs li + li::before {
+  content: "/";
+  margin-right: .5rem;
+  color: rgba(255, 255, 255, .35);
+}
+.ei-ab-crumbs a { color: var(--ei-white); }
+.ei-ab-crumbs a:hover { color: var(--ei-amber); }
+.ei-ab-crumbs [aria-current] { color: var(--ei-amber); }
+
+.ei-ab-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  margin: 0 0 1rem;
+  padding: .35rem .85rem;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .08);
+  font-family: var(--ei-mono);
+  font-size: .72rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.ei-ab-hero-eyebrow::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--ei-red), var(--ei-amber));
+}
+
+.ei-ab-hero-title {
+  max-width: 44rem;
+  margin: 0 0 1rem;
+  font-size: clamp(2.2rem, 5vw, 3.75rem);
+  line-height: 1.05;
+  letter-spacing: -.03em;
+  color: var(--ei-white);
+}
+/* The town, in the warm gradient. Large display text, so the lighter end
+   still clears 3:1 on ink; the text is also read from the DOM normally. */
+.ei-ab-hero-title span {
+  background: linear-gradient(90deg, var(--ei-red-lift), var(--ei-amber));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.ei-ab-hero-lede {
+  max-width: 36rem;
+  margin: 0 0 clamp(2rem, 4vw, 2.75rem);
+  font-size: clamp(1.02rem, 1.4vw, 1.15rem);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, .8);
+}
+
+/* Four frosted stat chips. */
+.ei-ab-hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .75rem;
+  max-width: 58rem;
+}
+.ei-ab-hero-stats > li {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .8rem .95rem;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .07);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.ei-ab-hero-stat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border-radius: 11px;
+  background: linear-gradient(135deg, var(--ei-crimson), var(--ei-red));
+}
+.ei-ab-hero-stats > li:nth-child(2) .ei-ab-hero-stat-icon { background: linear-gradient(135deg, var(--ei-ember), var(--ei-orange)); }
+.ei-ab-hero-stats > li:nth-child(3) .ei-ab-hero-stat-icon { background: linear-gradient(135deg, var(--ei-orange), var(--ei-amber)); }
+.ei-ab-hero-stats > li:nth-child(4) .ei-ab-hero-stat-icon { background: linear-gradient(135deg, var(--ei-red), var(--ei-ember)); }
+.ei-ab-hero-stat-icon svg { width: 19px; height: 19px; }
+
+.ei-ab-hero-stat-text { display: grid; line-height: 1.2; }
+.ei-ab-hero-stat-text strong {
+  font-family: var(--ei-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.ei-ab-hero-stat-text small {
+  font-size: .74rem;
+  color: rgba(255, 255, 255, .72);
+}
+
+
+/* ==========================================================================
+   Tab bar
+
+   Sticks just under the folded masthead, so the three tabs stay in reach
+   while a long panel scrolls.
+   ========================================================================== */
+
+.ei-ab-tabbar {
+  position: sticky;
+  top: calc(var(--ei-header-h) - var(--ei-hd-cut) + var(--ei-hd-rule));
+  z-index: 100;
+  padding-block: .85rem;
+  background: rgba(255, 255, 255, .92);
+  border-bottom: 1px solid var(--ei-line);
+  -webkit-backdrop-filter: saturate(1.4) blur(10px);
+  backdrop-filter: saturate(1.4) blur(10px);
+  scroll-margin-top: calc(var(--ei-header-h) - var(--ei-hd-cut) + var(--ei-hd-rule));
+}
+
+.ei-ab-tabs {
+  display: inline-flex;
+  gap: .35rem;
+  max-width: 100%;
+  padding: .35rem;
+  overflow-x: auto;
+  border-radius: 999px;
+  background: var(--ei-shell);
+  border: 1px solid var(--ei-line);
+  scrollbar-width: none;
+}
+.ei-ab-tabs::-webkit-scrollbar { display: none; }
+
+.ei-ab-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .6rem 1.2rem;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  font-family: var(--ei-display);
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--ei-graphite);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background var(--ei-dur-ui) var(--ei-ease-ui),
+    color var(--ei-dur-ui) var(--ei-ease-ui),
+    box-shadow var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-ab-tab svg {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  color: var(--ei-red);
+  transition: color var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-ab-tab:hover { background: var(--ei-blush); color: var(--ei-crimson); }
+.ei-ab-tab:focus-visible { outline: 3px solid var(--ei-red); outline-offset: 2px; }
+
+.ei-ab-tab[aria-selected="true"] {
+  background: linear-gradient(115deg, var(--ei-crimson), var(--ei-red) 55%, var(--ei-ember));
+  color: var(--ei-white);
+  box-shadow: 0 10px 20px -12px rgba(228, 24, 31, .8);
+}
+.ei-ab-tab[aria-selected="true"] svg { color: var(--ei-white); }
+
+.ei-ab-panel:focus { outline: none; }
+
+
+/* ==========================================================================
+   Overview — intro split
+   ========================================================================== */
+
+.ei-ab-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: center;
+}
+
+.ei-ab-intro-copy h2 {
+  margin: 0 0 1.1rem;
+  font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+  line-height: 1.12;
+  letter-spacing: -.02em;
+}
+
+.ei-ab-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  margin-top: 1.75rem;
+}
+.ei-ab-badges li {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .45rem .85rem;
+  border-radius: 999px;
+  background: var(--ei-blush);
+  font-size: .86rem;
+  font-weight: 600;
+  color: var(--ei-crimson);
+}
+.ei-ab-badges svg { width: 16px; height: 16px; flex: none; }
+
+/* Photo with a gradient corner block and a floating tag. */
+.ei-ab-photo {
+  position: relative;
+  margin: 0;
+  padding: 0 1.25rem 1.25rem 0;
+}
+.ei-ab-photo::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 55%;
+  height: 60%;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, .5) 1.5px, transparent 2px) 0 0 / 14px 14px,
+    linear-gradient(135deg, var(--ei-red), var(--ei-orange) 60%, var(--ei-amber));
+}
+.ei-ab-photo-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border-radius: 20px;
+  box-shadow: var(--ei-shadow-lg);
+}
+.ei-ab-photo-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .9s var(--ei-ease-rise);
+}
+.ei-ab-photo:hover .ei-ab-photo-frame img { transform: scale(1.04); }
+
+.ei-ab-photo-tag {
+  position: absolute;
+  left: clamp(-1rem, -2vw, 0rem);
+  top: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  padding: .8rem 1.1rem;
+  border-radius: 14px;
+  background: var(--ei-white);
+  box-shadow: var(--ei-shadow-lg);
+}
+.ei-ab-photo-tag strong {
+  font-family: var(--ei-display);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ei-crimson);
+}
+.ei-ab-photo-tag span {
+  max-width: 7.5rem;
+  font-size: .8rem;
+  line-height: 1.3;
+  color: var(--ei-steel);
+}
+
+
+/* ==========================================================================
+   Overview — four points
+   ========================================================================== */
+
+.ei-ab-point-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2.2vw, 1.5rem);
+}
+
+.ei-ab-point {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.4rem, 2.6vw, 2rem);
+  background: var(--ei-white);
+  border: 1px solid var(--ei-line);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px -22px rgba(22, 25, 29, .35);
+}
+/* Colour bar down the left edge. */
+.ei-ab-point::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--ab-a, var(--ei-crimson)), var(--ab-b, var(--ei-red)));
+}
+.ei-ab-point-num {
+  position: absolute;
+  top: .9rem;
+  right: 1.2rem;
+  font-family: var(--ei-display);
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ei-blush);
+}
+.ei-ab-point h3 {
+  margin: 1.1rem 0 .5rem;
+  font-size: 1.2rem;
+}
+.ei-ab-point p {
+  margin: 0;
+  color: var(--ei-steel);
+  line-height: 1.65;
+}
+
+
+/* ==========================================================================
+   Overview — product range and at-a-glance card
+   ========================================================================== */
+
+.ei-ab-range-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
+}
+
+.ei-ab-range-products h2,
+.ei-ab-reach h2 {
+  margin: 0 0 1.5rem;
+  font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+  line-height: 1.15;
+}
+
+.ei-ab-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+}
+.ei-ab-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .6rem 1rem;
+  border: 1px solid var(--ei-line);
+  border-radius: 999px;
+  background: var(--ei-white);
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--ei-graphite);
+  transition:
+    background var(--ei-dur-ui) var(--ei-ease-ui),
+    border-color var(--ei-dur-ui) var(--ei-ease-ui),
+    color var(--ei-dur-ui) var(--ei-ease-ui),
+    transform var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-ab-chip::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 2px;
+  background: var(--ei-red);
+}
+.ei-ab-chips > li:nth-child(3n + 2) .ei-ab-chip::before { background: var(--ei-orange); }
+.ei-ab-chips > li:nth-child(3n + 3) .ei-ab-chip::before { background: var(--ei-amber); }
+.ei-ab-chip svg {
+  width: 14px;
+  height: 14px;
+  color: var(--ei-red);
+  transition: transform var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-ab-chip:hover {
+  border-color: var(--ei-red);
+  background: var(--ei-blush);
+  color: var(--ei-crimson);
+  transform: translateY(-2px);
+}
+.ei-ab-chip:hover svg { transform: translateX(3px); }
+
+/* The at-a-glance card: dark, the one heavy object in the panel. */
+.ei-ab-glance {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  border-radius: 20px;
+  background:
+    radial-gradient(70% 60% at 100% 0%, rgba(242, 107, 29, .22), transparent 70%),
+    var(--ei-ink);
+  color: rgba(255, 255, 255, .78);
+  box-shadow: 0 30px 60px -30px rgba(22, 25, 29, .6);
+  --ei-focus: var(--ei-red-lift);
+}
+.ei-ab-glance::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--ei-red), var(--ei-orange), var(--ei-amber));
+}
+.ei-ab-glance-title {
+  margin: 0 0 1.25rem;
+  font-size: 1.35rem;
+  color: var(--ei-white);
+}
+.ei-ab-glance-list { margin: 0; }
+.ei-ab-glance-list > div {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  gap: 1rem;
+  padding-block: .8rem;
+  border-top: 1px dashed var(--ei-ink-line);
+}
+.ei-ab-glance-list dt {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-family: var(--ei-mono);
+  font-size: .72rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ei-amber);
+}
+.ei-ab-glance-list dt svg { width: 15px; height: 15px; flex: none; color: var(--ei-red-lift); }
+.ei-ab-glance-list dd {
+  margin: 0;
+  font-size: .92rem;
+  line-height: 1.55;
+}
+.ei-ab-glance a { color: var(--ei-white); }
+.ei-ab-glance a:hover { color: var(--ei-red-lift); }
+
+
+/* ==========================================================================
+   Ideology — four pillars
+   ========================================================================== */
+
+.ei-ab-ideology {
+  background:
+    radial-gradient(40% 50% at 0% 0%, rgba(242, 107, 29, .08), transparent 70%),
+    radial-gradient(40% 50% at 100% 100%, rgba(228, 24, 31, .06), transparent 70%),
+    var(--ei-white);
+}
+
+.ei-ab-pillars {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+.ei-ab-pillar {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.5rem, 2.6vw, 2rem) clamp(1.2rem, 2vw, 1.6rem);
+  background: var(--ei-white);
+  border: 1px solid var(--ei-line);
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 10px 30px -22px rgba(22, 25, 29, .35);
+}
+/* A tinted cap behind the disc. */
+.ei-ab-pillar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 62px;
+  background: linear-gradient(135deg, var(--ab-a, var(--ei-crimson)), var(--ab-b, var(--ei-red)));
+  opacity: .1;
+}
+.ei-ab-pillar .ei-ab-disc {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 6px var(--ei-white), 0 14px 26px -12px var(--ab-b, var(--ei-red));
+}
+.ei-ab-pillar h3 {
+  margin: 1.1rem 0 .6rem;
+  font-size: 1.45rem;
+  line-height: 1.1;
+}
+.ei-ab-pillar h3 small {
+  display: block;
+  margin-bottom: .2rem;
+  font-family: var(--ei-mono);
+  font-size: .7rem;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ab-a, var(--ei-crimson));
+}
+.ei-ab-pillar p {
+  margin: 0;
+  font-size: .93rem;
+  line-height: 1.6;
+  color: var(--ei-steel);
+}
+
+
+/* ==========================================================================
+   Ideology — strengths, on ink
+   ========================================================================== */
+
+.ei-ab-strengths {
+  position: relative;
+  overflow: hidden;
+  padding-block: var(--ei-band-y);
+  background:
+    radial-gradient(45% 60% at 100% 0%, rgba(242, 107, 29, .16), transparent 70%),
+    radial-gradient(40% 55% at 0% 100%, rgba(228, 24, 31, .16), transparent 70%),
+    var(--ei-ink);
+  color: rgba(255, 255, 255, .75);
+}
+.ei-ab-strengths::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, .5) 1.2px, transparent 1.6px) 0 0 / 22px 22px;
+  -webkit-mask-image: linear-gradient(180deg, #000, transparent 70%);
+  mask-image: linear-gradient(180deg, #000, transparent 70%);
+  opacity: .08;
+  pointer-events: none;
+}
+.ei-ab-strengths .ei-shell { position: relative; }
+
+.ei-ab-strengths-head { margin-bottom: clamp(2rem, 4vw, 3rem); }
+.ei-ab-dark-eyebrow {
+  margin: 0 0 .9rem;
+  font-family: var(--ei-mono);
+  font-size: .75rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ei-amber);
+}
+.ei-ab-strengths-head h2 {
+  margin: 0;
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  color: var(--ei-white);
+}
+
+.ei-ab-strength-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+.ei-ab-strength {
+  position: relative;
+  padding: clamp(1.5rem, 2.8vw, 2.1rem);
+  border: 1px solid var(--ei-ink-line);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .02));
+  transition: border-color var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-ab-strength:hover { border-color: rgba(255, 107, 98, .5); }
+.ei-ab-strength-num {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.4rem;
+  font-family: var(--ei-mono);
+  font-size: .8rem;
+  letter-spacing: .1em;
+  color: rgba(255, 255, 255, .4);
+}
+.ei-ab-strength h3 {
+  margin: 1.2rem 0 .55rem;
+  font-size: 1.2rem;
+  line-height: 1.25;
+  color: var(--ei-white);
+}
+.ei-ab-strength p { margin: 0; line-height: 1.65; }
+
+
+/* ==========================================================================
+   Achievements — counters
+   ========================================================================== */
+
+.ei-ab-counters {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+.ei-ab-counter {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.5rem, 2.6vw, 2rem) 1.25rem;
+  background: var(--ei-white);
+  border: 1px solid var(--ei-line);
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 10px 30px -22px rgba(22, 25, 29, .35);
+}
+/* A bar along the foot that fills when the card lands. */
+.ei-ab-counter::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--ab-a, var(--ei-crimson)), var(--ab-b, var(--ei-red)));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.1s var(--ei-ease-rise) calc(var(--d, 0ms) + 250ms);
+}
+.ei-ab-counter.is-in::after { transform: scaleX(1); }
+
+.ei-ab-counter .ei-ab-disc { border-radius: 50%; }
+
+.ei-ab-counter-value {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 1rem 0 .35rem;
+  font-family: var(--ei-display);
+  font-size: clamp(2.2rem, 3.8vw, 3rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -.03em;
+  color: var(--ei-graphite);
+}
+.ei-ab-counter-figure { font-variant-numeric: tabular-nums; }
+.ei-ab-counter-suffix {
+  font-size: .55em;
+  margin-top: .1em;
+  color: var(--ab-a, var(--ei-crimson));
+}
+.ei-ab-counter-label {
+  margin: 0;
+  font-family: var(--ei-mono);
+  font-size: .72rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ei-steel);
+}
+
+
+/* ==========================================================================
+   Achievements — industries and awards
+   ========================================================================== */
+
+.ei-ab-reach-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
+}
+
+.ei-ab-reach h2 { margin-bottom: .75rem; }
+.ei-ab-reach-text {
+  margin: 0 0 1.5rem;
+  max-width: 34rem;
+  color: var(--ei-steel);
+}
+
+.ei-ab-chips--soft .ei-ab-chip {
+  padding: .5rem .9rem;
+  font-size: .86rem;
+}
+
+.ei-ab-awards {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.75rem, 3.2vw, 2.5rem);
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--ei-crimson-deep), var(--ei-red) 55%, var(--ei-ember));
+  color: var(--ei-white);
+  box-shadow: 0 30px 60px -30px rgba(228, 24, 31, .6);
+  --ei-focus: var(--ei-white);
+}
+.ei-ab-awards::before,
+.ei-ab-awards::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, .16);
+  pointer-events: none;
+}
+.ei-ab-awards::before { width: 220px; height: 220px; right: -80px; top: -80px; }
+.ei-ab-awards::after  { width: 120px; height: 120px; right: 40px; bottom: -70px; border-color: rgba(249, 168, 38, .4); }
+
+.ei-ab-awards-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .16);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .3);
+}
+.ei-ab-awards-icon svg { width: 26px; height: 26px; color: var(--ei-white); }
+
+.ei-ab-awards h2 {
+  position: relative;
+  margin: 1.1rem 0 .6rem;
+  font-size: 1.5rem;
+  color: var(--ei-white);
+}
+.ei-ab-awards p {
+  position: relative;
+  margin: 0 0 1.5rem;
+  line-height: 1.65;
+  color: var(--ei-white);
+}
+
+.ei-ab-awards-actions {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+}
+.ei-ab-awards-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .7rem 1.1rem;
+  border: 1.5px solid var(--ei-white);
+  border-radius: 999px;
+  background: var(--ei-white);
+  font-family: var(--ei-display);
+  font-size: .92rem;
+  font-weight: 700;
+  color: var(--ei-crimson);
+  white-space: nowrap;
+  transition:
+    background var(--ei-dur-ui) var(--ei-ease-ui),
+    color var(--ei-dur-ui) var(--ei-ease-ui),
+    transform var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-ab-awards-btn svg { width: 16px; height: 16px; flex: none; }
+.ei-ab-awards-btn:hover {
+  background: var(--ei-ink);
+  border-color: var(--ei-ink);
+  color: var(--ei-white);
+  transform: translateY(-2px);
+}
+.ei-ab-awards-btn--ghost {
+  background: transparent;
+  color: var(--ei-white);
+  border-color: rgba(255, 255, 255, .7);
+}
+.ei-ab-awards-btn--ghost:hover {
+  background: var(--ei-white);
+  border-color: var(--ei-white);
+  color: var(--ei-crimson);
+}
+
+
+/* ==========================================================================
+   Tablet — below the masthead breakpoint
+   ========================================================================== */
+
+@media (max-width: 999.98px) {
+  .ei-ab-hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .ei-ab-split,
+  .ei-ab-range-grid,
+  .ei-ab-reach-grid { grid-template-columns: minmax(0, 1fr); }
+
+  .ei-ab-pillars,
+  .ei-ab-counters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .ei-ab-strength-grid { grid-template-columns: minmax(0, 1fr); }
+
+  .ei-ab-photo-tag { left: 1rem; }
+}
+
+
+/* ==========================================================================
+   Phone
+   ========================================================================== */
+
+@media (max-width: 599.98px) {
+  .ei-ab-hero-stats { gap: .5rem; }
+  .ei-ab-hero-stats > li { padding: .65rem .7rem; gap: .55rem; }
+  .ei-ab-hero-stat-icon { width: 32px; height: 32px; }
+  .ei-ab-hero-stat-text strong { font-size: 1.1rem; }
+
+  .ei-ab-tabs { display: flex; }
+  .ei-ab-tab { flex: 1 0 auto; justify-content: center; padding: .55rem .9rem; font-size: .88rem; }
+  .ei-ab-tab svg { display: none; }
+
+  .ei-ab-point-grid,
+  .ei-ab-pillars { grid-template-columns: minmax(0, 1fr); }
+
+  .ei-ab-counters { gap: .75rem; }
+  .ei-ab-counter { padding: 1.2rem .8rem; }
+  .ei-ab-counter .ei-ab-disc { width: 42px; height: 42px; }
+  .ei-ab-counter-value { font-size: clamp(1.7rem, 8vw, 2.2rem); }
+  .ei-ab-counter-label { font-size: .62rem; letter-spacing: .08em; }
+
+  .ei-ab-glance-list > div { grid-template-columns: minmax(0, 1fr); gap: .3rem; }
+}

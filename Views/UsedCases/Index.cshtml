@@ -1,126 +1,121 @@
 @model IReadOnlyList<EliteIndustries.Models.Industry>
 @using EliteIndustries.Models
 @using EliteIndustries.Services
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Env
 @*
-    Used Cases — the sectors the company supplies.
+    Use Cases — a photo wall, one tile per industry.
 
-    WHAT THIS REPLACED
-    ------------------
-    Three long written-up case studies: a tier-one automotive supplier shipping
-    castings Nhava Sheva to Bremerhaven, a 340-container programme with a
-    cost-per-container figure, a supplier caught sub-contracting an ISPM-15
-    heat treatment. All of it invented, none of it from the client, and the
-    page said in as many words that "figures come from the consignment records
-    we keep" — which turned fiction into a claim about our own records.
+    The client asked for photographs only: no description, no product lists.
+    Each tile carries the industry's photo and its name, nothing else. The
+    name stays because a wall of unlabelled pictures cannot be told apart, and
+    because other pages deep-link here by industry (UsedCases#slug from the
+    About page and every product page) — the id is on the tile.
 
-    The client's own Used Cases section is seventeen sectors, each listing the
-    products that serve it. That is what this page is now. Every pairing comes
-    from IndustryCatalog, which was transcribed from those pages; see the
-    remarks on that class for the two places where the client's product naming
-    is finer-grained than this catalogue.
+    Rebuilt onto theme.css: no ViewData["Legacy"]. Styles are
+    wwwroot/css/usecases-page.css (.ei-uc-*); the 3D tilt and the photo viewer
+    are wwwroot/js/usecases-page.js.
 
-    A sector here is a heading and a product list, not a link: the client's
-    seventeen sector pages have no prose of their own to justify a page each,
-    and seventeen stubs would be worse than one honest listing. If the client
-    supplies sector copy, this is the point to grow detail pages from — the
-    slugs are already on the model and already unique.
+    PHOTOS
+    ------
+    wwwroot/img/usecases/{slug}.jpg (or .jpeg / .webp / .png). The view checks
+    the disk, so a photo shows up as soon as the file is dropped in, with no
+    code change; until then the tile renders a coloured placeholder with the
+    industry's initials. See wwwroot/img/usecases/README.md for the file names.
+
+    With no photo a tile is not a button — there is nothing to enlarge.
 *@
 @{
-    ViewData["Title"] = "Used Cases";
+    ViewData["Title"] = "Use Cases";
     ViewData["ActiveNav"] = "usedcases";
-    // TEMPORARY — this page still renders against site.css. See _Layout.
-    ViewData["Legacy"] = true;
     ViewData["SeoTitle"] = $"Export Packaging by Industry | {CompanyProfile.Name}";
-    ViewData["Description"] = $"The industries {CompanyProfile.Name} supplies — from agriculture, ports and textiles to solar, pharmaceuticals and HVAC — and the export packaging and material handling products each one is served by.";
+    ViewData["Description"] = $"The {Model.Count} industries {CompanyProfile.Name} supplies with export packaging and material handling products — from agriculture, ports and textiles to solar, healthcare and HVAC.";
+
+    string? PhotoFor(string slug)
+    {
+        foreach (var ext in new[] { ".jpg", ".jpeg", ".webp", ".png" })
+        {
+            var relative = $"img/usecases/{slug}{ext}";
+            if (System.IO.File.Exists(System.IO.Path.Combine(Env.WebRootPath, relative)))
+            {
+                return "/" + relative;
+            }
+        }
+        return null;
+    }
+
+    string Initials(string name) =>
+        string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+            .Where(w => w != "and" && w != "&")
+            .Take(2)
+            .Select(w => char.ToUpperInvariant(w[0])));
 }
 
-<section class="page-header">
-    <div class="shell">
-        <ol class="breadcrumb">
+@section Head {
+    <link rel="stylesheet" href="~/css/usecases-page.css" asp-append-version="true" />
+}
+
+<section class="ei-uc-hero" aria-labelledby="ei-uc-title">
+    <div class="ei-shell">
+        <ol class="ei-uc-crumbs">
             <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-            <li aria-current="page">Used Cases</li>
+            <li aria-current="page">Use Cases</li>
         </ol>
-        <h1>Used Cases</h1>
-        <p>
-            The sectors we supply, and what each one is packed with.
-        </p>
+        <h1 class="ei-uc-title" id="ei-uc-title">Use <span>Cases</span></h1>
     </div>
 </section>
 
-<section class="section-sm">
-    <div class="shell">
-        <div class="section-head center">
-            <span class="eyebrow center-line">Industries served</span>
-            <h2>@Model.Count industries, @ProductCatalog.ForNav.Count product lines</h2>
-            <p>
-                Export packaging is our key USP, and the requirement changes with the
-                cargo — a pallet of tiles, a crate of solar modules and a drum of
-                chemicals are three different load problems. Every product listed
-                against a sector below is one we supply into it.
-            </p>
-        </div>
-    </div>
-</section>
-
-<section class="section" style="padding-top:0">
-    <div class="shell">
-
-        @*  One card per sector. The card is not a link — see the note at the
-            top of this file — so the products inside it are the links, and they
-            go to the detail page that already exists for each.  *@
-        <div class="grid cols-3 reveal">
-            @foreach (var industry in Model)
+<section class="ei-uc-wall" aria-labelledby="ei-uc-title">
+    <div class="ei-shell">
+        <ul class="ei-uc-grid" data-uc-grid>
+            @for (var i = 0; i < Model.Count; i++)
             {
-                var products = IndustryCatalog.ProductsFor(industry);
+                var industry = Model[i];
+                var photo = PhotoFor(industry.Slug);
+                var label = industry.Expansion is null ? industry.Name : $"{industry.Name} ({industry.Expansion})";
 
-                <div class="info-card" id="@industry.Slug">
-                    <h3>
-                        @industry.Name
-                        @if (industry.Expansion is not null)
-                        {
-                            @* Spelled out because the client spells it out, and
-                               because HVAC alone is not obvious to everyone. *@
-                            <span class="muted">(@industry.Expansion)</span>
-                        }
-                    </h3>
-
-                    @if (products.Count > 0)
+                <li class="ei-uc-cell ei-reveal" id="@industry.Slug" style="--d:@(Math.Min(i, 8) * 60)ms">
+                    @if (photo is not null)
                     {
-                        <ul class="check-list">
-                            @foreach (var product in products)
-                            {
-                                <li>
-                                    <a asp-controller="Products" asp-action="Detail" asp-route-slug="@product.Slug">@product.Name</a>
-                                </li>
-                            }
-                        </ul>
+                        <button class="ei-uc-tile" type="button" data-uc-tilt
+                                data-uc-src="@Url.Content("~" + photo)" data-uc-name="@label"
+                                aria-label="View photo: @label">
+                            <span class="ei-uc-media">
+                                <img src="@Url.Content("~" + photo)" alt="" loading="lazy" decoding="async" />
+                            </span>
+                            <span class="ei-uc-glare" aria-hidden="true"></span>
+                            <span class="ei-uc-name">@industry.Name</span>
+                        </button>
                     }
-                </div>
+                    else
+                    {
+                        <div class="ei-uc-tile ei-uc-tile--empty" data-uc-tilt>
+                            <span class="ei-uc-media" aria-hidden="true">
+                                <span class="ei-uc-initials">@Initials(industry.Name)</span>
+                            </span>
+                            <span class="ei-uc-glare" aria-hidden="true"></span>
+                            <span class="ei-uc-name">@industry.Name</span>
+                        </div>
+                    }
+                </li>
             }
-        </div>
+        </ul>
     </div>
 </section>
 
-<section class="cta-band">
-    <div class="shell">
-        <div class="cta-inner reveal">
-            <div>
-                <h2>Not sure which applies?</h2>
-                <p>
-                    Tell us what is being shipped, how much of it and when it has to leave, and
-                    we will quote the material for the job — any quantity, urgent or large.
-                </p>
-            </div>
-            <div class="cta-actions">
-                <a class="btn btn-light btn-lg" href="tel:@CompanyProfile.PhonePrimaryHref">
-                    <svg width="18" height="18" aria-hidden="true"><use href="#i-phone" /></svg>
-                    @CompanyProfile.PhonePrimary
-                </a>
-                <a class="btn btn-ghost-light btn-lg" asp-controller="Contact" asp-action="Index">
-                    Contact Us
-                    <svg width="18" height="18" aria-hidden="true"><use href="#i-arrow-right" /></svg>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+@* Photo viewer. A native <dialog>: Esc closes it and focus returns to the
+   tile that opened it. *@
+<dialog class="ei-uc-viewer" data-uc-viewer aria-labelledby="ei-uc-viewer-name">
+    <figure class="ei-uc-viewer-figure">
+        <img data-uc-viewer-img alt="" />
+        <figcaption id="ei-uc-viewer-name" data-uc-viewer-name></figcaption>
+    </figure>
+    <form method="dialog">
+        <button class="ei-uc-viewer-close" type="submit" aria-label="Close photo">
+            <svg aria-hidden="true"><use href="#i-close" /></svg>
+        </button>
+    </form>
+</dialog>
+
+@section Scripts {
+    <script src="~/js/usecases-page.js" asp-append-version="true" defer></script>
+}

@@ -3,9 +3,10 @@
 @*
     Footer.
 
-    The same job the previous footer did — identity, contact, the link columns,
-    the brochure and the legal bar — restyled onto the dark ground and pruned to
-    the new information architecture.
+    Identity, contact, the link columns, the brochure and the legal bar, on the
+    dark ground — opened by a warm gradient call-to-action card and a moving
+    red-to-amber strap, the same colours the masthead and the homepage cards
+    use.
 
     Gone, because the pages behind them no longer exist in the signed-off IA:
     Our Brands, Events, News, Industries, and the whole Media column with them.
@@ -18,6 +19,28 @@
 *@
 
 <footer class="ei-ft">
+
+    @*  The call-to-action card. A gradient panel at the head of the footer
+        with the two things a buyer who has scrolled this far is ready to do:
+        ring the works, or take the brochure away. *@
+    <div class="ei-shell">
+        <div class="ei-ft-cta">
+            <div class="ei-ft-cta-copy">
+                <p class="ei-ft-cta-eyebrow">Ready to ship?</p>
+                <h2 class="ei-ft-cta-title">Let's pack your next consignment.</h2>
+            </div>
+            <div class="ei-ft-cta-actions">
+                <a class="ei-ft-cta-btn ei-ft-cta-btn--solid" href="tel:@CompanyProfile.PhonePrimaryHref">
+                    <svg aria-hidden="true"><use href="#i-phone" /></svg>
+                    @CompanyProfile.PhonePrimary
+                </a>
+                <a class="ei-ft-cta-btn" href="@CompanyProfile.BrochurePath" download>
+                    <svg aria-hidden="true"><use href="#i-download" /></svg>
+                    Download Brochure
+                </a>
+            </div>
+        </div>
+    </div>
 
     <div class="ei-shell ei-ft-top">
 
@@ -36,43 +59,48 @@
                      alt="@CompanyProfile.Name" />
             </a>
 
-            @*  Two addresses, as on the client's own footer. The works is
+            <p class="ei-ft-tagline">
+                @CompanyProfile.Tagline — manufactured and supplied from
+                @CompanyProfile.City since @CompanyProfile.FoundedYear.
+            </p>
+
+            @*  Contact, as a list of icon rows. Each icon sits in a disc of its
+                own warm colour (see .ei-ft-contact in shell.css).
+
+                Two addresses, as on the client's own footer. The works is
                 first and is the one the schema.org markup carries; the office
                 is second and deliberately not repeated into that payload —
                 see the note on CompanyProfile.OfficeStreetAddress. *@
-            <address class="ei-ft-address">
-                @CompanyProfile.LegalName<br />
-                @CompanyProfile.StreetAddress<br />
-                @CompanyProfile.City, @CompanyProfile.Region @CompanyProfile.PostalCode<br />
-                @CompanyProfile.Country
-            </address>
-
-            <address class="ei-ft-address ei-ft-address--office">
-                <span class="ei-ft-address-label">@CompanyProfile.OfficeLabel</span>
-                @CompanyProfile.OfficeStreetAddress<br />
-                @CompanyProfile.OfficeCity, @CompanyProfile.OfficeRegion
-            </address>
-
-            @* Both numbers are dialable. On a desktop that costs nothing; on a
-               phone it is the difference between an enquiry and a copy-paste. *@
-            <p class="ei-ft-lines">
-                <a href="tel:@CompanyProfile.PhonePrimaryHref">@CompanyProfile.PhonePrimary</a>
-                <span class="ei-ft-sep" aria-hidden="true">/</span>
-                <a href="tel:@CompanyProfile.PhoneSecondaryHref">@CompanyProfile.PhoneSecondary</a>
-            </p>
-
-            <p class="ei-ft-mail">
-                <svg aria-hidden="true"><use href="#i-mail" /></svg>
-                <a href="mailto:@CompanyProfile.Email">@CompanyProfile.Email</a>
-            </p>
-
-            @* Icon-only, so each one carries its own label. The visible glyph is
-               aria-hidden and the accessible name comes from the link. *@
-            <ul class="ei-ft-social">
-                <li><a href="@CompanyProfile.LinkedIn" target="_blank" rel="noopener" aria-label="@CompanyProfile.Name on LinkedIn"><svg aria-hidden="true"><use href="#i-linkedin" /></svg></a></li>
-                <li><a href="@CompanyProfile.Facebook" target="_blank" rel="noopener" aria-label="@CompanyProfile.Name on Facebook"><svg aria-hidden="true"><use href="#i-facebook" /></svg></a></li>
-                <li><a href="@CompanyProfile.Twitter" target="_blank" rel="noopener" aria-label="@CompanyProfile.Name on X"><svg aria-hidden="true"><use href="#i-twitter" /></svg></a></li>
-                <li><a href="@CompanyProfile.YouTube" target="_blank" rel="noopener" aria-label="@CompanyProfile.Name on YouTube"><svg aria-hidden="true"><use href="#i-youtube" /></svg></a></li>
+            <ul class="ei-ft-contact">
+                <li>
+                    <span class="ei-ft-disc" aria-hidden="true"><svg><use href="#i-pin" /></svg></span>
+                    <address class="ei-ft-address">
+                        <span class="ei-ft-address-label">Works</span>
+                        @CompanyProfile.StreetAddress,
+                        @CompanyProfile.City, @CompanyProfile.Region @CompanyProfile.PostalCode, @CompanyProfile.Country
+                    </address>
+                </li>
+                <li>
+                    <span class="ei-ft-disc" aria-hidden="true"><svg><use href="#i-works" /></svg></span>
+                    <address class="ei-ft-address">
+                        <span class="ei-ft-address-label">@CompanyProfile.OfficeLabel</span>
+                        @CompanyProfile.OfficeStreetAddress, @CompanyProfile.OfficeCity, @CompanyProfile.OfficeRegion
+                    </address>
+                </li>
+                <li>
+                    <span class="ei-ft-disc" aria-hidden="true"><svg><use href="#i-phone" /></svg></span>
+                    @* Both numbers are dialable. On a phone that is the
+                       difference between an enquiry and a copy-paste. *@
+                    <p class="ei-ft-lines">
+                        <a href="tel:@CompanyProfile.PhonePrimaryHref">@CompanyProfile.PhonePrimary</a>
+                        <span class="ei-ft-sep" aria-hidden="true">/</span>
+                        <a href="tel:@CompanyProfile.PhoneSecondaryHref">@CompanyProfile.PhoneSecondary</a>
+                    </p>
+                </li>
+                <li>
+                    <span class="ei-ft-disc" aria-hidden="true"><svg><use href="#i-mail" /></svg></span>
+                    <p class="ei-ft-mail"><a href="mailto:@CompanyProfile.Email">@CompanyProfile.Email</a></p>
+                </li>
             </ul>
         </div>
 
@@ -114,15 +142,22 @@
             </div>
 
             <div class="ei-ft-col">
-                <h2 class="ei-ft-heading">Brochure</h2>
-                <a class="ei-ft-download" href="@CompanyProfile.BrochurePath" download>
-                    <svg aria-hidden="true"><use href="#i-download" /></svg>
-                    Product range, PDF
-                </a>
+                <h2 class="ei-ft-heading">Stay in touch</h2>
+
                 <p class="ei-ft-hours">
                     <svg aria-hidden="true"><use href="#i-clock" /></svg>
                     @CompanyProfile.BusinessHours
                 </p>
+
+                @* Icon-only, so each one carries its own label. The visible
+                   glyph is aria-hidden and the accessible name comes from the
+                   link. *@
+                <ul class="ei-ft-social">
+                    <li><a href="@CompanyProfile.LinkedIn" target="_blank" rel="noopener" aria-label="@CompanyProfile.Name on LinkedIn"><svg aria-hidden="true"><use href="#i-linkedin" /></svg></a></li>
+                    <li><a href="@CompanyProfile.Facebook" target="_blank" rel="noopener" aria-label="@CompanyProfile.Name on Facebook"><svg aria-hidden="true"><use href="#i-facebook" /></svg></a></li>
+                    <li><a href="@CompanyProfile.Twitter" target="_blank" rel="noopener" aria-label="@CompanyProfile.Name on X"><svg aria-hidden="true"><use href="#i-twitter" /></svg></a></li>
+                    <li><a href="@CompanyProfile.YouTube" target="_blank" rel="noopener" aria-label="@CompanyProfile.Name on YouTube"><svg aria-hidden="true"><use href="#i-youtube" /></svg></a></li>
+                </ul>
             </div>
         </nav>
     </div>
@@ -130,19 +165,18 @@
     <div class="ei-ft-base">
         <div class="ei-shell ei-ft-base-inner">
             <span>&copy; @DateTime.Now.Year @CompanyProfile.LegalName. All rights reserved.</span>
-            @*  This slot held "ISO 9001:2015 Certified · ISPM-15 Registered" —
-                on every page of the site, in the one strip a buyer scans for
-                exactly that. Neither is claimed anywhere on eliteind.in and
-                neither could be verified, so it now carries what the client
-                does say. Put certifications back only against the certificates,
-                and name the issuing body when you do.  *@
+            @*  This slot held "ISO 9001:2015 Certified · ISPM-15 Registered".
+                Neither is claimed anywhere on eliteind.in and neither could be
+                verified, so it carries what the client does say. Put
+                certifications back only against the certificates, and name
+                the issuing body when you do.  *@
             <span class="ei-ft-standards">Export Packaging &middot; Any quantity, on time</span>
             @* An in-page jump, not a scripted scroll: it works with the script
                blocked, and honours the smooth-scroll setting theme.css already
                drops under prefers-reduced-motion. *@
             <a class="ei-ft-totop" href="#siteHeader">
                 Back to top
-                <svg aria-hidden="true"><use href="#i-arrow-up" /></svg>
+                <span class="ei-ft-totop-icon" aria-hidden="true"><svg><use href="#i-arrow-up" /></svg></span>
             </a>
         </div>
     </div>

@@ -10,10 +10,8 @@
 
     THE COPY
     --------
-    This is the client's own "Who We Are?" text, cut to the three sentences the
-    band has room for. The full version — every sentence of it, nothing added —
-    is the Overview tab of the About page, which is where "Learn more about us"
-    at the bottom of this block goes. The two are the same voice on purpose: a
+    The client's own "Who We Are?" text, cut to two sentences. The full version
+    is the Overview tab of the About page, which "Know more" links to. The two are the same voice on purpose: a
     visitor who follows the link should recognise what they just read, not meet
     a different company. If the client sends new copy, edit both.
 
@@ -26,18 +24,10 @@
 
     THE ARTWORK
     -----------
-    wwwroot/img/about-facility.svg is the client's existing illustration, reused
-    as briefed. It was drawn for the ORIGINAL palette — cool blue-greys and an
-    #ee6a1e orange — and has since been recoloured onto this one: the orange
-    ramp to --ei-red / --ei-crimson, and the grey ramp held neutral at matching
-    lightness so it does not read as a wash of the accent. The kraft browns were
-    left alone, because corrugate and timber genuinely are that colour. The
-    original is kept beside it as about-facility.legacy-palette.svg.
-
-    The white panel therefore no longer separates two colour families — it is
-    now just a frame, giving the illustration a hard edge to end on rather than
-    fading into the --ei-shell ground. That is still worth having, so it
-    stays.
+    wwwroot/img/about-facility.jpeg is the client's photograph of the works,
+    shown in a 4:3 frame. Behind it: a red outline frame offset down and to
+    the right, and a warm dot grid peeping out top-left. A round "since" stamp
+    sits on the top-right corner; the address plate on the bottom-left.
 *@
 
 <section class="ei-band ei-band--shell" id="about" aria-labelledby="ei-about-title">
@@ -56,6 +46,8 @@
                what the company is FOR rather than what it sells. *@
             <h2 class="ei-about-title" id="ei-about-title">Export packaging is our key USP</h2>
 
+            @* Short on purpose: one sentence of who, one of what. Everything
+               else the client wrote is on the About page, behind "Know more". *@
             <p class="ei-lede ei-about-lede">
                 Established in @CompanyProfile.FoundedYear at @CompanyProfile.ShortAddress,
                 @CompanyProfile.Name is one of the most professional, progressive and punctual
@@ -63,22 +55,18 @@
             </p>
 
             <p class="ei-about-body">
-                As a manufacturer and wholesaler of export packaging material for container and
-                cargo, we are determined to fulfil every urgent and large-quantity requirement
-                our customers bring us — across the packaging, material handling and insulation
-                domain.
+                We manufacture and wholesale export packaging material for container and cargo —
+                built to international standards, priced for bulk.
             </p>
 
-            <p class="ei-about-body">
-                Manufacturing and distributing at scale lets us pass bulk discounts straight to
-                the customer, so supplies can be bought in smaller quantities at the lowest
-                possible price. Every order is backed by a 100% satisfaction guarantee.
-            </p>
-
+            @* Goes to the About page, whose Overview tab carries the full
+               client text this band is cut down from. *@
             <p class="ei-about-more">
-                <a class="ei-link" asp-controller="About" asp-action="Index">
-                    Learn more about us
-                    <svg aria-hidden="true" focusable="false"><use href="#i-arrow-right" /></svg>
+                <a class="ei-about-cta" asp-controller="About" asp-action="Index" asp-fragment="overview">
+                    Know more
+                    <span class="ei-about-cta-icon" aria-hidden="true">
+                        <svg focusable="false"><use href="#i-arrow-right" /></svg>
+                    </span>
                 </a>
             </p>
         </div>
@@ -88,12 +76,18 @@
         <figure class="ei-about-figure ei-reveal ei-reveal--right" style="--d:120ms">
             <div class="ei-about-frame">
                 <img class="ei-about-img"
-                     src="~/img/about-facility.svg"
+                     src="~/img/about-facility.jpeg"
                      asp-append-version="true"
-                     width="1200" height="900"
+                     width="1600" height="1200"
                      loading="lazy" decoding="async"
-                     alt="Isometric view of the @CompanyProfile.Name works: racked stock along the bays, palletised loads on the floor and a marked route out to the loading dock." />
+                     alt="The @CompanyProfile.Name works: two red-and-white steel warehouse sheds with covered loading bays, the Stuffex air dunnage bag sign by the entrance." />
             </div>
+
+            @* Decorative — the year is also on the plate below, in text. *@
+            <span class="ei-about-stamp" aria-hidden="true">
+                <span class="ei-about-stamp-small">Since</span>
+                <span class="ei-about-stamp-year">@CompanyProfile.FoundedYear</span>
+            </span>
 
             @*  The stencilled plate.
 

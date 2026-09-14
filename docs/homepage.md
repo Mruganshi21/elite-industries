@@ -105,13 +105,14 @@ that switches all of it off. If you add motion, add it there too.
 
 ## Removed
 
-- `wwwroot/css/hero.css` and `wwwroot/js/hero.js` — the old video-background
-  hero. Superseded; nothing else referenced them.
+- `wwwroot/js/hero.js` and `CompanyProfile.HeroVideoPath` — the video-background
+  hero with the rotating shipping mark. The hero is now a single image,
+  `wwwroot/img/hero-export-packaging.jpeg`; `wwwroot/css/hero.css` styles only
+  that image band.
 - The homepage intro title card — `Views/Home/_Intro.cshtml`,
   `wwwroot/css/intro.css`, `wwwroot/js/intro.js`. The page opens straight on the
-  hero and its clip is now the hero background.
-- `wwwroot/video/hero.mp4` (20.5 MB) is still on disk but nothing renders it;
-  `CompanyProfile.HeroVideoPath` points at the 482 KB intro clip instead. See
+  hero; its clip later served as the hero background and is now unused.
+- Both clips in `wwwroot/video/` are still on disk but nothing renders them. See
   `wwwroot/video/README.md`.
 
 ## If you change the catalogue

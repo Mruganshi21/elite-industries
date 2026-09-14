@@ -1,128 +1,228 @@
 @model IReadOnlyList<EliteIndustries.Models.Product>
+@using EliteIndustries.Services
+@*
+    Products listing.
+
+    Rebuilt onto theme.css: no ViewData["Legacy"], so site.css and site.js do
+    not load here. Styles are wwwroot/css/products-page.css (.ei-pl-*); the
+    category filter is wwwroot/js/products-page.js. The cards are the shared
+    component (Views/Shared/_ProductCard.cshtml + product-card.css), the same
+    card the homepage grid renders.
+
+    SEARCH AND FILTER
+    -----------------
+    Search is a plain GET form to ?q=, which ProductsController already
+    handles through ProductCatalog.Search — it works with no script at all.
+    The category pills are progressive: they ship `hidden` and the script
+    reveals and wires them, so with the script blocked the page is simply the
+    full (or searched) list with no dead controls.
+
+    COPY
+    ----
+    The old intro promised corrosion protection, certified timber packaging,
+    test data and treatment certificates — none of it in the catalogue or on
+    eliteind.in. This version only names what the catalogue holds and what the
+    client says about itself (any quantity, on time, bulk pricing).
+*@
 @{
     ViewData["Title"] = "Products";
     ViewData["ActiveNav"] = "products";
-    // TEMPORARY — this page still renders against site.css. See _Layout.
-    ViewData["Legacy"] = true;
-    // Listed VCI film, ISPM-15 timber, lashing and desiccants until the copy
-    // was checked against eliteind.in. None of the four is in ProductCatalog.
     ViewData["Description"] = $"Export packaging and material handling products from {CompanyProfile.Name} — PET and PP strapping, polyester composite strap, stretch wrapping film, P.P. corrugated sheet, dunnage air bags, paper edge boards, security seals, cable ties and self adhesive tapes, manufactured in {CompanyProfile.ShortAddress}.";
     ViewData["SeoTitle"] = $"Leading Provider of {CompanyProfile.ProductCategory} for Container Shipping | {CompanyProfile.Name}";
 
-    // Set by ProductsController when the header search box submits ?q=. Null on
-    // a plain visit to /Products, which is still the full listing.
     var query = ViewData["Query"] as string;
     var searching = !string.IsNullOrWhiteSpace(query);
+
+    // Categories in catalogue order, counted over what is actually listed.
+    var categories = Model
+        .GroupBy(p => p.Category)
+        .Select(g => (Name: g.Key, Count: g.Count()))
+        .ToList();
+
+    string Key(string category) =>
+        new string(category.ToLowerInvariant().Select(ch => char.IsLetterOrDigit(ch) ? ch : '-').ToArray());
+
+    var heroArt = ProductCatalog.All.Take(3).ToList();
 }
 
-<section class="page-header">
-    <div class="shell">
-        <ol class="breadcrumb">
-            <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-            <li aria-current="page">Products</li>
-        </ol>
-        <h1>Products</h1>
-        @if (searching)
-        {
-            <p>
-                @Model.Count of @EliteIndustries.Services.ProductCatalog.All.Count ranges match
-                “@query”.
-                <a asp-controller="Products" asp-action="Index">Show the full range</a>
+@section Head {
+    <link rel="stylesheet" href="~/css/product-card.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/products-page.css" asp-append-version="true" />
+}
+
+@* ================================ Hero ================================ *@
+<section class="ei-pl-hero" aria-labelledby="ei-pl-title">
+    <div class="ei-shell ei-pl-hero-inner">
+
+        <div class="ei-pl-hero-copy">
+            <ol class="ei-pl-crumbs">
+                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                <li aria-current="page">Products</li>
+            </ol>
+
+            <p class="ei-pl-hero-eyebrow">Our range</p>
+            <h1 class="ei-pl-hero-title" id="ei-pl-title">
+                Everything that goes in the container <span>before the doors close.</span>
+            </h1>
+            <p class="ei-pl-hero-lede">
+                @ProductCatalog.All.Count product lines — strapping, void fill, protective packaging
+                and security — manufactured and supplied from @CompanyProfile.City, in any quantity.
             </p>
-        }
-        else
-        {
-            <p>
-                @Model.Count product ranges covering everything that goes into a container
-                before the doors close — corrosion protection, unitising, securing, moisture
-                control and certified timber packaging.
-            </p>
-        }
+
+            @* A real GET form: ProductsController.Index(q) filters server-side,
+               so search works with the script blocked. *@
+            <form class="ei-pl-search" method="get" asp-controller="Products" asp-action="Index" role="search">
+                <label class="ei-sr" for="ei-pl-q">Search products</label>
+                <svg class="ei-pl-search-icon" aria-hidden="true"><use href="#i-crate" /></svg>
+                <input class="ei-pl-search-input" id="ei-pl-q" name="q" type="search"
+                       value="@query" placeholder="Search strap, film, seal…" autocomplete="off" />
+                <button class="ei-pl-search-btn" type="submit">
+                    Search
+                    <svg aria-hidden="true"><use href="#i-arrow-right" /></svg>
+                </button>
+            </form>
+        </div>
+
+        @* Decorative: three product illustrations fanned out as cards. *@
+        <div class="ei-pl-hero-art" aria-hidden="true">
+            @{ var a = 0; }
+            @foreach (var product in heroArt)
+            {
+                <div class="ei-pl-hero-card ei-pl-hero-card--@(a + 1)">
+                    <img src="@Url.Content("~" + product.ImagePath)" width="400" height="300" alt="" />
+                    <span>@product.Name</span>
+                </div>
+                a++;
+            }
+        </div>
     </div>
 </section>
 
-<section class="section">
-    <div class="shell">
+@* ============================ Listing band ============================ *@
+<section class="ei-band ei-band--shell ei-pl-list" aria-labelledby="ei-pl-list-title">
+    <div class="ei-shell">
 
-        <div class="section-head reveal" hidden="@searching">
-            <span class="eyebrow">Our Range</span>
-            <h2>Packaging built for the voyage, not the shelf</h2>
-            <p class="lede">
-                Everything below is manufactured or converted in-house at
-                @CompanyProfile.ShortAddress and supplied with the test data, treatment
-                certificates and load ratings your documentation needs. Sizes outside the
-                standard ranges are made to drawing.
-            </p>
+        <div class="ei-pl-toolbar">
+            <div>
+                <h2 class="ei-pl-list-title" id="ei-pl-list-title">
+                    @if (searching)
+                    {
+                        <text>Results for “@query”</text>
+                    }
+                    else
+                    {
+                        <text>All products</text>
+                    }
+                </h2>
+                <p class="ei-pl-count" aria-live="polite" data-pl-count>
+                    Showing @Model.Count of @ProductCatalog.All.Count
+                    @if (searching)
+                    {
+                        <text>·</text> <a asp-controller="Products" asp-action="Index">Clear search</a>
+                    }
+                </p>
+            </div>
+
+            @if (categories.Count > 1)
+            {
+                @* hidden until products-page.js wires it up. *@
+                <div class="ei-pl-filters" role="group" aria-label="Filter by category" data-pl-filters hidden>
+                    <button class="ei-pl-filter" type="button" aria-pressed="true" data-pl-filter="all">
+                        All <span>@Model.Count</span>
+                    </button>
+                    @foreach (var (name, count) in categories)
+                    {
+                        <button class="ei-pl-filter" type="button" aria-pressed="false" data-pl-filter="@Key(name)">
+                            @name <span>@count</span>
+                        </button>
+                    }
+                </div>
+            }
         </div>
 
         @if (searching && Model.Count == 0)
         {
-            @* A dead end is still a page. Say what was searched, and give the two
-               routes out that actually help: the full range, or a person. *@
-            <div class="form-card center">
-                <h2>Nothing in the catalogue matches “@query”</h2>
-                <p class="lede">
-                    We convert to drawing as well as to the standard ranges, so the item
-                    may still be something we make. Tell us the cargo and the route.
-                </p>
+            @* A dead end is still a page: say what was searched and give the two
+               routes out that help — the full range, or a person. *@
+            <div class="ei-pl-empty">
+                <span class="ei-pl-empty-icon" aria-hidden="true"><svg><use href="#i-crate" /></svg></span>
+                <h3>Nothing in the catalogue matches “@query”</h3>
                 <p>
-                    <a class="btn btn-primary" asp-controller="Products" asp-action="Index">
-                        Browse all @EliteIndustries.Services.ProductCatalog.All.Count ranges
-                    </a>
-                    <a class="btn btn-outline" asp-controller="Contact" asp-action="Index">
-                        Ask us
-                    </a>
+                    We make to requirement as well as to the standard ranges, so it may still be
+                    something we can supply. Tell us the cargo and the quantity.
                 </p>
+                <div class="ei-pl-empty-actions">
+                    <a class="ei-pl-pill ei-pl-pill--solid" asp-controller="Products" asp-action="Index">
+                        Browse all @ProductCatalog.All.Count products
+                    </a>
+                    <a class="ei-pl-pill" asp-controller="Contact" asp-action="Index">Ask us</a>
+                </div>
             </div>
         }
+        else
+        {
+            <ul class="ei-pl-grid" data-pl-grid>
+                @{ var step = 0; }
+                @foreach (var product in Model)
+                {
+                    <li class="ei-pl-cell ei-reveal" style="--d:@(Math.Min(step, 6) * 60)ms" data-pl-category="@Key(product.Category)">
+                        <partial name="_ProductCard" model="product" />
+                    </li>
+                    step++;
+                }
 
-        <div class="grid cols-4 reveal">
-            @foreach (var p in Model)
-            {
-                <a class="product-card" asp-controller="Products" asp-action="Detail" asp-route-slug="@p.Slug">
-                    <div class="product-thumb">
-                        <img src="@p.ImagePath" alt="@p.Name" loading="lazy" width="600" height="600" />
-                        <span class="product-tag">@p.Category</span>
+                @* The help tile: always last, never filtered out. *@
+                <li class="ei-pl-cell ei-pl-cell--help ei-reveal" style="--d:@(Math.Min(step, 6) * 60)ms">
+                    <div class="ei-pl-help">
+                        <span class="ei-pl-help-icon" aria-hidden="true"><svg><use href="#i-users" /></svg></span>
+                        <h3>Not sure which one you need?</h3>
+                        <p>
+                            Tell us what is being shipped, how much of it and when it has to leave.
+                            We will pick the material and size for the job and quote against it.
+                        </p>
+                        <div class="ei-pl-help-actions">
+                            <a class="ei-pl-help-btn" asp-controller="Contact" asp-action="Index">
+                                Request a quote
+                                <svg aria-hidden="true"><use href="#i-arrow-right" /></svg>
+                            </a>
+                            <a class="ei-pl-help-link" href="tel:@CompanyProfile.PhonePrimaryHref">
+                                <svg aria-hidden="true"><use href="#i-phone" /></svg>
+                                @CompanyProfile.PhonePrimary
+                            </a>
+                        </div>
                     </div>
-                    <div class="product-body">
-                        <h3>@p.Name</h3>
-                        <p>@p.Summary</p>
-                        <span class="product-link">
-                            View Details
-                            <svg aria-hidden="true"><use href="#i-arrow-right" /></svg>
-                        </span>
-                    </div>
-                </a>
-            }
-        </div>
-
+                </li>
+            </ul>
+        }
     </div>
 </section>
 
-<section class="cta-band reveal">
-    <div class="shell">
-        <div class="cta-inner">
-            <div>
-                <h2>Not sure which specification you need?</h2>
-                @* Offered to size a desiccant, pick a film gauge and rate a
-                   lashing — two of the three for products that are not in the
-                   catalogue. *@
-                <p>
-                    Tell us what is being shipped, how much of it and when it has to leave.
-                    We will pick the material and the size for the job — any quantity,
-                    urgent or large — and quote against it.
-                </p>
-            </div>
-            <div class="cta-actions">
-                <a class="btn btn-light btn-lg" asp-controller="Contact" asp-action="Index">
-                    Request a Quote
-                    <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow-right" /></svg>
-                </a>
-                <a class="btn btn-ghost-light btn-lg" href="tel:@CompanyProfile.PhonePrimaryHref">
-                    <svg width="16" height="16" aria-hidden="true"><use href="#i-phone" /></svg>
-                    @CompanyProfile.PhonePrimary
-                </a>
-            </div>
-        </div>
+@* =========================== Why buy here =========================== *@
+@* The client's own claims, from the About copy — nothing new. *@
+<section class="ei-band ei-band--tight ei-pl-why" aria-labelledby="ei-pl-why-title">
+    <div class="ei-shell">
+        <h2 class="ei-sr" id="ei-pl-why-title">Why buy from @CompanyProfile.Name</h2>
+        <ul class="ei-pl-why-grid">
+            <li class="ei-reveal">
+                <span class="ei-pl-why-icon" aria-hidden="true"><svg><use href="#i-works" /></svg></span>
+                <div><h3>Direct from the maker</h3><p>Manufactured and distributed by us, since @CompanyProfile.FoundedYear.</p></div>
+            </li>
+            <li class="ei-reveal" style="--d:80ms">
+                <span class="ei-pl-why-icon" aria-hidden="true"><svg><use href="#i-container" /></svg></span>
+                <div><h3>Any quantity</h3><p>Urgent or large requirements, sized to the consignment.</p></div>
+            </li>
+            <li class="ei-reveal" style="--d:160ms">
+                <span class="ei-pl-why-icon" aria-hidden="true"><svg><use href="#i-pallet" /></svg></span>
+                <div><h3>Bulk pricing</h3><p>Bulk discounts passed straight on, even on smaller orders.</p></div>
+            </li>
+            <li class="ei-reveal" style="--d:240ms">
+                <span class="ei-pl-why-icon" aria-hidden="true"><svg><use href="#i-truck" /></svg></span>
+                <div><h3>On time</h3><p>Held to the date your shipment has to leave.</p></div>
+            </li>
+        </ul>
     </div>
 </section>
+
+@section Scripts {
+    <script src="~/js/products-page.js" asp-append-version="true" defer></script>
+}

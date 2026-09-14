@@ -53,7 +53,7 @@ public class ContactController : Controller
 
         // Post-redirect-get: a refresh after submitting must not resubmit.
         TempData["ContactSuccess"] =
-            $"Thank you, {message.Name}. Your enquiry has reached our sales desk — we reply within one business day.";
+            $"Thank you, {message.Name}. Your enquiry has reached our sales desk and we will get back to you shortly.";
 
         return RedirectToAction(nameof(Index));
     }

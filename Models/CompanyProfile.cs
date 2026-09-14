@@ -125,14 +125,6 @@ public static class CompanyProfile
 
     // ---- Assets ------------------------------------------------------------
     public const string BrochurePath = "/downloads/elite-industries-brochure.pdf";
-    /// <summary>
-    /// The looping background of the homepage hero. This is the clip that used
-    /// to run as the full-screen intro title card; the card was removed and the
-    /// homepage now opens straight on the hero, so the same 482 KB file does the
-    /// background instead. The old 20.5 MB hero.mp4 is still in wwwroot/video/
-    /// but nothing references it.
-    /// </summary>
-    public const string HeroVideoPath = "/video/elite-industries-intro.mp4";
 
     public const string BusinessHours = "Mon–Sat, 09:00–18:00 IST";
     public const string PhoneLabel = "24/7 Phone Services";

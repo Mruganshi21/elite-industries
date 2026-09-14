@@ -43,16 +43,30 @@
 <section class="ei-band ei-band--shell ei-feat" aria-labelledby="ei-feat-title">
     <div class="ei-shell">
 
-        <div class="ei-band-head ei-reveal">
-            <p class="ei-eyebrow">What we make</p>
+        @*  Split head: the eyebrow and title on the left, the lede and the
+            way out to the full listing on the right. The button sits up here
+            rather than under the grid so it is seen before six cards of
+            scrolling, not after.  *@
+        <div class="ei-feat-head ei-reveal">
+            <div class="ei-feat-head-title">
+                <p class="ei-eyebrow">What we make</p>
+                <h2 id="ei-feat-title">Stocked, specified, ready to ship</h2>
+            </div>
 
-            <h2 id="ei-feat-title">Stocked, specified, ready to ship</h2>
+            <div class="ei-feat-head-side">
+                <p class="ei-lede">
+                    @Model.Count of the @ProductCatalog.All.Count lines we manufacture and hold in
+                    @CompanyProfile.City. Each one is specified against the leg it has to survive —
+                    the hold, the stack, and the handling at the far end.
+                </p>
 
-            <p class="ei-lede">
-                @Model.Count of the @ProductCatalog.All.Count lines we manufacture and hold in
-                @CompanyProfile.City. Each one is specified against the leg it has to survive —
-                the hold, the stack, and the handling at the far end.
-            </p>
+                <a class="ei-feat-all" asp-controller="Products" asp-action="Index">
+                    View all products
+                    <span class="ei-feat-all-icon" aria-hidden="true">
+                        <svg focusable="false"><use href="#i-arrow-right" /></svg>
+                    </span>
+                </a>
+            </div>
         </div>
 
         @*  A list, because that is what it is: a set of products of equal
@@ -70,15 +84,5 @@
             }
         </ul>
 
-        <div class="ei-feat-more ei-reveal">
-            @*  Sentence case, matching "Explore products" in the hero and the
-                "View all products" row already in the masthead's Products
-                dropdown. The same destination should not be spelled two ways
-                on one page.  *@
-            <a class="ei-btn ei-btn--outline" asp-controller="Products" asp-action="Index">
-                View all products
-                <svg aria-hidden="true" focusable="false"><use href="#i-arrow-right" /></svg>
-            </a>
-        </div>
     </div>
 </section>

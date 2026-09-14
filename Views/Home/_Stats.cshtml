@@ -3,12 +3,12 @@
 @*
     Homepage stats band.
 
-    Four figures on the brand red, divided by hairlines — a spec plate, not
-    four cards. It follows the about preview deliberately: that band says who
-    the company is and carries no numbers at all, so this one can be nothing
-    but numbers and the two do not compete. The ground is red because the bands
-    either side are both --ei-shell and one of the three has to break the page;
-    the reasoning and every contrast figure live in wwwroot/css/stats.css.
+    Four white cards on a light, dotted band, each with its own warm colour —
+    red, orange, amber, ember — carried by an icon disc, the "+" and a bar
+    along the bottom that fills in when the card arrives. It follows the about
+    preview deliberately: that band says who the company is and carries no
+    numbers at all, so this one can be nothing but numbers. Styles and
+    contrast notes are in wwwroot/css/stats.css.
 
     WHERE THE FIGURES COME FROM
     ---------------------------
@@ -90,7 +90,9 @@
                    movement rather than together as a block. *@
                 <div class="ei-stats-cell ei-reveal" style="--d:@(step * 90)ms">
 
-                    <svg class="ei-stats-icon" aria-hidden="true" focusable="false"><use href="#@icon" /></svg>
+                    <span class="ei-stats-disc" aria-hidden="true">
+                        <svg class="ei-stats-icon" focusable="false"><use href="#@icon" /></svg>
+                    </span>
 
                     <p class="ei-stats-value">
                         @* data-count-to is the bare integer; the text is the
