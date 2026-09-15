@@ -33,7 +33,11 @@ public class Product
     /// <summary>Picked for the curated homepage grid. Not every product is.</summary>
     public bool IsFeatured { get; set; }
 
-    public string ImagePath => $"/img/products/{Slug}.svg";
+    /// <summary>A real product photo exists at /img/products/{Slug}.jpg (made by
+    /// tools/make_product_photos.py). Without one the SVG illustration is used.</summary>
+    public bool HasPhoto { get; set; }
+
+    public string ImagePath => HasPhoto ? $"/img/products/{Slug}.jpg" : $"/img/products/{Slug}.svg";
 
     /// <summary>"Leading Provider of X for Y | Company" — the pattern the brief asked for.</summary>
     public string SeoTitle => $"Leading Provider of {Name} for {UseCase} | {CompanyProfile.Name}";

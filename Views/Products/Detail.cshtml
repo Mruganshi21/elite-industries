@@ -113,7 +113,7 @@
         <figure class="ei-pd-visual">
             <div class="ei-pd-visual-card">
                 <img src="@Url.Content("~" + Model.ImagePath)" width="400" height="300"
-                     alt="Illustration of @Model.Name" fetchpriority="high" />
+                     alt="@(Model.HasPhoto ? "Photo" : "Illustration") of @Model.Name" fetchpriority="high" />
             </div>
             <span class="ei-pd-visual-num" aria-hidden="true">@((index + 1).ToString("00")) / @all.Count.ToString("00")</span>
             <figcaption class="ei-pd-visual-cat">

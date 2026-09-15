@@ -8,9 +8,10 @@ namespace EliteIndustries.Services;
 /// Swap this class for a repository if the catalogue ever moves to a CMS.
 /// </summary>
 /// <remarks>
-/// Every <see cref="Product.Slug"/> also names the illustration that represents
-/// it: <c>wwwroot/img/products/{slug}.svg</c>. Rename a slug and the artwork has
-/// to be renamed with it, or the card renders a broken image.
+/// Every <see cref="Product.Slug"/> also names the image that represents it:
+/// <c>wwwroot/img/products/{slug}.jpg</c> when <see cref="Product.HasPhoto"/> is
+/// set, otherwise the illustration <c>{slug}.svg</c>. Rename a slug and the
+/// artwork has to be renamed with it, or the card renders a broken image.
 /// </remarks>
 public static class ProductCatalog
 {
@@ -46,6 +47,7 @@ public static class ProductCatalog
         new Product
         {
             Slug = "dunnage-air-bags",
+            HasPhoto = true,
             Name = "Dunnage Air Bags",
             Category = "Void Fill & Bracing",
             UseCase = "Container Void Filling",
@@ -79,6 +81,7 @@ public static class ProductCatalog
         new Product
         {
             Slug = "polyester-composite-strap",
+            HasPhoto = true,
             Name = "Polyester Composite Strap",
             Category = "Strapping Systems",
             UseCase = "Heavy Load Securing",
@@ -112,6 +115,7 @@ public static class ProductCatalog
         new Product
         {
             Slug = "pp-corrugated-sheet",
+            HasPhoto = true,
             Name = "P.P. Corrugated Sheet",
             Category = "Protective Packaging",
             UseCase = "Reusable Layer Protection",
@@ -145,6 +149,7 @@ public static class ProductCatalog
         new Product
         {
             Slug = "pet-strap",
+            HasPhoto = true,
             Name = "PET Strap",
             Category = "Strapping Systems",
             UseCase = "Pallet & Bundle Strapping",
@@ -178,6 +183,7 @@ public static class ProductCatalog
         new Product
         {
             Slug = "stretch-wrapping-film",
+            HasPhoto = true,
             Name = "Stretch Wrapping Film",
             Category = "Protective Packaging",
             UseCase = "Pallet Unitising",
@@ -211,6 +217,7 @@ public static class ProductCatalog
         new Product
         {
             Slug = "paper-edge-boards",
+            HasPhoto = true,
             Name = "Paper Edge Boards",
             Category = "Protective Packaging",
             UseCase = "Edge & Corner Protection",
@@ -310,6 +317,7 @@ public static class ProductCatalog
         new Product
         {
             Slug = "pp-box-strapping",
+            HasPhoto = true,
             Name = "PP Box Strapping",
             Category = "Strapping Systems",
             UseCase = "Carton & Light Bundling",
@@ -343,6 +351,7 @@ public static class ProductCatalog
         new Product
         {
             Slug = "self-adhesive-tapes",
+            HasPhoto = true,
             Name = "Self Adhesive Tapes",
             Category = "Security & Identification",
             UseCase = "Carton Sealing & Marking",
