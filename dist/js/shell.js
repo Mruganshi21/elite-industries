@@ -1,9 +1,10 @@
 /* ==========================================================================
    Elite Industries — site shell behaviour
 
-   Everything the masthead needs and nothing else: the scrolled state, the
-   dropdown panels, the slide-in panel on narrow screens, and the document
-   scroll lock the panel holds while it is open.
+   Everything the masthead needs and nothing else: the scrolled and folded
+   states, the dropdown panels, the slide-in panel on
+   narrow screens, and the document scroll lock the panel holds while it is
+   open.
 
    The markup is already correct without this file. Every dropdown trigger is a
    real <button>, every destination is a real <a>, and the panels are laid out
@@ -69,23 +70,40 @@
 
 
   /* ====================================================================== */
-  /* Scrolled state                                                         */
+  /* Scrolled and folded states                                             */
   /* ====================================================================== */
   /*
-     Ten pixels rather than zero: a rubber-band overscroll on a trackpad can
-     report a pixel or two of offset at rest, and a shadow flickering on and
-     off at the top of the page is worse than no shadow at all.
+     Two thresholds. The shadow arrives at ten pixels rather than zero: a
+     rubber-band overscroll on a trackpad can report a pixel or two of offset
+     at rest, and a shadow flickering at the top of the page is worse than
+     none.
+
+     The fold waits until the page has scrolled at least as far as the header
+     lifts (--ei-hd-top-h plus --ei-hd-cut, 84px at most). The fold is a
+     negative sticky offset, and a header folded before the page has travelled
+     that far is not yet stuck: it would show a strip of empty bar above the
+     folded row. 96 is past the largest lift, so that window never opens. The fold moves nothing
+     in the document flow (see shell.css), so a single threshold with no
+     hysteresis cannot oscillate.
   */
 
   var SCROLLED_AT = 10;
+  var CONDENSE_AT = 96;
   var scrolled = false;
+  var condensed = false;
   var ticking = false;
 
   function readScroll() {
-    var next = window.pageYOffset > SCROLLED_AT;
-    if (next !== scrolled) {
-      scrolled = next;
+    var y = window.pageYOffset;
+    var nextScrolled = y > SCROLLED_AT;
+    var nextCondensed = y > CONDENSE_AT;
+    if (nextScrolled !== scrolled) {
+      scrolled = nextScrolled;
       header.classList.toggle('is-scrolled', scrolled);
+    }
+    if (nextCondensed !== condensed) {
+      condensed = nextCondensed;
+      header.classList.toggle('is-condensed', condensed);
     }
     ticking = false;
   }

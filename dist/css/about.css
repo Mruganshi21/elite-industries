@@ -1,8 +1,9 @@
 /* ==========================================================================
    Elite Industries — homepage about-us preview band
 
-   Two columns on a neutral off-white ground: the copy, and the client's facility
-   illustration set on a white panel with a stencilled plate over it.
+   Two columns on a neutral off-white ground: short copy with a "Know more"
+   link to the About page, and the client's photograph of the works with a stencilled
+   plate over it.
 
    NAMESPACE
    ---------
@@ -20,25 +21,13 @@
    them, and a band that opts out reintroduces exactly the drift the token
    exists to prevent.
 
-   WHY THE ARTWORK SITS ON WHITE
-   -----------------------------
-   about-facility.svg was drawn against an earlier palette — cool blue-greys
-   (#e8edf1, #cfd8e0, #aab6c2) and an #ee6a1e orange — and has since been
-   recoloured onto this one, so the clash this panel was originally introduced
-   to hide no longer exists.
-
-   The panel stays anyway, for a smaller reason: the illustration's lightest
-   tone is close enough to --ei-shell that its edges would dissolve into the
-   band. The white ground and its hairline give it something definite to end
-   on. If the asset is ever redrawn with its own margin, this panel can go.
-
    MOTION
    ------
-   None is declared in this file. The entrance is .ei-reveal, which theme.css
-   defines and reveal.js drives, and the only hover is on .ei-link, which
-   theme.css also owns — both are already switched off under the global
-   prefers-reduced-motion block. There is deliberately no reduced-motion query
-   here because there is nothing of this band's own to switch off.
+   The entrance is .ei-reveal (theme.css + reveal.js). This file adds three
+   small hovers of its own: a slow zoom on the photo, the outline frame
+   closing in behind it, and the Know more arrow sliding right. All are transitions or
+   animations, so the global prefers-reduced-motion block in theme.css
+   already stills them.
    ========================================================================== */
 
 
@@ -78,35 +67,151 @@
   max-width: 33rem;
 }
 
-.ei-about-more { margin: clamp(1.75rem, 3vw, 2.25rem) 0 0; }
+.ei-about-more { margin: 1.25rem 0 0; }
+
+
+/* ---- Know more ----------------------------------------------------------
+   A pill link to the About page. The arrow sits in a gradient disc that
+   slides right on hover while the pill fills with a pale blush. */
+.ei-about-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .45rem .5rem .45rem 1.25rem;
+  border: 1.5px solid var(--ei-red);
+  border-radius: 999px;
+  background: var(--ei-white);
+  font-family: var(--ei-display);
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--ei-crimson);
+  transition:
+    background var(--ei-dur-ui) var(--ei-ease-ui),
+    box-shadow var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-about-cta:hover {
+  background: var(--ei-blush);
+  color: var(--ei-crimson);
+  box-shadow: 0 8px 20px -10px rgba(228, 24, 31, .5);
+}
+.ei-about-cta-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--ei-crimson), var(--ei-red) 55%, var(--ei-ember));
+  color: var(--ei-white);
+  transition: transform .35s var(--ei-ease-rise);
+}
+.ei-about-cta-icon svg { width: 15px; height: 15px; }
+.ei-about-cta:hover .ei-about-cta-icon { transform: translateX(4px); }
 
 
 /* ==========================================================================
    Figure
 
-   The frame is a real panel — white ground, hairline, card radius, medium
-   shadow — not a border drawn round a transparent SVG. The plate then hangs
-   off its lower-left corner, overlapping the edge, so the two read as one
-   object photographed rather than as two stacked boxes.
+   The photograph in a 4:3 frame with rounded corners. Behind it, two layers
+   instead of a solid block: a red outline frame offset down and to the right
+   (::after), and a warm dot grid peeping out top-left (::before). A round
+   stamp sits across the top-right corner; the plate hangs off the bottom
+   left.
    ========================================================================== */
 
 .ei-about-figure {
+  --ei-about-off: clamp(.9rem, 2vw, 1.4rem);
   position: relative;
   margin: 0;
+  padding: var(--ei-about-off);
 }
 
+/* The dot grid, fading out toward the photo. */
+.ei-about-figure::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 55%;
+  background: radial-gradient(circle, var(--ei-orange) 2px, transparent 2.5px) 0 0 / 16px 16px;
+  -webkit-mask-image: linear-gradient(135deg, #000 30%, transparent 85%);
+  mask-image: linear-gradient(135deg, #000 30%, transparent 85%);
+  opacity: .75;
+}
+
+/* The offset outline frame, same radius as the photo. It closes in a little
+   behind the photo on hover. */
+.ei-about-figure::after {
+  content: "";
+  position: absolute;
+  top: calc(var(--ei-about-off) * 2);
+  left: calc(var(--ei-about-off) * 2);
+  right: 0;
+  bottom: 0;
+  border: 2px solid var(--ei-red);
+  border-radius: calc(var(--ei-r-card) * 3);
+  transition: transform .5s var(--ei-ease-rise);
+}
+.ei-about-figure:hover::after { transform: translate(-6px, -6px); }
+
 .ei-about-frame {
-  background: var(--ei-white);
-  border: 1px solid var(--ei-line);
-  border-radius: var(--ei-r-card);
-  padding: clamp(.75rem, 1.6vw, 1.15rem);
-  box-shadow: var(--ei-shadow-md);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: calc(var(--ei-r-card) * 3);
+  box-shadow: var(--ei-shadow-lg);
+  aspect-ratio: 4 / 3;
+  background: var(--ei-line);
 }
 
 .ei-about-img {
+  display: block;
   width: 100%;
-  height: auto;
-  border-radius: calc(var(--ei-r-card) - 1px);
+  height: 100%;
+  object-fit: cover;
+  transition: transform .8s var(--ei-ease-rise);
+}
+.ei-about-figure:hover .ei-about-img { transform: scale(1.04); }
+
+/* ---- The stamp -----------------------------------------------------------
+   A gradient disc with a dashed white ring inside it, like a rubber stamp,
+   set across the photo's top-right corner at a slight tilt. */
+.ei-about-stamp {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: clamp(76px, 9vw, 96px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--ei-crimson), var(--ei-red) 50%, var(--ei-ember));
+  box-shadow: 0 12px 26px -10px rgba(179, 15, 21, .55);
+  color: var(--ei-white);
+  transform: rotate(-12deg);
+}
+.ei-about-stamp::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border: 1.5px dashed rgba(255, 255, 255, .6);
+  border-radius: 50%;
+}
+.ei-about-stamp-small {
+  font-family: var(--ei-mono);
+  font-size: .62rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+.ei-about-stamp-year {
+  font-family: var(--ei-display);
+  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  font-weight: 800;
+  line-height: 1.1;
 }
 
 /* ---- The stencilled plate ------------------------------------------------
@@ -116,6 +221,7 @@
 
 .ei-about-plate {
   position: absolute;
+  z-index: 2;
   left: clamp(-.5rem, -1vw, 0rem);
   bottom: clamp(1.25rem, 3vw, 2rem);
   display: flex;

@@ -58,6 +58,15 @@
   --ei-blush:        #FEECEB;   /* pale wash for tinted surfaces */
   --ei-blush-line:   #F9CDCA;   /* hairline on a tinted surface */
 
+  /* Warm companions to the red, used by the masthead's gradients: the contact
+     strip, the strap and the brochure button. --ei-ember is the orange that
+     still carries white text (5.2:1); --ei-orange and --ei-amber are graphics
+     only — white type on either fails — so they sit at the light end of a
+     gradient or in a dot, never behind a label. */
+  --ei-ember:        #C2410C;
+  --ei-orange:       #F26B1D;
+  --ei-amber:        #F9A826;
+
   /* ---- Ground --------------------------------------------------------- */
   /* Neutral, not warm. The cream the orange palette sat on pulled the whole
      page toward the accent; with red the ground is kept off-hue so the red is
@@ -84,7 +93,31 @@
   /* ---- Layout --------------------------------------------------------- */
   --ei-shell-w:   1240px;
   --ei-gutter:    clamp(1.25rem, 4vw, 2.5rem);
-  --ei-header-h:  76px;
+  /* The masthead bar at the top of the page, and therefore the logo —
+     .ei-hd-logo is sized off the bar's live height rather than carrying its
+     own number, so the clearance around the mark cannot drift.
+
+     Fluid between 1000px and ~1410px: the five tabs and the phone number are
+     tightest for room at the bottom of that range, so the mark only reaches
+     full size on screens with space to spare. Below 1000px the bar is a
+     phone bar and drops to a flat 72px (see the media block below). */
+  --ei-header-h:  clamp(92px, 8.5vw, 120px);
+
+  /* How much of the bar folds away once the page has scrolled. shell.js adds
+     .is-condensed and the masthead lifts by this much — 120px becomes 76px.
+     Zero on narrow screens, where the bar is already compact. */
+  --ei-hd-cut:    clamp(24px, 3.1vw, 44px);
+
+  /* The strap: the red band under the masthead. A token because three things
+     have to agree on it — the border itself, and the two fixed overlays (the
+     slide-in nav panel and its scrim) that hang off the bottom of the bar and
+     would otherwise start behind the strap instead of below it. */
+  --ei-hd-rule:   4px;
+
+  /* The contact strip above the masthead bar. It is the part of the header
+     that slides out of view once the page scrolls (see .is-condensed in
+     shell.css), and it is gone entirely on narrow screens. */
+  --ei-hd-top-h:  40px;
 
   /* Section rhythm. One scale, used by every band, so no two section files
      can disagree about how much air sits between them. */
@@ -110,6 +143,15 @@
   --ei-dur-ui:    .22s;
 }
 
+/* The masthead's phone bar. Same breakpoint as shell.css and shell.js. */
+@media (max-width: 999.98px) {
+  :root {
+    --ei-header-h: 72px;
+    --ei-hd-cut:   0px;
+    --ei-hd-top-h: 0px;
+  }
+}
+
 
 /* ==========================================================================
    Reset and base
@@ -120,7 +162,9 @@
 html {
   scroll-behavior: smooth;
   /* An in-page jump must clear the sticky masthead rather than land under it. */
-  scroll-padding-top: calc(var(--ei-header-h) + 1rem);
+  /* Measured against the condensed bar: by the time an in-page jump lands,
+     the page has scrolled and the masthead has folded. */
+  scroll-padding-top: calc(var(--ei-header-h) - var(--ei-hd-cut) + var(--ei-hd-rule) + 1rem);
   -webkit-text-size-adjust: 100%;
 }
 

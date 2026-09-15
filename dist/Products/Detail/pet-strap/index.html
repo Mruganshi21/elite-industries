@@ -19,10 +19,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
 
-    <link rel="stylesheet" href="/css/theme.css?v=_TCwCUkQd18AdztwlJ3CL_mlNh59m-lAhsIkgSjVO68" />
-    <link rel="stylesheet" href="/css/shell.css?v=teR1XPqhugc6zxxar2zqX5NGI2Gxo8q8E5M9_wwLOYw" />
-        <link rel="stylesheet" href="/css/site.css?v=P3POP7tz4Wf2xiUNrHiq78IhwwNK2_UOk6DhHO54dXA" />
+    <link rel="stylesheet" href="/css/theme.css?v=LewB_4RFApwJj06IVl6Sbonxh88PGTNDa-GbHWM--MU" />
+    <link rel="stylesheet" href="/css/shell.css?v=F97DqtW8y77CnsWAw8f_rne1w0Si7suOiCfH-cW4JHc" />
     
+    <link rel="stylesheet" href="/css/product-card.css?v=FilCveM8RTahQdwbhh57fOUx222wK_FLshSd9tAztyc" />
+    <link rel="stylesheet" href="/css/products-page.css?v=LjBWSb6oYeRs8x8U5UgoKixLdJbQfL3SWR0KnN-2XI4" />
+    <link rel="stylesheet" href="/css/product-detail.css?v=IQjFgEZ73PcTOZLLWYI_hzKbyr5tah2b4zAQZw4BUVA" />
+
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -30,7 +33,7 @@
       "name": "PET Strap",
       "description": "Extruded polyester strap that holds tension as a load settles, runs on manual and automatic tools alike, and ships from recycled flake.",
       "category": "Strapping Systems",
-      "image": "/img/products/pet-strap.svg",
+      "image": "/img/products/pet-strap.jpg",
       "brand": {
         "@type": "Brand",
         "name": "Elite Industries"
@@ -130,6 +133,44 @@
 
 
 <header class="ei-hd" id="siteHeader" data-hd>
+
+    <div class="ei-hd-top">
+        <div class="ei-shell ei-hd-top-inner">
+            <ul class="ei-hd-top-info">
+                <li>
+                    <a class="ei-hd-top-item" href="mailto:sales@eliteind.in">
+                        <span class="ei-hd-chip"><svg aria-hidden="true"><use href="#i-mail" /></svg></span>
+                        sales@eliteind.in
+                    </a>
+                </li>
+                <li>
+                    <a class="ei-hd-top-item" href="tel:&#x2B;919898014279">
+                        <span class="ei-hd-chip"><svg aria-hidden="true"><use href="#i-phone" /></svg></span>
+                        <span class="ei-hd-top-label">24/7 Phone Services</span>
+                        <strong>&#x2B;91 98980 14279</strong>
+                    </a>
+                </li>
+                <li class="ei-hd-top-hours">
+                    <span class="ei-hd-top-item">
+                        <span class="ei-hd-chip"><svg aria-hidden="true"><use href="#i-clock" /></svg></span>
+                        Mon&#x2013;Sat, 09:00&#x2013;18:00 IST
+                    </span>
+                </li>
+            </ul>
+
+            <div class="ei-hd-top-end">
+                <span class="ei-hd-top-badge">
+                    <svg aria-hidden="true"><use href="#i-award" /></svg>
+                    Trusted since 2010
+                </span>
+                <ul class="ei-hd-top-social">
+                    <li><a href="https://www.linkedin.com/company/example" target="_blank" rel="noopener" aria-label="Elite Industries on LinkedIn"><svg aria-hidden="true"><use href="#i-linkedin" /></svg></a></li>
+                    <li><a href="https://www.facebook.com/example" target="_blank" rel="noopener" aria-label="Elite Industries on Facebook"><svg aria-hidden="true"><use href="#i-facebook" /></svg></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <div class="ei-shell ei-hd-inner">
 
         <a class="ei-hd-brand" href="/">
@@ -212,10 +253,7 @@
                                         <a class="ei-hd-panel-link" href="/Products/Detail/self-adhesive-tapes">Self Adhesive Tapes</a>
                                     </li>
                                 <li class="ei-hd-panel-all">
-                                    <a class="ei-hd-panel-link" href="/Products">
-                                        View all products
-                                        <svg aria-hidden="true"><use href="#i-arrow-right" /></svg>
-                                    </a>
+                                    <a class="ei-hd-panel-link" href="/Products">View all products</a>
                                 </li>
                             </ul>
                         </div>
@@ -236,13 +274,27 @@
                     <svg aria-hidden="true"><use href="#i-phone" /></svg>
                     &#x2B;91 98980 14279
                 </a>
+                <a class="ei-hd-mail" href="mailto:sales@eliteind.in">
+                    <svg aria-hidden="true"><use href="#i-mail" /></svg>
+                    sales@eliteind.in
+                </a>
+                <a class="ei-hd-cta" href="/downloads/elite-industries-brochure.pdf" download>
+                    <svg aria-hidden="true"><use href="#i-download" /></svg>
+                    Download Brochure
+                </a>
             </div>
         </nav>
 
         <div class="ei-hd-utils">
-            <a class="ei-hd-phone" href="tel:&#x2B;919898014279">
+            <a class="ei-hd-cta" href="/downloads/elite-industries-brochure.pdf" download>
+                <span class="ei-hd-cta-icon"><svg aria-hidden="true"><use href="#i-download" /></svg></span>
+                <span class="ei-hd-cta-long">Download Brochure</span>
+                <span class="ei-hd-cta-short">Brochure</span>
+            </a>
+
+            <a class="ei-hd-call" href="tel:&#x2B;919898014279"
+               aria-label="Call &#x2B;91 98980 14279">
                 <svg aria-hidden="true"><use href="#i-phone" /></svg>
-                &#x2B;91 98980 14279
             </a>
 
             <button class="ei-hd-burger" type="button"
@@ -261,189 +313,296 @@
 <main id="main">
     
 
-<section class="page-header">
-    <div class="shell">
-        <ol class="breadcrumb">
-            <li><a href="/">Home</a></li>
-            <li><a href="/Products">Products</a></li>
-            <li aria-current="page">PET Strap</li>
-        </ol>
-        <h1>PET Strap</h1>
-        <p>Extruded polyester strap that holds tension as a load settles, runs on manual and automatic tools alike, and ships from recycled flake.</p>
-    </div>
-</section>
+<section class="ei-pl-hero" aria-labelledby="ei-pd-title">
+    <div class="ei-shell ei-pd-hero-inner">
 
-<section class="section">
-    <div class="shell">
-        <div class="split wide-right reveal">
+        <div>
+            <ol class="ei-pl-crumbs">
+                <li><a href="/">Home</a></li>
+                <li><a href="/Products">Products</a></li>
+                <li aria-current="page">PET Strap</li>
+            </ol>
 
-            <div>
-                <div class="media-frame">
-                    <img src="/img/products/pet-strap.svg" alt="PET Strap" width="900" height="900" />
-                </div>
-            </div>
+            <p class="ei-pl-hero-eyebrow">Strapping Systems</p>
+            <h1 class="ei-pl-hero-title" id="ei-pd-title">PET Strap</h1>
+            <p class="ei-pd-hero-lede">Extruded polyester strap that holds tension as a load settles, runs on manual and automatic tools alike, and ships from recycled flake.</p>
 
-            <div>
-                <span class="eyebrow">Strapping Systems</span>
-                <h2>PET Strap</h2>
-
-                    <p>PET strap is the everyday workhorse where steel is more strength than the load needs. It takes high initial tension and &#x2014; unlike steel &#x2014; gives it back, so a load of bricks or paper reels that compresses in transit stays tight rather than turning into a loose stack.</p>
-                    <p>It runs on the full range of tooling: manual tensioner and sealer, battery combination tools, and semi- or fully automatic strapping heads. Embossed grades give friction-weld tools a consistent bite.</p>
-                    <p>Produced from recycled PET flake, so it carries recycled content into the pack rather than out of it.</p>
-
-                <div class="cta-actions">
-                    <a class="btn btn-primary btn-lg" href="/Contact">
-                        Request a Quote
-                        <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow-right" /></svg>
-                    </a>
-                    <a class="btn btn-outline btn-lg" href="/downloads/elite-industries-brochure.pdf" download>
-                        <svg width="16" height="16" aria-hidden="true"><use href="#i-download" /></svg>
-                        Download Brochure
-                    </a>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<section class="section section-alt">
-    <div class="shell">
-        <div class="split reveal">
-
-            <div>
-                <h3>Specifications</h3>
-                <table class="spec-table">
-                    <tbody>
-                        <tr>
-                            <th scope="row">Widths</th>
-                            <td>9, 12, 15, 16, 19, 25, 32 mm</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Thickness</th>
-                            <td>0.5 mm to 1.27 mm</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Break strength</th>
-                            <td>200 kgf to 900 kgf</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Finish</th>
-                            <td>Smooth or embossed</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Core</th>
-                            <td>406 mm / 200 mm</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Content</th>
-                            <td>Up to 98% recycled PET</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div>
-                <h3>Applications</h3>
-                <p>Typically specified for Pallet &amp; Bundle Strapping and jobs of this kind:</p>
-                <ul class="check-list">
-                        <li>Brick, block and tile palletising</li>
-                        <li>Paper reel and board bundling</li>
-                        <li>Drum and can palletising</li>
-                        <li>Baled goods and compressed bales</li>
+                <ul class="ei-pd-facts">
+                        <li><small>Widths</small><strong>9, 12, 15, 16, 19, 25, 32 mm</strong></li>
+                        <li><small>Thickness</small><strong>0.5 mm to 1.27 mm</strong></li>
+                        <li><small>Break strength</small><strong>200 kgf to 900 kgf</strong></li>
                 </ul>
-                <p class="muted">
-                    Working to a specification we have not listed? Send us the drawing or
-                    the transit conditions and we will quote against them.
+
+            <div class="ei-pd-actions">
+                <a class="ei-pd-btn ei-pd-btn--solid" href="/Contact">
+                    Request a quote
+                    <svg aria-hidden="true"><use href="#i-arrow-right" /></svg>
+                </a>
+                <a class="ei-pd-btn" href="/downloads/elite-industries-brochure.pdf" download>
+                    <svg aria-hidden="true"><use href="#i-download" /></svg>
+                    Download brochure
+                </a>
+            </div>
+        </div>
+
+        <figure class="ei-pd-visual">
+            <div class="ei-pd-visual-card">
+                <img src="/img/products/pet-strap.jpg" width="400" height="300"
+                     alt="Photo of PET Strap" fetchpriority="high" />
+            </div>
+            <span class="ei-pd-visual-num" aria-hidden="true">04 / 10</span>
+            <figcaption class="ei-pd-visual-cat">
+                <svg aria-hidden="true"><use href="#i-crate" /></svg>
+                For Pallet &amp; Bundle Strapping
+            </figcaption>
+        </figure>
+    </div>
+</section>
+
+<section class="ei-band ei-pd-overview" aria-labelledby="ei-pd-about-title">
+    <div class="ei-shell ei-pd-overview-grid">
+
+        <div class="ei-pd-copy ei-reveal ei-reveal--left">
+            <p class="ei-eyebrow">Product overview</p>
+            <h2 id="ei-pd-about-title">What it is and how it works</h2>
+
+                <p>PET strap is the everyday workhorse where steel is more strength than the load needs. It takes high initial tension and &#x2014; unlike steel &#x2014; gives it back, so a load of bricks or paper reels that compresses in transit stays tight rather than turning into a loose stack.</p>
+                <p>It runs on the full range of tooling: manual tensioner and sealer, battery combination tools, and semi- or fully automatic strapping heads. Embossed grades give friction-weld tools a consistent bite.</p>
+                <p>Produced from recycled PET flake, so it carries recycled content into the pack rather than out of it.</p>
+
+            <div class="ei-pd-usecase">
+                <span class="ei-pd-usecase-icon" aria-hidden="true"><svg><use href="#i-container" /></svg></span>
+                <div>
+                    <small>Typically specified for</small>
+                    <strong>Pallet &amp; Bundle Strapping</strong>
+                </div>
+            </div>
+        </div>
+
+            <aside class="ei-pd-specs ei-reveal ei-reveal--right" style="--d:120ms" aria-labelledby="ei-pd-specs-title">
+                <div class="ei-pd-specs-head">
+                    <svg aria-hidden="true"><use href="#i-shield" /></svg>
+                    <h2 id="ei-pd-specs-title">Specifications</h2>
+                </div>
+                <dl class="ei-pd-specs-list">
+                        <div>
+                            <dt>Widths</dt>
+                            <dd>9, 12, 15, 16, 19, 25, 32 mm</dd>
+                        </div>
+                        <div>
+                            <dt>Thickness</dt>
+                            <dd>0.5 mm to 1.27 mm</dd>
+                        </div>
+                        <div>
+                            <dt>Break strength</dt>
+                            <dd>200 kgf to 900 kgf</dd>
+                        </div>
+                        <div>
+                            <dt>Finish</dt>
+                            <dd>Smooth or embossed</dd>
+                        </div>
+                        <div>
+                            <dt>Core</dt>
+                            <dd>406 mm / 200 mm</dd>
+                        </div>
+                        <div>
+                            <dt>Content</dt>
+                            <dd>Up to 98% recycled PET</dd>
+                        </div>
+                </dl>
+                <p class="ei-pd-specs-foot">
+                    Working to a specification we have not listed?
+                    <a href="/Contact">Send us the details</a>
+                    and we will quote against them.
                 </p>
+            </aside>
+    </div>
+</section>
+
+    <section class="ei-band ei-band--shell ei-pd-apps" aria-labelledby="ei-pd-apps-title">
+        <div class="ei-shell">
+            <div class="ei-band-head ei-reveal">
+                <p class="ei-eyebrow">Applications</p>
+                <h2 id="ei-pd-apps-title">Where it gets used</h2>
             </div>
 
+            <ul class="ei-pd-apps-grid">
+                    <li class="ei-pd-app ei-reveal" style="--d:0ms">
+                        <span class="ei-pd-app-icon" aria-hidden="true"><svg><use href="#i-container" /></svg></span>
+                        <h3>Brick, block and tile palletising</h3>
+                    </li>
+                    <li class="ei-pd-app ei-reveal" style="--d:80ms">
+                        <span class="ei-pd-app-icon" aria-hidden="true"><svg><use href="#i-pallet" /></svg></span>
+                        <h3>Paper reel and board bundling</h3>
+                    </li>
+                    <li class="ei-pd-app ei-reveal" style="--d:160ms">
+                        <span class="ei-pd-app-icon" aria-hidden="true"><svg><use href="#i-crate" /></svg></span>
+                        <h3>Drum and can palletising</h3>
+                    </li>
+                    <li class="ei-pd-app ei-reveal" style="--d:240ms">
+                        <span class="ei-pd-app-icon" aria-hidden="true"><svg><use href="#i-truck" /></svg></span>
+                        <h3>Baled goods and compressed bales</h3>
+                    </li>
+            </ul>
+
+                <div class="ei-pd-industries ei-reveal" style="--d:120ms">
+                    <div>
+                        <p class="ei-pd-industries-eyebrow">Industries</p>
+                        <h2>Bought by 6 sectors</h2>
+                        <p>Each links to how that industry uses it.</p>
+                    </div>
+                    <ul class="ei-pd-ind-list">
+                            <li>
+                                <a class="ei-pd-ind" href="/UsedCases#agriculture-and-gardening">Agriculture and Gardening</a>
+                            </li>
+                            <li>
+                                <a class="ei-pd-ind" href="/UsedCases#chemical">Chemical</a>
+                            </li>
+                            <li>
+                                <a class="ei-pd-ind" href="/UsedCases#rubber-and-miscellaneous-plastic">Rubber and Miscellaneous Plastic</a>
+                            </li>
+                            <li>
+                                <a class="ei-pd-ind" href="/UsedCases#solar-industries">Solar Industries</a>
+                            </li>
+                            <li>
+                                <a class="ei-pd-ind" href="/UsedCases#glass-industries">Glass Industries</a>
+                            </li>
+                            <li>
+                                <a class="ei-pd-ind" href="/UsedCases#healthcare-and-pharmaceuticals">Healthcare and Pharmaceuticals</a>
+                            </li>
+                    </ul>
+                </div>
+
         </div>
-    </div>
-</section>
-
-<section class="section">
-    <div class="shell">
-
-        <div class="section-head reveal">
-            <span class="eyebrow">Related products</span>
-            <h2>Often packed alongside</h2>
-            <p>
-                Most consignments use two or three of these together — protection inside
-                the wrap, securing outside it.
-            </p>
-        </div>
-
-        <div class="grid cols-3 reveal">
-                <a class="product-card" href="/Products/Detail/dunnage-air-bags">
-                    <div class="product-thumb">
-                        <img src="/img/products/dunnage-air-bags.svg" alt="Dunnage Air Bags" loading="lazy" width="600" height="600" />
-                        <span class="product-tag">Void Fill &amp; Bracing</span>
-                    </div>
-                    <div class="product-body">
-                        <h3>Dunnage Air Bags</h3>
-                        <p>Inflatable kraft and woven-PP bags that fill the voids between palletised cargo and lock it in place for the whole journey.</p>
-                        <span class="product-link">
-                            View Details
-                            <svg aria-hidden="true"><use href="#i-arrow-right" /></svg>
-                        </span>
-                    </div>
-                </a>
-                <a class="product-card" href="/Products/Detail/polyester-composite-strap">
-                    <div class="product-thumb">
-                        <img src="/img/products/polyester-composite-strap.svg" alt="Polyester Composite Strap" loading="lazy" width="600" height="600" />
-                        <span class="product-tag">Strapping Systems</span>
-                    </div>
-                    <div class="product-body">
-                        <h3>Polyester Composite Strap</h3>
-                        <p>Bonded polyester filament strap with the break strength of steel, no sharp edges and no rust &#x2014; the standard replacement for steel on heavy export loads.</p>
-                        <span class="product-link">
-                            View Details
-                            <svg aria-hidden="true"><use href="#i-arrow-right" /></svg>
-                        </span>
-                    </div>
-                </a>
-                <a class="product-card" href="/Products/Detail/pp-corrugated-sheet">
-                    <div class="product-thumb">
-                        <img src="/img/products/pp-corrugated-sheet.svg" alt="P.P. Corrugated Sheet" loading="lazy" width="600" height="600" />
-                        <span class="product-tag">Protective Packaging</span>
-                    </div>
-                    <div class="product-body">
-                        <h3>P.P. Corrugated Sheet</h3>
-                        <p>Twin-wall polypropylene sheet &#x2014; waterproof, washable and reusable &#x2014; cut to layer pads, partitions, box blanks and returnable totes.</p>
-                        <span class="product-link">
-                            View Details
-                            <svg aria-hidden="true"><use href="#i-arrow-right" /></svg>
-                        </span>
-                    </div>
-                </a>
-        </div>
-
-    </div>
-</section>
-
-<section class="cta-band reveal">
-    <div class="shell">
-        <div class="cta-inner">
+    </section>
+<section class="ei-band ei-pd-related" aria-labelledby="ei-pd-related-title">
+    <div class="ei-shell">
+        <div class="ei-pd-related-head ei-reveal">
             <div>
-                <h2>Get a quote on PET Strap</h2>
+                <p class="ei-eyebrow">Related products</p>
+                <h2 id="ei-pd-related-title">Often packed alongside</h2>
                 <p>
-                    Give us the quantity, the destination and the transit time. Quotations
-                    go out within one business day, with the certificates and load data
-                    attached.
+                    Most consignments use two or three of these together — protection inside the
+                    wrap, securing outside it.
                 </p>
             </div>
-            <div class="cta-actions">
-                <a class="btn btn-light btn-lg" href="/Contact">
-                    Request a Quote
-                    <svg width="16" height="16" aria-hidden="true"><use href="#i-arrow-right" /></svg>
-                </a>
-                <a class="btn btn-ghost-light btn-lg" href="mailto:sales@eliteind.in">
-                    <svg width="16" height="16" aria-hidden="true"><use href="#i-mail" /></svg>
-                    sales@eliteind.in
-                </a>
-            </div>
+            <a class="ei-pd-related-all" href="/Products">
+                All products
+                <svg aria-hidden="true"><use href="#i-arrow-right" /></svg>
+            </a>
         </div>
+
+        <ul class="ei-pd-related-grid">
+                <li class="ei-reveal" style="--d:0ms">
+                    
+<article class="ei-pcard">
+
+    <div class="ei-pcard-thumb">
+        <img class="ei-pcard-img"
+             src="/img/products/polyester-composite-strap.jpg"
+             width="400" height="300"
+             loading="lazy" decoding="async"
+             alt="" />
+    </div>
+
+    <div class="ei-pcard-body">
+
+        <p class="ei-pcard-cat">Strapping Systems</p>
+
+        <h3 class="ei-pcard-name">
+            <a class="ei-pcard-link" href="/Products/Detail/polyester-composite-strap">Polyester Composite Strap</a>
+        </h3>
+
+        <p class="ei-pcard-where">Secures heavy timber, steel coil and machinery for export</p>
+
+        <span class="ei-pcard-cue" aria-hidden="true">
+            <span class="ei-pcard-cue-text">View details</span>
+            <span class="ei-pcard-cue-icon">
+                <svg focusable="false"><use href="#i-arrow-right" /></svg>
+            </span>
+        </span>
+    </div>
+</article>
+
+                </li>
+                <li class="ei-reveal" style="--d:80ms">
+                    
+<article class="ei-pcard">
+
+    <div class="ei-pcard-thumb">
+        <img class="ei-pcard-img"
+             src="/img/products/pp-box-strapping.jpg"
+             width="400" height="300"
+             loading="lazy" decoding="async"
+             alt="" />
+    </div>
+
+    <div class="ei-pcard-body">
+
+        <p class="ei-pcard-cat">Strapping Systems</p>
+
+        <h3 class="ei-pcard-name">
+            <a class="ei-pcard-link" href="/Products/Detail/pp-box-strapping">PP Box Strapping</a>
+        </h3>
+
+        <p class="ei-pcard-where">Closing cartons and bundling light goods on the line</p>
+
+        <span class="ei-pcard-cue" aria-hidden="true">
+            <span class="ei-pcard-cue-text">View details</span>
+            <span class="ei-pcard-cue-icon">
+                <svg focusable="false"><use href="#i-arrow-right" /></svg>
+            </span>
+        </span>
+    </div>
+</article>
+
+                </li>
+                <li class="ei-reveal" style="--d:160ms">
+                    
+<article class="ei-pcard">
+
+    <div class="ei-pcard-thumb">
+        <img class="ei-pcard-img"
+             src="/img/products/dunnage-air-bags.jpg"
+             width="400" height="300"
+             loading="lazy" decoding="async"
+             alt="" />
+    </div>
+
+    <div class="ei-pcard-body">
+
+        <p class="ei-pcard-cat">Void Fill &amp; Bracing</p>
+
+        <h3 class="ei-pcard-name">
+            <a class="ei-pcard-link" href="/Products/Detail/dunnage-air-bags">Dunnage Air Bags</a>
+        </h3>
+
+        <p class="ei-pcard-where">Fills the gap between pallets in sea containers and railcars</p>
+
+        <span class="ei-pcard-cue" aria-hidden="true">
+            <span class="ei-pcard-cue-text">View details</span>
+            <span class="ei-pcard-cue-icon">
+                <svg focusable="false"><use href="#i-arrow-right" /></svg>
+            </span>
+        </span>
+    </div>
+</article>
+
+                </li>
+        </ul>
+
+        <nav class="ei-pd-pager" aria-label="More products">
+            <a class="ei-pd-pager-prev" href="/Products/Detail/pp-corrugated-sheet">
+                <span class="ei-pd-pager-arrow" aria-hidden="true"><svg><use href="#i-arrow-right" /></svg></span>
+                <img src="/img/products/pp-corrugated-sheet.jpg" width="400" height="300" alt="" loading="lazy" />
+                <span><small>Previous</small><strong>P.P. Corrugated Sheet</strong></span>
+            </a>
+            <a class="ei-pd-pager-next" href="/Products/Detail/stretch-wrapping-film">
+                <span><small>Next</small><strong>Stretch Wrapping Film</strong></span>
+                <img src="/img/products/stretch-wrapping-film.jpg" width="400" height="300" alt="" loading="lazy" />
+                <span class="ei-pd-pager-arrow" aria-hidden="true"><svg><use href="#i-arrow-right" /></svg></span>
+            </a>
+        </nav>
     </div>
 </section>
 
@@ -452,6 +611,25 @@
 
 <footer class="ei-ft">
 
+    <div class="ei-shell">
+        <div class="ei-ft-cta">
+            <div class="ei-ft-cta-copy">
+                <p class="ei-ft-cta-eyebrow">Ready to ship?</p>
+                <h2 class="ei-ft-cta-title">Let's pack your next consignment.</h2>
+            </div>
+            <div class="ei-ft-cta-actions">
+                <a class="ei-ft-cta-btn ei-ft-cta-btn--solid" href="tel:&#x2B;919898014279">
+                    <svg aria-hidden="true"><use href="#i-phone" /></svg>
+                    &#x2B;91 98980 14279
+                </a>
+                <a class="ei-ft-cta-btn" href="/downloads/elite-industries-brochure.pdf" download>
+                    <svg aria-hidden="true"><use href="#i-download" /></svg>
+                    Download Brochure
+                </a>
+            </div>
+        </div>
+    </div>
+
     <div class="ei-shell ei-ft-top">
 
         <div class="ei-ft-brand">
@@ -459,35 +637,39 @@
                 <img class="ei-ft-logo" src="/img/logo-light.png?v=dBKx3b06voL1kx9LmeF5FfuMxoUBfrhGeFp4bn1FPj8" width="301" height="132" loading="lazy" decoding="async" alt="Elite Industries" />
             </a>
 
-            <address class="ei-ft-address">
-                Elite Industries<br />
-                Plot No. 157/4, Phase II, Bharuch GIDC Estate, Bholav<br />
-                Bharuch, Gujarat 392001<br />
-                India
-            </address>
-
-            <address class="ei-ft-address ei-ft-address--office">
-                <span class="ei-ft-address-label">Office</span>
-                305, Shilpi Square, Dahej Bypass Road<br />
-                Bharuch, Gujarat
-            </address>
-
-            <p class="ei-ft-lines">
-                <a href="tel:&#x2B;919898014279">&#x2B;91 98980 14279</a>
-                <span class="ei-ft-sep" aria-hidden="true">/</span>
-                <a href="tel:&#x2B;919328014279">&#x2B;91 93280 14279</a>
+            <p class="ei-ft-tagline">
+                Export Packaging &amp; Material Handling — manufactured and supplied from
+                Bharuch since 2010.
             </p>
 
-            <p class="ei-ft-mail">
-                <svg aria-hidden="true"><use href="#i-mail" /></svg>
-                <a href="mailto:sales@eliteind.in">sales@eliteind.in</a>
-            </p>
-
-            <ul class="ei-ft-social">
-                <li><a href="https://www.linkedin.com/company/example" target="_blank" rel="noopener" aria-label="Elite Industries on LinkedIn"><svg aria-hidden="true"><use href="#i-linkedin" /></svg></a></li>
-                <li><a href="https://www.facebook.com/example" target="_blank" rel="noopener" aria-label="Elite Industries on Facebook"><svg aria-hidden="true"><use href="#i-facebook" /></svg></a></li>
-                <li><a href="https://twitter.com/example" target="_blank" rel="noopener" aria-label="Elite Industries on X"><svg aria-hidden="true"><use href="#i-twitter" /></svg></a></li>
-                <li><a href="https://www.youtube.com/@example" target="_blank" rel="noopener" aria-label="Elite Industries on YouTube"><svg aria-hidden="true"><use href="#i-youtube" /></svg></a></li>
+            <ul class="ei-ft-contact">
+                <li>
+                    <span class="ei-ft-disc" aria-hidden="true"><svg><use href="#i-pin" /></svg></span>
+                    <address class="ei-ft-address">
+                        <span class="ei-ft-address-label">Works</span>
+                        Plot No. 157/4, Phase II, Bharuch GIDC Estate, Bholav,
+                        Bharuch, Gujarat 392001, India
+                    </address>
+                </li>
+                <li>
+                    <span class="ei-ft-disc" aria-hidden="true"><svg><use href="#i-works" /></svg></span>
+                    <address class="ei-ft-address">
+                        <span class="ei-ft-address-label">Office</span>
+                        305, Shilpi Square, Dahej Bypass Road, Bharuch, Gujarat
+                    </address>
+                </li>
+                <li>
+                    <span class="ei-ft-disc" aria-hidden="true"><svg><use href="#i-phone" /></svg></span>
+                    <p class="ei-ft-lines">
+                        <a href="tel:&#x2B;919898014279">&#x2B;91 98980 14279</a>
+                        <span class="ei-ft-sep" aria-hidden="true">/</span>
+                        <a href="tel:&#x2B;919328014279">&#x2B;91 93280 14279</a>
+                    </p>
+                </li>
+                <li>
+                    <span class="ei-ft-disc" aria-hidden="true"><svg><use href="#i-mail" /></svg></span>
+                    <p class="ei-ft-mail"><a href="mailto:sales@eliteind.in">sales@eliteind.in</a></p>
+                </li>
             </ul>
         </div>
 
@@ -527,15 +709,19 @@
             </div>
 
             <div class="ei-ft-col">
-                <h2 class="ei-ft-heading">Brochure</h2>
-                <a class="ei-ft-download" href="/downloads/elite-industries-brochure.pdf" download>
-                    <svg aria-hidden="true"><use href="#i-download" /></svg>
-                    Product range, PDF
-                </a>
+                <h2 class="ei-ft-heading">Stay in touch</h2>
+
                 <p class="ei-ft-hours">
                     <svg aria-hidden="true"><use href="#i-clock" /></svg>
                     Mon&#x2013;Sat, 09:00&#x2013;18:00 IST
                 </p>
+
+                <ul class="ei-ft-social">
+                    <li><a href="https://www.linkedin.com/company/example" target="_blank" rel="noopener" aria-label="Elite Industries on LinkedIn"><svg aria-hidden="true"><use href="#i-linkedin" /></svg></a></li>
+                    <li><a href="https://www.facebook.com/example" target="_blank" rel="noopener" aria-label="Elite Industries on Facebook"><svg aria-hidden="true"><use href="#i-facebook" /></svg></a></li>
+                    <li><a href="https://twitter.com/example" target="_blank" rel="noopener" aria-label="Elite Industries on X"><svg aria-hidden="true"><use href="#i-twitter" /></svg></a></li>
+                    <li><a href="https://www.youtube.com/@example" target="_blank" rel="noopener" aria-label="Elite Industries on YouTube"><svg aria-hidden="true"><use href="#i-youtube" /></svg></a></li>
+                </ul>
             </div>
         </nav>
     </div>
@@ -546,16 +732,15 @@
             <span class="ei-ft-standards">Export Packaging &middot; Any quantity, on time</span>
             <a class="ei-ft-totop" href="#siteHeader">
                 Back to top
-                <svg aria-hidden="true"><use href="#i-arrow-up" /></svg>
+                <span class="ei-ft-totop-icon" aria-hidden="true"><svg><use href="#i-arrow-up" /></svg></span>
             </a>
         </div>
     </div>
 </footer>
 
 
-<script src="/js/shell.js?v=dXinkr8EDi72kHYRVOBhEcZ1hKV1w-nX-OkTsPU7XgU" defer></script>
+<script src="/js/shell.js?v=ciWrEgRKqjPmLULJU-IbfitFsLP7cGOno3vWQ0EoiKM" defer></script>
 <script src="/js/reveal.js?v=Sq8TCmQHTWI9Aj2kOCZTOSd7ekIEfwQ5-xmbD-mngXo" defer></script>
-    <script src="/js/site.js?v=6erIXu_Ht052i4k_RGZRTDHvKcjDc80550HN5CDaBZI" defer></script>
 
 </body>
 </html>

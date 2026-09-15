@@ -32,123 +32,383 @@
 
 /* ==========================================================================
    Masthead
+
+   A white bar — the logo is drawn for a light ground — under a warm gradient
+   contact strip, and closed along the bottom by the strap: a red-to-amber
+   band with a slow run of light along it, the one piece of colour that is on
+   every page at every scroll position. The current tab carries a short
+   gradient underline in the same colours.
+
+   FOLDING
+   -------
+   The bar is tall at the top of the page, where the logo has the room, and
+   folds by --ei-hd-cut once the page scrolls. It folds without moving
+   anything below it: the header box keeps its full height in the flow, and
+   the sticky offset goes negative by the cut while the bar's top padding
+   grows by the same amount. The top strip of the box slides out above the viewport and
+   what remains stuck is a shorter bar. A header that changed its own height
+   instead would shove the whole page up by the cut at the exact moment the
+   visitor started scrolling.
+
+   --ei-hd-now is the live bar height. The logo, the dividers and the two
+   fixed overlays on narrow screens all read it, so none of them can disagree
+   with the bar about how tall it currently is.
    ========================================================================== */
 
 .ei-hd {
+  --ei-hd-now: var(--ei-header-h);
+
   position: sticky;
   top: 0;
   z-index: 200;
+  height: calc(var(--ei-hd-top-h) + var(--ei-header-h) + var(--ei-hd-rule));
   background: var(--ei-white);
-  border-bottom: 1px solid var(--ei-line);
-  transition: box-shadow var(--ei-dur-ui) var(--ei-ease-ui);
+  /* Four pixels rather than a hairline: at 1px the strap reads as a rendering
+     artefact. The border reserves the room and gives a solid fallback; the
+     ::after below paints the moving gradient over it. */
+  border-bottom: var(--ei-hd-rule) solid var(--ei-red);
+  transition:
+    top var(--ei-dur-ui) var(--ei-ease-ui),
+    background-color var(--ei-dur-ui) var(--ei-ease-ui),
+    box-shadow var(--ei-dur-ui) var(--ei-ease-ui);
+}
+
+/* The strap. Red running out to amber and back, twice as wide as the bar and
+   drifting slowly along it, so the colour seems to travel like a strap being
+   fed through a machine. Slow enough to read as texture, not as motion that
+   wants attention; the global reduced-motion rule in theme.css stills it. */
+.ei-hd::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--ei-hd-rule) * -1);
+  height: var(--ei-hd-rule);
+  background: linear-gradient(90deg,
+      var(--ei-crimson), var(--ei-red), var(--ei-orange), var(--ei-amber),
+      var(--ei-orange), var(--ei-red), var(--ei-crimson)) 0 0 / 200% 100%;
+  animation: ei-hd-strap 14s linear infinite;
+  pointer-events: none;
+}
+@keyframes ei-hd-strap {
+  to { background-position: -200% 0; }
 }
 
 /* Only once the page has actually moved. A shadow under a bar that is still at
-   the top of the document reads as a mistake rather than as elevation. */
-.ei-hd.is-scrolled { box-shadow: var(--ei-shadow-md); }
+   the top of the document reads as a mistake rather than as elevation. The
+   bar also turns faintly translucent and blurs what passes beneath it —
+   desktop only: a backdrop-filter makes the header the containing block for
+   its position:fixed children, which would trap the slide-in nav and scrim
+   inside the 72px phone bar. */
+.ei-hd.is-scrolled { box-shadow: 0 10px 30px -12px rgba(179, 15, 21, .22); }
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @media (min-width: 1000px) {
+  .ei-hd.is-scrolled {
+    background-color: rgba(255, 255, 255, .88);
+    -webkit-backdrop-filter: saturate(1.4) blur(12px);
+    backdrop-filter: saturate(1.4) blur(12px);
+  }
+  }
+}
 
-.ei-hd-inner {
+/* The sticky offset lifts the contact strip and the cut out above the
+   viewport together; the strip's bottom margin (below) opens by the cut so the
+   bar row drops into the space the fold made. */
+.ei-hd.is-condensed {
+  --ei-hd-now: calc(var(--ei-header-h) - var(--ei-hd-cut));
+  top: calc((var(--ei-hd-top-h) + var(--ei-hd-cut)) * -1);
+}
+
+/* ---- Contact strip -------------------------------------------------------
+   Crimson through the brand red into ember, every stop of which carries white
+   type at 4.5:1 or better. Over it, a faint diagonal weave — the texture of a
+   woven strap — at an alpha low enough not to touch the contrast. */
+.ei-hd-top {
+  height: var(--ei-hd-top-h);
+  /* The fold's drop. A margin between two blocks rather than padding on the
+     header: the strip is in the way of a padding-top, which would push it
+     down instead of opening the gap below it. */
+  margin-bottom: calc(var(--ei-header-h) - var(--ei-hd-now));
+  position: relative;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(135deg,
+      rgba(255, 255, 255, .06) 0 2px, transparent 2px 9px),
+    linear-gradient(90deg,
+      var(--ei-crimson-deep) 0%, var(--ei-red) 45%, var(--ei-ember) 100%);
+  color: var(--ei-white);
+  font-size: .82rem;
+  transition: margin-bottom var(--ei-dur-ui) var(--ei-ease-ui);
+}
+
+/* A band of light that crosses the strip every few seconds. */
+.ei-hd-top::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 18%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .16), transparent);
+  transform: translateX(-120%) skewX(-20deg);
+  animation: ei-hd-shine 9s var(--ei-ease-ui) infinite;
+  pointer-events: none;
+}
+@keyframes ei-hd-shine {
+  0%, 55% { transform: translateX(-120%) skewX(-20deg); }
+  100%    { transform: translateX(640%) skewX(-20deg); }
+}
+.ei-hd-top-inner { position: relative; }
+
+/* On the gradient a red ring is invisible, so the strip's ring is white. */
+.ei-hd-top :where(a):focus-visible {
+  outline-color: var(--ei-white);
+  outline-offset: 2px;
+}
+
+.ei-hd-top-inner {
   display: flex;
   align-items: center;
-  gap: clamp(1rem, 2.5vw, 2.25rem);
-  min-height: var(--ei-header-h);
+  justify-content: space-between;
+  gap: 1.5rem;
+  height: 100%;
 }
 
-/* ---- Brand ---------------------------------------------------------------
-   The client's logo, as a single image. It used to be a drawn crate glyph in
-   --ei-red beside the company name set in --ei-display, and the note here
-   explained why only the glyph took the accent. Both are gone: the logo
-   carries its own colour, and the contrast rule at the top of theme.css has
-   nothing to police in an image. */
-.ei-hd-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: .7rem;
-  flex: none;
-  color: var(--ei-graphite);
-  --ei-focus-offset: 6px;
-}
-.ei-hd-brand:hover { color: var(--ei-graphite); }
-
-/* Sized by height, not width: the masthead has a fixed bar height and the
-   logo has to sit inside it, so the height is the constraint and the width
-   follows the file's own ratio. The intrinsic width/height are on the element,
-   so `width: auto` here resolves against those rather than collapsing. */
-.ei-hd-logo {
-  display: block;
-  height: 40px;
-  width: auto;
-  transition: opacity var(--ei-dur-ui) var(--ei-ease-ui);
-}
-.ei-hd-brand:hover .ei-hd-logo { opacity: .8; }
-
-/* ---- Tab row -------------------------------------------------------------
-   margin-left:auto pushes the nav and the utility cluster to the right of the
-   brand as one group, so the tabs stay optically tied to the phone number
-   rather than floating in the middle of the bar. */
-.ei-hd-nav {
-  margin-left: auto;
+.ei-hd-top-info,
+.ei-hd-top-social {
   display: flex;
   align-items: center;
-}
-
-.ei-hd-tabs {
-  display: flex;
-  align-items: center;
-  gap: clamp(.25rem, 1.4vw, 1.1rem);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.ei-hd-tab { position: relative; }
+.ei-hd-top-info { gap: clamp(1rem, 2.4vw, 2rem); }
+
+/* Items after the first are set off by a short upright rule. */
+.ei-hd-top-info > li + li { position: relative; }
+.ei-hd-top-info > li + li::before {
+  content: "";
+  position: absolute;
+  left: calc(clamp(1rem, 2.4vw, 2rem) / -2);
+  top: 50%;
+  width: 1px;
+  height: 14px;
+  background: rgba(255, 255, 255, .35);
+  transform: translateY(-50%);
+}
+
+.ei-hd-top-item {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  color: var(--ei-white);
+  white-space: nowrap;
+  letter-spacing: .01em;
+}
+a.ei-hd-top-item:hover { color: var(--ei-white); }
+a.ei-hd-top-item:hover .ei-hd-chip {
+  background: var(--ei-white);
+  color: var(--ei-red);
+}
+
+.ei-hd-top-item strong {
+  font-family: var(--ei-display);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .02em;
+}
+
+.ei-hd-top-label { opacity: .9; }
+
+/* A small frosted disc behind each glyph — the icon gets a shape of its own
+   rather than floating loose on the gradient, and fills white on hover. */
+.ei-hd-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .18);
+  color: var(--ei-white);
+  transition:
+    background var(--ei-dur-ui) var(--ei-ease-ui),
+    color var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-hd-chip svg { width: 13px; height: 13px; }
+
+.ei-hd-top-end {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* A frosted tag with an amber award glyph — the one amber note on the strip. */
+.ei-hd-top-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .2rem .7rem .2rem .45rem;
+  border: 1px solid rgba(255, 255, 255, .28);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, .14);
+  font-family: var(--ei-mono);
+  font-size: .7rem;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.ei-hd-top-badge svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--ei-amber);
+}
+
+.ei-hd-top-social { gap: .4rem; }
+.ei-hd-top-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--ei-white);
+  color: var(--ei-crimson);
+  transition:
+    background var(--ei-dur-ui) var(--ei-ease-ui),
+    color var(--ei-dur-ui) var(--ei-ease-ui),
+    transform var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-hd-top-social a:hover {
+  background: var(--ei-amber);
+  color: var(--ei-graphite);
+  transform: translateY(-1px);
+}
+.ei-hd-top-social svg { width: 14px; height: 14px; }
+
+/* The hours and the badge are the first things to give way when the strip
+   runs short. */
+@media (max-width: 1279.98px) {
+  .ei-hd-top-hours { display: none; }
+}
+@media (max-width: 1099.98px) {
+  .ei-hd-top-badge { display: none; }
+}
+
+/* Stretch, not centre: the tabs run the full height of the bar, so the hover
+   target is the whole column above the strap and a dropdown hangs from the
+   strap itself rather than from somewhere in mid-air. */
+.ei-hd-inner {
+  display: flex;
+  align-items: stretch;
+  gap: clamp(1rem, 2.5vw, 2.25rem);
+  height: var(--ei-hd-now);
+  transition: height var(--ei-dur-ui) var(--ei-ease-ui);
+}
+
+/* One ring for the whole masthead. The interior pages still load site.css,
+   whose own focus rule (orange, 2px) comes later in the cascade and would win
+   the zero-specificity :where() tie in theme.css — so the masthead restates
+   the ring at class specificity and looks the same on every page. */
+.ei-hd :where(a, button):focus-visible {
+  outline: 3px solid var(--ei-red);
+  outline-offset: var(--ei-focus-offset, 3px);
+  border-radius: var(--ei-r);
+}
+
+/* ---- Brand ---------------------------------------------------------------
+   The client's logo, as a single image. */
+.ei-hd-brand {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  flex: none;
+  --ei-focus-offset: 6px;
+}
+
+/* Sized off the live bar, so it folds with it: 120px bar -> 89px mark,
+   76px bar -> 56px mark.
+
+   RESOLUTION CEILING. logo.png is 301x132, so the mark has pixels for 66px
+   of height on a 2x display and no more. The folded mark is inside that; the
+   full-height mark at the top of the page is past it, and is slightly soft on
+   a retina screen as a result. The fix is a bigger file — a vector original
+   from the client — not a smaller bar. elite-logo.jpeg is 308x139 and is no
+   help. */
+.ei-hd-logo {
+  display: block;
+  height: calc(var(--ei-hd-now) * .74);
+  width: auto;
+  transition:
+    height var(--ei-dur-ui) var(--ei-ease-ui),
+    opacity var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-hd-brand:hover .ei-hd-logo { opacity: .8; }
+
+/* ---- Tab row ------------------------------------------------------------- */
+.ei-hd-nav {
+  margin-left: auto;
+  display: flex;
+  align-items: stretch;
+}
+
+.ei-hd-tabs {
+  display: flex;
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ei-hd-tab {
+  position: relative;
+  display: flex;
+}
 
 /* One rule for both kinds of tab. The dropdown triggers are <button> and the
    plain destinations are <a>; they have to be visually identical, so the
-   button is stripped back to the anchor rather than the other way round. */
+   button is stripped back to the anchor rather than the other way round.
+
+   Archivo, the display face, rather than the body face: five words set in
+   the same face as the headings is what makes the row read as part of the
+   identity rather than as a default menu. */
 .ei-hd-link {
   display: inline-flex;
   align-items: center;
-  gap: .35rem;
+  gap: .3rem;
   position: relative;
-  padding: calc((var(--ei-header-h) - 1.4rem) / 2) .55rem;
+  height: 100%;
+  padding: 0 clamp(.55rem, 1.05vw, .95rem);
   border: 0;
   background: none;
-  font-family: var(--ei-body);
-  font-size: .92rem;
-  font-weight: 500;
-  letter-spacing: .005em;
-  line-height: 1.4;
+  font-family: var(--ei-display);
+  font-size: clamp(.94rem, 1.1vw, 1.02rem);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.2;
   color: var(--ei-graphite);
   cursor: pointer;
   white-space: nowrap;
-  --ei-focus-offset: -2px;
   transition: color var(--ei-dur-ui) var(--ei-ease-ui);
 }
-.ei-hd-link:hover { color: var(--ei-crimson); }
+.ei-hd-link:hover,
+.ei-hd-link[aria-expanded="true"] { color: var(--ei-crimson); }
 
-/* The underline is the state marker, drawn for hover, open and current alike.
-   Current holds it; hover and open are the same gesture arriving. */
-.ei-hd-link::after {
+/* The tab is the full height of the bar, and a ring drawn round that would be
+   a tall empty box. The ring goes round the label instead. */
+.ei-hd-link:focus-visible { outline: none; }
+.ei-hd-link:focus-visible::before {
   content: "";
   position: absolute;
-  left: .55rem;
-  right: .55rem;
-  bottom: calc((var(--ei-header-h) - 1.4rem) / 2 - .55rem);
-  height: 2px;
-  background: var(--ei-red);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--ei-dur-ui) var(--ei-ease-ui);
+  inset: calc(50% - 1.3rem) 0;
+  border: 3px solid var(--ei-red);
+  border-radius: var(--ei-r);
+  pointer-events: none;
 }
-.ei-hd-link:hover::after,
-.ei-hd-link[aria-expanded="true"]::after { transform: scaleX(1); }
-
-/* Colour alone would not carry the current tab for a colour-blind visitor, and
-   red text at this size sits too close to the ink around it — so the marker is the rule
-   plus the weight, and the ink stays graphite. */
-.ei-hd-link.is-current { font-weight: 600; }
-.ei-hd-link.is-current::after { transform: scaleX(1); }
 
 .ei-hd-caret {
   width: 14px;
@@ -159,37 +419,82 @@
 }
 .ei-hd-link[aria-expanded="true"] .ei-hd-caret { transform: rotate(180deg); }
 
+/* ---- Tab marker -----------------------------------------------------------
+   A short gradient bar under the label: red into amber, the strap's colours in
+   miniature. It grows out from the centre on hover and on an open dropdown,
+   and stays out, full label width, on the current page. Pure CSS — nothing to
+   measure, nothing to place. */
+.ei-hd-link::after {
+  content: "";
+  position: absolute;
+  left: clamp(.55rem, 1.05vw, .95rem);
+  right: clamp(.55rem, 1.05vw, .95rem);
+  bottom: calc(50% - 1.25rem);
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--ei-red), var(--ei-orange), var(--ei-amber));
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform .3s var(--ei-ease-rise);
+  pointer-events: none;
+}
+.ei-hd-link:hover::after,
+.ei-hd-link[aria-expanded="true"]::after,
+.ei-hd-link.is-current::after { transform: scaleX(1); }
+
+.ei-hd-link.is-current { color: var(--ei-crimson); }
+.ei-hd-link.is-current .ei-hd-caret { color: var(--ei-red); }
+.ei-hd-link:hover .ei-hd-caret,
+.ei-hd-link[aria-expanded="true"] .ei-hd-caret { color: var(--ei-red); }
+
 
 /* ==========================================================================
    Dropdown panels
 
-   Never display:none — a panel removed from the box tree cannot animate back
-   in, and toggling display mid-transition drops the frame the entrance is
-   supposed to start from. visibility + pointer-events take it out of the tab
-   order and out of the cursor's way while leaving it laid out.
+   Hung from the underside of the strap. Never display:none — a panel removed
+   from the box tree cannot animate back in, and toggling display
+   mid-transition drops the frame the entrance is supposed to start from.
+   visibility + pointer-events take it out of the tab order and out of the
+   cursor's way while leaving it laid out.
    ========================================================================== */
 
 .ei-hd-panel {
   position: absolute;
-  top: 100%;
-  left: -.75rem;
+  top: calc(100% + var(--ei-hd-rule));
+  left: 0;
   z-index: 1;
   min-width: 15rem;
   max-width: calc(100vw - 2rem);
-  background: var(--ei-white);
+  /* The strap's gradient carried onto the panel's top edge, so the panel
+     reads as hanging from the band rather than as a separate card. */
+  background:
+    linear-gradient(90deg, var(--ei-red), var(--ei-orange) 60%, var(--ei-amber)) top / 100% 3px no-repeat,
+    var(--ei-white);
   border: 1px solid var(--ei-line);
-  border-top: 2px solid var(--ei-red);
+  border-top: 0;
   border-radius: 0 0 var(--ei-r-card) var(--ei-r-card);
   box-shadow: var(--ei-shadow-lg);
 
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translateY(-8px);
+  transform: translateY(-6px);
   transition:
     opacity var(--ei-dur-ui) var(--ei-ease-ui),
     transform var(--ei-dur-ui) var(--ei-ease-ui),
     visibility 0s linear var(--ei-dur-ui);
+}
+
+/* Bridges the strap. The panel starts below the band, and without this the
+   pointer crossing those 4px would leave the tab and close the panel it was
+   heading for. */
+.ei-hd-panel::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: calc(var(--ei-hd-rule) + 2px);
 }
 
 .ei-hd-panel.is-open {
@@ -201,7 +506,7 @@
   transition-delay: 0s;
 }
 
-.ei-hd-panel-inner { padding: .6rem; }
+.ei-hd-panel-inner { padding: .7rem .5rem .5rem; }
 
 .ei-hd-panel-list {
   margin: 0;
@@ -210,47 +515,61 @@
 }
 
 .ei-hd-panel-link {
+  --ei-hd-dot: var(--ei-red);
   display: flex;
   align-items: center;
-  gap: .5rem;
-  padding: .6rem .75rem;
+  gap: .7rem;
+  padding: .6rem .85rem;
   border-radius: var(--ei-r);
-  font-size: .9rem;
+  font-size: .92rem;
   font-weight: 500;
   line-height: 1.35;
   color: var(--ei-graphite);
+  --ei-focus-offset: -3px;
   transition:
     background var(--ei-dur-ui) var(--ei-ease-ui),
+    box-shadow var(--ei-dur-ui) var(--ei-ease-ui),
     color var(--ei-dur-ui) var(--ei-ease-ui);
 }
+/* A short red edge on the row, the strap's colour carried down into the list,
+   rather than a pink wash across it. */
 .ei-hd-panel-link:hover {
   background: var(--ei-blush);
+  box-shadow: inset 3px 0 0 var(--ei-hd-dot);
   color: var(--ei-crimson);
 }
 
-/* The "View all products" row. Ruled off and set in the mono utility register
-   so it reads as an action rather than as an eleventh product. */
+/* A small square marker on each row, cycling red, orange, amber down the
+   list — a touch of the palette in every row without washing any of them.
+   On hover it turns to face the pointer, a quarter turn into a diamond. */
+.ei-hd-panel-list > li:nth-child(3n + 2) > .ei-hd-panel-link { --ei-hd-dot: var(--ei-orange); }
+.ei-hd-panel-list > li:nth-child(3n + 3) > .ei-hd-panel-link { --ei-hd-dot: var(--ei-amber); }
+
+.ei-hd-panel-link::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 1px;
+  background: var(--ei-hd-dot);
+  transition: transform var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-hd-panel-link:hover::before { transform: rotate(45deg) scale(1.2); }
+.ei-hd-panel-all .ei-hd-panel-link::before { display: none; }
+
+/* The "View all products" row: ruled off and set in the display face so it
+   reads as the section's own page rather than as an eleventh product. */
 .ei-hd-panel-all {
   grid-column: 1 / -1;
-  margin-top: .35rem;
-  padding-top: .6rem;
+  margin-top: .4rem;
+  padding-top: .4rem;
   border-top: 1px solid var(--ei-line);
 }
 .ei-hd-panel-all .ei-hd-panel-link {
-  font-family: var(--ei-mono);
-  font-size: .72rem;
-  font-weight: 500;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--ei-red);
+  font-family: var(--ei-display);
+  font-weight: 600;
+  color: var(--ei-crimson);
 }
-.ei-hd-panel-all svg {
-  width: 14px;
-  height: 14px;
-  margin-left: auto;
-  transition: transform var(--ei-dur-ui) var(--ei-ease-ui);
-}
-.ei-hd-panel-all .ei-hd-panel-link:hover svg { transform: translateX(3px); }
 
 /* Ten products in one column would run past the fold on a laptop, so the
    products panel splits in two. Centred with left/margin-left rather than a
@@ -274,31 +593,115 @@
 .ei-hd-utils {
   display: flex;
   align-items: center;
-  gap: .75rem;
+  gap: .5rem;
   flex: none;
 }
 
-/* Mono, because a phone number is a figure to be read off and dialled, not
-   running copy — the register the spec rows and shipping marks already use. */
-.ei-hd-phone {
+/* A figure to be read off and dialled, so tabular figures in the display
+   face — the digits line up in their groups and the number holds its width. */
+.ei-hd-phone,
+.ei-hd-mail {
   display: inline-flex;
   align-items: center;
-  gap: .5rem;
-  font-family: var(--ei-mono);
-  font-size: .85rem;
-  font-weight: 500;
+  gap: .55rem;
+  font-family: var(--ei-display);
+  font-size: 1rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
   letter-spacing: .01em;
   color: var(--ei-graphite);
   white-space: nowrap;
+  transition: color var(--ei-dur-ui) var(--ei-ease-ui);
 }
-.ei-hd-phone:hover { color: var(--ei-crimson); }
-.ei-hd-phone svg {
-  width: 17px;
-  height: 17px;
+.ei-hd-phone:hover,
+.ei-hd-mail:hover { color: var(--ei-crimson); }
+.ei-hd-phone svg,
+.ei-hd-mail svg {
+  width: 18px;
+  height: 18px;
   flex: none;
   color: var(--ei-red);
 }
 
+/* ---- Brochure button -----------------------------------------------------
+   The masthead's one solid control. A crimson-to-ember gradient, both ends of
+   which hold white type above 4.5:1, twice as wide as the button so hover can
+   slide it toward the orange end; a band of light sweeps across on the way. */
+.ei-hd-cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .72rem 1.1rem;
+  overflow: hidden;
+  border-radius: var(--ei-r);
+  background: linear-gradient(110deg,
+      var(--ei-crimson) 0%, var(--ei-red) 45%, var(--ei-ember) 100%) 0 0 / 200% 100%;
+  box-shadow: 0 6px 16px -6px rgba(228, 24, 31, .55);
+  font-family: var(--ei-display);
+  font-size: .92rem;
+  font-weight: 700;
+  letter-spacing: .01em;
+  color: var(--ei-white);
+  white-space: nowrap;
+  transition:
+    background-position .45s var(--ei-ease-ui),
+    box-shadow var(--ei-dur-ui) var(--ei-ease-ui),
+    transform var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-hd-cta::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+  width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .35), transparent);
+  transform: skewX(-20deg);
+  transition: left .6s var(--ei-ease-ui);
+  pointer-events: none;
+}
+.ei-hd-cta:hover {
+  background-position: 100% 0;
+  box-shadow: 0 10px 22px -8px rgba(194, 65, 12, .6);
+  color: var(--ei-white);
+  transform: translateY(-1px);
+}
+.ei-hd-cta:hover::after { left: 120%; }
+.ei-hd-cta svg {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  transition: transform var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-hd-cta:hover svg { transform: translateY(2px); }
+
+/* The glyph sits in a frosted disc; on the bar the button's left padding is
+   pulled in so the disc sits close to the edge, like a tag's eyelet. */
+.ei-hd-cta-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .2);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .25);
+}
+.ei-hd-cta-icon svg { width: 15px; height: 15px; }
+.ei-hd-utils > .ei-hd-cta { padding: .45rem 1.15rem .45rem .5rem; }
+
+.ei-hd-cta-short { display: none; }
+
+/* Between 1000px and ~1180px the five tabs, the logo and the full label stop
+   fitting comfortably on one row. */
+@media (min-width: 1000px) and (max-width: 1179.98px) {
+  .ei-hd-cta-long { display: none; }
+  .ei-hd-cta-short { display: inline; }
+}
+
+.ei-hd-call,
 .ei-hd-burger {
   display: none;
   align-items: center;
@@ -306,17 +709,32 @@
   width: 44px;
   height: 44px;
   padding: 0;
-  border: 1px solid var(--ei-line);
   border-radius: var(--ei-r);
-  background: var(--ei-white);
-  color: var(--ei-graphite);
   cursor: pointer;
   transition:
     background var(--ei-dur-ui) var(--ei-ease-ui),
-    border-color var(--ei-dur-ui) var(--ei-ease-ui);
+    border-color var(--ei-dur-ui) var(--ei-ease-ui),
+    color var(--ei-dur-ui) var(--ei-ease-ui);
 }
-.ei-hd-burger:hover { background: var(--ei-shell); border-color: var(--ei-red); }
+.ei-hd-call svg,
 .ei-hd-burger svg { width: 22px; height: 22px; }
+
+.ei-hd-call {
+  border: 1px solid var(--ei-line);
+  background: var(--ei-white);
+  color: var(--ei-red);
+}
+.ei-hd-call:hover { border-color: var(--ei-red); color: var(--ei-crimson); }
+
+/* The menu is the primary control on a phone, so it is the solid one — and
+   it takes the brochure button's gradient, since that button is not on the
+   phone bar. */
+.ei-hd-burger {
+  border: 0;
+  background: linear-gradient(135deg, var(--ei-crimson), var(--ei-red) 55%, var(--ei-ember));
+  color: var(--ei-white);
+}
+.ei-hd-burger:hover { background: var(--ei-crimson); }
 
 /* The burger swaps glyph rather than morphing three bars — the sprite already
    carries both, and a CSS morph is one more thing to keep in sync with the
@@ -329,7 +747,7 @@
    stacking context and cannot end up over the bar itself. */
 .ei-hd-scrim {
   position: fixed;
-  inset: var(--ei-header-h) 0 0;
+  inset: calc(var(--ei-hd-now) + var(--ei-hd-rule)) 0 0;
   background: rgba(22, 25, 29, .45);
   opacity: 0;
   visibility: hidden;
@@ -346,7 +764,7 @@
 }
 
 /* Only shown inside the slide-in panel: the utility cluster collapses on
-   narrow screens, and without this the phone number is unreachable there. */
+   narrow screens, and without this the contact details are unreachable. */
 .ei-hd-nav-tail { display: none; }
 
 
@@ -356,23 +774,39 @@
    Five tabs plus a phone number stop fitting on one row somewhere around here,
    so the whole nav becomes a slide-in panel and the dropdowns become
    accordions inside it. Same markup, same ARIA, same JS; only the layout
-   changes, which is why there is no second set of classes for it.
+   changes, which is why there is no second set of classes for it. The bar
+   drops to 72px and does not fold (--ei-hd-cut is 0 here, see theme.css).
    ========================================================================== */
 
 @media (max-width: 999.98px) {
 
-  .ei-hd-burger { display: inline-flex; }
-  .ei-hd-utils > .ei-hd-phone { display: none; }
+  .ei-hd-inner { align-items: center; }
 
+  .ei-hd-call,
+  .ei-hd-burger { display: inline-flex; }
+  .ei-hd-utils { margin-left: auto; }
+  .ei-hd-utils > .ei-hd-cta { display: none; }
+
+  /* --ei-hd-top-h is 0 here too, so nothing reserves room for it. */
+  .ei-hd-top { display: none; }
+
+  /* The underline is a tab-row device; the stacked list marks its own
+     position with an edge instead (below). */
+  .ei-hd-link::after { display: none; }
+
+  /* z-index: the scrim follows the nav in the markup, and two fixed siblings
+     with no z-index paint in document order — without it the scrim lies over
+     the panel, greys it out and takes every tap meant for a link. */
   .ei-hd-nav {
     position: fixed;
-    top: var(--ei-header-h);
+    z-index: 1;
+    top: calc(var(--ei-hd-now) + var(--ei-hd-rule));
     right: 0;
     bottom: 0;
     width: min(24rem, 88vw);
     display: block;
     margin: 0;
-    padding: 1.25rem var(--ei-gutter) 2.5rem;
+    padding: 1rem var(--ei-gutter) 2.5rem;
     background: var(--ei-white);
     border-left: 1px solid var(--ei-line);
     box-shadow: var(--ei-shadow-lg);
@@ -391,24 +825,29 @@
     transition-delay: 0s;
   }
 
-  .ei-hd-tabs { display: block; gap: 0; }
+  .ei-hd-tabs { display: block; }
 
-  .ei-hd-tab { border-bottom: 1px solid var(--ei-line); }
+  .ei-hd-tab {
+    display: block;
+    border-bottom: 1px solid var(--ei-line);
+  }
 
   .ei-hd-link {
     display: flex;
     width: 100%;
+    height: auto;
     justify-content: space-between;
     padding: 1rem .25rem;
-    font-size: 1rem;
+    font-size: 1.05rem;
     text-align: left;
   }
-  /* The underline marker is a tab-row device. Stacked, the current item takes
-     a left rule instead, which is how a list marks its own position. */
-  .ei-hd-link::after { display: none; }
+  .ei-hd-link:focus-visible::before { inset: 3px 0; }
+
+  /* Stacked, the current item takes a red edge — the strap again, turned on
+     its side — which is how a list marks its own position. */
   .ei-hd-link.is-current {
-    box-shadow: inset 3px 0 0 var(--ei-red);
-    padding-left: .85rem;
+    box-shadow: inset 4px 0 0 var(--ei-red);
+    padding-left: 1rem;
   }
 
   .ei-hd-caret { width: 18px; height: 18px; }
@@ -435,6 +874,7 @@
     transform: none;
     transition: grid-template-rows var(--ei-dur-ui) var(--ei-ease-ui);
   }
+  .ei-hd-panel::before { display: none; }
   .ei-hd-panel.is-open { grid-template-rows: 1fr; }
 
   /* A closed accordion still has laid-out links inside it, so the contents are
@@ -455,11 +895,24 @@
   .ei-hd-panel--wide .ei-hd-panel-list { grid-template-columns: 1fr; }
 
   .ei-hd-panel-list { padding: .35rem 0 .75rem; }
-  .ei-hd-panel-link { padding: .55rem 1.1rem; }
-  .ei-hd-panel-all { margin: .35rem 1.1rem 0; padding-top: .5rem; }
+  .ei-hd-panel-link { padding: .6rem 1.1rem; }
+  .ei-hd-panel-all { margin: .35rem 1.1rem 0; padding-top: .35rem; }
 
-  .ei-hd-nav-tail { display: block; padding-top: 1.5rem; }
-  .ei-hd-nav-tail .ei-hd-phone { display: inline-flex; font-size: .95rem; }
+  .ei-hd-nav-tail {
+    display: grid;
+    gap: .9rem;
+    padding-top: 1.5rem;
+  }
+  /* The address is a string, not a figure. */
+  .ei-hd-mail {
+    font-family: var(--ei-body);
+    font-weight: 500;
+  }
+  .ei-hd-nav-tail .ei-hd-cta {
+    justify-content: center;
+    margin-top: .4rem;
+    padding-block: .9rem;
+  }
 }
 
 /* Locks the document while the slide-in panel is open. shell.js applies it
@@ -471,92 +924,338 @@
 /* ==========================================================================
    Footer
 
-   Dark ground, red top rule. Everything on this ground is white or an alpha
-   white: the mid greys that work on the shell (--ei-steel, --ei-steel-soft)
-   drop below 4.5:1 here and must not be used. The accent is --ei-red-lift, not
-   --ei-red — the brand red is 3.7:1 on this ground, a graphics-floor figure.
-   --ei-red stays for the top rule and the hover fills, which are graphics.
+   Dark ground with a soft warm glow, opened by a moving red-to-amber strap
+   along its top edge and a gradient call-to-action card. The colour notes:
+
+   - Everything set as TEXT on the ink ground is white or an alpha white.
+     --ei-steel and --ei-steel-soft drop below 4.5:1 here and must not be used.
+   - The accent as text is --ei-red-lift (6.3:1 on ink); --ei-red is 3.7:1
+     and is used only for fills and graphics.
+   - --ei-orange and --ei-amber appear only in graphics: icon discs, bars,
+     the strap.
+   - On the CTA card, text is white over the crimson-to-ember gradient, every
+     stop of which holds 4.5:1.
    ========================================================================== */
 
 .ei-ft {
   /* Dark ground: the focus ring lifts with the rest of the accent. */
   --ei-focus: var(--ei-red-lift);
-  background: var(--ei-ink);
-  border-top: 4px solid var(--ei-red);
+  position: relative;
+  overflow: hidden;
+  padding-top: clamp(2.5rem, 5vw, 3.5rem);
+  background:
+    radial-gradient(40% 60% at 100% 0%, rgba(242, 107, 29, .12), transparent 70%),
+    radial-gradient(35% 50% at 0% 100%, rgba(228, 24, 31, .12), transparent 70%),
+    var(--ei-ink);
   color: rgba(255, 255, 255, .72);   /* ~9:1 on --ei-ink */
   font-size: .92rem;
 }
 
+/* The strap, as on the masthead: red to amber and back, drifting slowly. */
+.ei-ft::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg,
+      var(--ei-crimson), var(--ei-red), var(--ei-orange), var(--ei-amber),
+      var(--ei-orange), var(--ei-red), var(--ei-crimson)) 0 0 / 200% 100%;
+  animation: ei-hd-strap 14s linear infinite;
+}
+
+/* A faint dot grid in the top-left corner, fading out. */
+.ei-ft::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 420px;
+  background: radial-gradient(circle, rgba(255, 255, 255, .5) 1.2px, transparent 1.6px) 0 0 / 20px 20px;
+  -webkit-mask-image: linear-gradient(160deg, #000, transparent 65%);
+  mask-image: linear-gradient(160deg, #000, transparent 65%);
+  opacity: .12;
+  pointer-events: none;
+}
+
+.ei-ft > * { position: relative; z-index: 1; }
+
 .ei-ft a { color: var(--ei-white); }
 .ei-ft a:hover { color: var(--ei-red-lift); }
 
-.ei-ft-top {
-  display: grid;
-  grid-template-columns: minmax(17rem, 22rem) 1fr;
-  gap: clamp(2.5rem, 5vw, 4.5rem);
-  padding-block: clamp(3rem, 6vw, 4.75rem);
+
+/* ---- Call-to-action card ------------------------------------------------- */
+
+.ei-ft-cta {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem 2rem;
+  padding: clamp(1.5rem, 3.4vw, 2.4rem) clamp(1.4rem, 3.6vw, 2.75rem);
+  border-radius: 18px;
+  background: linear-gradient(115deg, var(--ei-crimson-deep), var(--ei-red) 50%, var(--ei-ember));
+  box-shadow: 0 24px 50px -24px rgba(228, 24, 31, .6);
+  color: var(--ei-white);
+  /* Ring on the gradient must be white — the lifted red disappears on it. */
+  --ei-focus: var(--ei-white);
 }
 
-/* ---- Brand block --------------------------------------------------------- */
+/* Two big soft rings in the card's right corner. */
+.ei-ft-cta::before,
+.ei-ft-cta::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, .16);
+  pointer-events: none;
+}
+.ei-ft-cta::before { width: 260px; height: 260px; right: -70px; top: -120px; }
+.ei-ft-cta::after  { width: 160px; height: 160px; right: 60px; bottom: -110px; border-color: rgba(249, 168, 38, .35); }
+
+.ei-ft-cta-copy { position: relative; }
+
+.ei-ft-cta-eyebrow {
+  margin: 0 0 .35rem;
+  font-family: var(--ei-mono);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ei-white);
+}
+
+.ei-ft-cta-title {
+  margin: 0;
+  font-family: var(--ei-display);
+  font-size: clamp(1.35rem, 2.6vw, 1.95rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+  color: var(--ei-white);
+}
+
+.ei-ft-cta-actions {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+}
+
+.ei-ft-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  padding: .75rem 1.2rem;
+  border: 1.5px solid rgba(255, 255, 255, .7);
+  border-radius: 999px;
+  font-family: var(--ei-display);
+  font-size: .95rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition:
+    background var(--ei-dur-ui) var(--ei-ease-ui),
+    color var(--ei-dur-ui) var(--ei-ease-ui),
+    transform var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-ft .ei-ft-cta-btn { color: var(--ei-white); }
+.ei-ft .ei-ft-cta-btn:hover {
+  background: var(--ei-white);
+  color: var(--ei-crimson);
+  transform: translateY(-2px);
+}
+.ei-ft .ei-ft-cta-btn--solid {
+  background: var(--ei-white);
+  border-color: var(--ei-white);
+  color: var(--ei-crimson);
+  font-variant-numeric: tabular-nums;
+}
+.ei-ft .ei-ft-cta-btn--solid:hover {
+  background: var(--ei-ink);
+  border-color: var(--ei-ink);
+  color: var(--ei-white);
+}
+.ei-ft-cta-btn svg { width: 17px; height: 17px; flex: none; }
+
+
+/* ---- Top: brand + link columns ------------------------------------------- */
+
+.ei-ft-top {
+  display: grid;
+  grid-template-columns: minmax(17rem, 23rem) 1fr;
+  gap: clamp(2.5rem, 5vw, 4.5rem);
+  padding-block: clamp(2.75rem, 5.5vw, 4.25rem);
+}
 
 .ei-ft-lockup {
   display: inline-flex;
   align-items: center;
-  gap: .8rem;
-  margin-bottom: 1.4rem;
-  color: var(--ei-white);
+  margin-bottom: 1rem;
 }
-.ei-ft-lockup:hover { color: var(--ei-white); }
-
-/* Larger than the masthead's: the footer lockup is the last thing on the page
-   rather than a persistent bar, and it is not competing with a nav for room. */
 .ei-ft-logo {
   display: block;
-  height: 52px;
+  height: 64px;
   width: auto;
   transition: opacity var(--ei-dur-ui) var(--ei-ease-ui);
 }
 .ei-ft-lockup:hover .ei-ft-logo { opacity: .8; }
 
-.ei-ft-address {
-  font-style: normal;
-  line-height: 1.75;
-  margin: 0 0 1.25rem;
+.ei-ft-tagline {
+  margin: 0 0 1.5rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, .72);
 }
 
-/* The second address. Set back from the works above it so the two read as a
-   list of two places rather than as one run-on block — the label carries most
-   of that, and the muting keeps the works first in the eye. */
-.ei-ft-address--office { color: rgba(255, 255, 255, .62); }
+/* Contact rows: a coloured disc, then the detail. */
+.ei-ft-contact {
+  display: grid;
+  gap: .9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ei-ft-contact > li {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: .8rem;
+  align-items: start;
+}
+
+.ei-ft-disc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--ei-crimson), var(--ei-red));
+  color: var(--ei-white);
+  box-shadow: 0 8px 18px -10px var(--ei-red);
+}
+.ei-ft-contact > li:nth-child(2) .ei-ft-disc { background: linear-gradient(135deg, var(--ei-ember), var(--ei-orange)); }
+.ei-ft-contact > li:nth-child(3) .ei-ft-disc { background: linear-gradient(135deg, var(--ei-orange), var(--ei-amber)); }
+.ei-ft-contact > li:nth-child(4) .ei-ft-disc { background: linear-gradient(135deg, var(--ei-red), var(--ei-ember)); }
+.ei-ft-disc svg { width: 16px; height: 16px; }
+
+.ei-ft-address {
+  margin: 0;
+  font-style: normal;
+  line-height: 1.6;
+}
 
 .ei-ft-address-label {
   display: block;
   font-family: var(--ei-mono);
-  font-size: .7rem;
+  font-size: .68rem;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, .45);
-  margin-bottom: .15rem;
+  color: var(--ei-red-lift);
+  margin-bottom: .1rem;
 }
 
-.ei-ft-lines {
+.ei-ft-lines,
+.ei-ft-mail {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: .5rem .75rem;
-  margin: 0 0 .6rem;
-}
-.ei-ft-lines a { font-family: var(--ei-mono); font-size: .85rem; }
-.ei-ft-sep { color: rgba(255, 255, 255, .35); }
-
-.ei-ft-mail {
-  display: inline-flex;
-  align-items: center;
-  gap: .45rem;
-  margin: 0 0 1.6rem;
+  gap: .25rem .6rem;
+  min-height: 34px;
+  margin: 0;
   word-break: break-word;
 }
-.ei-ft-mail svg { width: 16px; height: 16px; flex: none; color: var(--ei-red-lift); }
+.ei-ft-lines a {
+  font-family: var(--ei-display);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.ei-ft-sep { color: rgba(255, 255, 255, .35); }
+
+/* ---- Link columns -------------------------------------------------------- */
+
+.ei-ft-nav {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1.75rem, 3vw, 2.5rem);
+  align-content: start;
+}
+
+/* White heading with a short gradient bar under it. */
+.ei-ft-heading {
+  position: relative;
+  margin: 0 0 1.35rem;
+  padding-bottom: .7rem;
+  font-family: var(--ei-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ei-white);
+}
+.ei-ft-heading::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 34px;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--ei-red), var(--ei-orange), var(--ei-amber));
+}
+
+.ei-ft-list {
+  display: grid;
+  gap: .65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Links slide right on hover, with a small chevron growing in ahead of them. */
+.ei-ft .ei-ft-list a {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 400;
+  color: rgba(255, 255, 255, .72);
+  transition:
+    color var(--ei-dur-ui) var(--ei-ease-ui),
+    transform var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-ft .ei-ft-list a::before {
+  content: "";
+  width: 0;
+  height: 2px;
+  margin-right: 0;
+  border-radius: 2px;
+  background: var(--ei-orange);
+  transition:
+    width var(--ei-dur-ui) var(--ei-ease-ui),
+    margin-right var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-ft .ei-ft-list a:hover { color: var(--ei-white); }
+.ei-ft .ei-ft-list a:hover::before {
+  width: 12px;
+  margin-right: .5rem;
+}
+
+.ei-ft-hours {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  margin: 0 0 1.25rem;
+  padding: .45rem .8rem;
+  border: 1px solid var(--ei-ink-line);
+  border-radius: 999px;
+  background: var(--ei-ink-2);
+  font-family: var(--ei-mono);
+  font-size: .74rem;
+  letter-spacing: .02em;
+  color: rgba(255, 255, 255, .8);
+}
+.ei-ft-hours svg { width: 15px; height: 15px; flex: none; color: var(--ei-amber); }
 
 .ei-ft-social {
   display: flex;
@@ -570,90 +1269,30 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border: 1px solid var(--ei-ink-line);
-  border-radius: var(--ei-r);
+  border-radius: 12px;
   background: var(--ei-ink-2);
   transition:
     background var(--ei-dur-ui) var(--ei-ease-ui),
     border-color var(--ei-dur-ui) var(--ei-ease-ui),
-    color var(--ei-dur-ui) var(--ei-ease-ui);
+    transform var(--ei-dur-ui) var(--ei-ease-ui);
 }
-/* White on red, the same pairing the primary button makes — 5.9:1 for the
-   glyph on the fill. */
-.ei-ft-social a:hover {
-  background: var(--ei-red);
-  border-color: var(--ei-red);
+/* White glyph on a crimson-to-ember fill — 5:1 or better at both ends. */
+.ei-ft .ei-ft-social a:hover {
+  background: linear-gradient(135deg, var(--ei-crimson), var(--ei-red) 50%, var(--ei-ember));
+  border-color: transparent;
   color: var(--ei-white);
+  transform: translateY(-3px);
 }
 .ei-ft-social svg { width: 18px; height: 18px; }
-
-/* ---- Link columns -------------------------------------------------------- */
-
-.ei-ft-nav {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(1.75rem, 3vw, 2.5rem);
-  align-content: start;
-}
-
-.ei-ft-heading {
-  font-family: var(--ei-mono);
-  font-size: .72rem;
-  font-weight: 500;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  color: var(--ei-red-lift);   /* 6.3:1 on --ei-ink — the brand red is 3.7:1 here */
-  margin: 0 0 1rem;
-}
-
-.ei-ft-list {
-  display: grid;
-  gap: .6rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.ei-ft-list a { font-weight: 400; }
-
-.ei-ft-download {
-  display: inline-flex;
-  align-items: center;
-  gap: .5rem;
-  padding: .7rem .95rem;
-  border: 1px solid var(--ei-ink-line);
-  border-radius: var(--ei-r);
-  background: var(--ei-ink-2);
-  font-size: .86rem;
-  font-weight: 600;
-  transition:
-    background var(--ei-dur-ui) var(--ei-ease-ui),
-    border-color var(--ei-dur-ui) var(--ei-ease-ui),
-    color var(--ei-dur-ui) var(--ei-ease-ui);
-}
-.ei-ft-download:hover {
-  background: var(--ei-red);
-  border-color: var(--ei-red);
-  color: var(--ei-white);
-}
-.ei-ft-download svg { width: 17px; height: 17px; flex: none; }
-
-.ei-ft-hours {
-  display: flex;
-  align-items: center;
-  gap: .45rem;
-  margin: 1rem 0 0;
-  font-family: var(--ei-mono);
-  font-size: .78rem;
-  letter-spacing: .02em;
-}
-.ei-ft-hours svg { width: 15px; height: 15px; flex: none; color: var(--ei-red-lift); }
 
 /* ---- Base bar ------------------------------------------------------------ */
 
 .ei-ft-base {
   border-top: 1px solid var(--ei-ink-line);
+  background: rgba(0, 0, 0, .18);
   color: rgba(255, 255, 255, .6);    /* ~6.8:1 on --ei-ink */
 }
 
@@ -662,7 +1301,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: .6rem 1.5rem;
-  padding-block: 1.4rem;
+  padding-block: 1.25rem;
   font-size: .82rem;
 }
 
@@ -676,7 +1315,7 @@
 .ei-ft-totop {
   display: inline-flex;
   align-items: center;
-  gap: .45rem;
+  gap: .6rem;
   margin-left: auto;
   font-family: var(--ei-mono);
   font-size: .74rem;
@@ -684,21 +1323,33 @@
   letter-spacing: .12em;
   text-transform: uppercase;
 }
-.ei-ft-totop svg {
-  width: 15px;
-  height: 15px;
+.ei-ft-totop-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--ei-crimson), var(--ei-red) 50%, var(--ei-ember));
+  color: var(--ei-white);
+  box-shadow: 0 8px 18px -8px var(--ei-red);
   transition: transform var(--ei-dur-ui) var(--ei-ease-ui);
 }
-.ei-ft-totop:hover svg { transform: translateY(-3px); }
+.ei-ft-totop-icon svg { width: 15px; height: 15px; }
+.ei-ft-totop:hover .ei-ft-totop-icon { transform: translateY(-3px); }
 
 @media (max-width: 1000px) {
   .ei-ft-top { grid-template-columns: 1fr; }
   .ei-ft-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-/* At 360px two link columns crush to unreadable widths, so they stack and the
-   base bar gives up its right-aligned "back to top". */
+/* At 360px two link columns crush to unreadable widths, so they stack, the
+   CTA buttons go full width, and the base bar gives up its right-aligned
+   "back to top". */
 @media (max-width: 520px) {
   .ei-ft-nav { grid-template-columns: 1fr; }
   .ei-ft-totop { margin-left: 0; }
+  .ei-ft-cta-actions,
+  .ei-ft-cta-btn { width: 100%; }
+  .ei-ft-cta-btn { justify-content: center; }
 }

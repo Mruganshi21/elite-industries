@@ -1,0 +1,369 @@
+/* ==========================================================================
+   Elite Industries — Use Cases photo wall
+
+   A slim dark title band, then a wall of 3D photo tiles, one per industry.
+
+   THE 3D TILE
+   -----------
+   Each list cell sets the perspective. The tile inside it keeps
+   transform-style: preserve-3d and is rotated by usecases-page.js
+   (--uc-rx / --uc-ry) toward the pointer. Three layers sit at different
+   depths inside it, so they separate as it tilts:
+
+     ::before   a coloured back plate, pushed back (translateZ negative)
+     .ei-uc-media   the photo, at the tile's own plane
+     .ei-uc-name    the name label, pulled forward
+
+   The tile itself must NOT have overflow: hidden — that flattens 3D. The
+   photo is clipped by .ei-uc-media instead. The glare is a radial gradient
+   that follows the pointer (--uc-gx / --uc-gy).
+
+   Without the script, or on touch, or under reduced motion, tiles simply
+   lift on hover and the layers still read as a stacked card at rest.
+
+   NAMESPACE
+   ---------
+   .ei-uc and .ei-uc-* only.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   Title band
+   ========================================================================== */
+
+.ei-uc-hero {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(2.5rem, 5vw, 4rem) clamp(2.25rem, 4.5vw, 3.5rem);
+  background:
+    radial-gradient(40% 90% at 100% 0%, rgba(242, 107, 29, .3), transparent 70%),
+    radial-gradient(35% 90% at 0% 100%, rgba(228, 24, 31, .28), transparent 70%),
+    var(--ei-ink);
+  color: var(--ei-white);
+  --ei-focus: var(--ei-red-lift);
+}
+.ei-uc-hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 5px;
+  background: linear-gradient(90deg,
+      var(--ei-crimson), var(--ei-red), var(--ei-orange), var(--ei-amber),
+      var(--ei-orange), var(--ei-red), var(--ei-crimson)) 0 0 / 200% 100%;
+  animation: ei-hd-strap 14s linear infinite;
+}
+
+.ei-uc-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+  font-size: .85rem;
+  color: rgba(255, 255, 255, .7);
+}
+.ei-uc-crumbs li + li::before { content: "/"; margin-right: .5rem; color: rgba(255, 255, 255, .35); }
+.ei-uc-crumbs a { color: var(--ei-white); }
+.ei-uc-crumbs a:hover,
+.ei-uc-crumbs [aria-current] { color: var(--ei-amber); }
+
+.ei-uc-title {
+  margin: 0;
+  font-size: clamp(2.4rem, 6vw, 4.25rem);
+  line-height: 1;
+  letter-spacing: -.035em;
+  color: var(--ei-white);
+}
+.ei-uc-title span {
+  background: linear-gradient(90deg, var(--ei-red-lift), var(--ei-amber));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+
+/* ==========================================================================
+   The wall
+   ========================================================================== */
+
+.ei-uc-wall {
+  padding-block: clamp(2.5rem, 5vw, 4.5rem) var(--ei-band-y);
+  background:
+    radial-gradient(40% 30% at 100% 0%, rgba(242, 107, 29, .08), transparent 70%),
+    radial-gradient(40% 30% at 0% 100%, rgba(228, 24, 31, .06), transparent 70%),
+    var(--ei-shell);
+}
+
+.ei-uc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: clamp(190px, 18vw, 250px);
+  gap: clamp(1.1rem, 2.2vw, 1.75rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A rhythm of wide tiles: 1, 6, 11, 16 — each row still adds up to four.
+   The seventeenth closes the wall as a full-width banner. */
+.ei-uc-cell:nth-child(5n + 1) { grid-column: span 2; }
+.ei-uc-cell:nth-child(17)     { grid-column: 1 / -1; }
+
+.ei-uc-cell {
+  --uc-a: var(--ei-crimson);
+  --uc-b: var(--ei-red);
+  position: relative;
+  perspective: 1000px;
+  scroll-margin-top: calc(var(--ei-header-h) - var(--ei-hd-cut) + var(--ei-hd-rule) + 1.5rem);
+}
+.ei-uc-cell:nth-child(4n + 2) { --uc-a: var(--ei-ember);   --uc-b: var(--ei-orange); }
+.ei-uc-cell:nth-child(4n + 3) { --uc-a: var(--ei-orange);  --uc-b: var(--ei-amber); }
+.ei-uc-cell:nth-child(4n + 4) { --uc-a: var(--ei-crimson); --uc-b: var(--ei-ember); }
+
+
+/* ==========================================================================
+   The tile
+   ========================================================================== */
+
+.ei-uc-tile {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: default;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--uc-rx, 0deg)) rotateY(var(--uc-ry, 0deg));
+  transition: transform .6s var(--ei-ease-rise);
+}
+button.ei-uc-tile { cursor: zoom-in; }
+
+/* Follow the pointer quickly while it is over the tile; settle slowly after. */
+.ei-uc-tile.is-tilting { transition: transform .12s linear; }
+
+/* The coloured back plate, offset down and right and pushed back in depth. */
+.ei-uc-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--uc-a), var(--uc-b));
+  transform: translate3d(10px, 12px, -30px);
+  opacity: .9;
+  transition: transform .6s var(--ei-ease-rise), opacity .3s var(--ei-ease-ui);
+}
+
+.ei-uc-media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--ei-line);
+  box-shadow: 0 22px 40px -24px rgba(22, 25, 29, .55);
+  transform: translateZ(0);
+  transition: box-shadow .4s var(--ei-ease-rise);
+}
+
+.ei-uc-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.02);
+  transition: transform .9s var(--ei-ease-rise);
+}
+
+/* A soft dark foot so the label always sits on something. */
+.ei-uc-media::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 45%;
+  background: linear-gradient(0deg, rgba(22, 25, 29, .45), transparent);
+  pointer-events: none;
+}
+
+/* Glare that tracks the pointer. */
+.ei-uc-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: radial-gradient(circle at var(--uc-gx, 50%) var(--uc-gy, 0%),
+      rgba(255, 255, 255, .38), transparent 55%);
+  opacity: 0;
+  transform: translateZ(1px);
+  transition: opacity .35s var(--ei-ease-ui);
+  pointer-events: none;
+}
+
+/* The name label, pulled forward so it floats off the photo as it tilts. */
+.ei-uc-name {
+  position: absolute;
+  left: 1rem;
+  bottom: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  max-width: calc(100% - 2rem);
+  padding: .5rem .85rem .5rem .6rem;
+  border-radius: 999px;
+  background: var(--ei-white);
+  box-shadow: 0 12px 24px -12px rgba(22, 25, 29, .6);
+  font-family: var(--ei-display);
+  font-size: .9rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ei-graphite);
+  transform: translateZ(40px);
+  transition: transform .6s var(--ei-ease-rise);
+}
+.ei-uc-name::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  flex: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--uc-a), var(--uc-b));
+}
+
+/* ---- Hover / focus ------------------------------------------------------- */
+
+.ei-uc-tile:hover::before,
+.ei-uc-tile:focus-visible::before { transform: translate3d(14px, 18px, -50px); }
+
+.ei-uc-tile:hover .ei-uc-media,
+.ei-uc-tile:focus-visible .ei-uc-media { box-shadow: 0 34px 60px -26px rgba(179, 15, 21, .55); }
+
+.ei-uc-tile:hover .ei-uc-media img,
+.ei-uc-tile:focus-visible .ei-uc-media img { transform: scale(1.08); }
+
+.ei-uc-tile:hover .ei-uc-glare { opacity: 1; }
+
+.ei-uc-tile:hover .ei-uc-name,
+.ei-uc-tile:focus-visible .ei-uc-name { transform: translateZ(70px); }
+
+.ei-uc-tile:focus-visible { outline: none; }
+.ei-uc-tile:focus-visible .ei-uc-media { outline: 3px solid var(--ei-red); outline-offset: 4px; }
+
+/* ---- Placeholder (no photo yet) ------------------------------------------ */
+
+.ei-uc-tile--empty .ei-uc-media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, .35) 1.4px, transparent 1.8px) 0 0 / 18px 18px,
+    linear-gradient(135deg, var(--uc-a), var(--uc-b));
+}
+.ei-uc-tile--empty::before {
+  background: var(--ei-ink);
+  opacity: .85;
+}
+.ei-uc-initials {
+  font-family: var(--ei-display);
+  font-size: clamp(3.5rem, 7vw, 5.5rem);
+  font-weight: 800;
+  letter-spacing: -.04em;
+  color: rgba(255, 255, 255, .3);
+  transform: translateY(-8%);
+}
+
+
+/* ==========================================================================
+   Photo viewer
+   ========================================================================== */
+
+.ei-uc-viewer {
+  width: min(1100px, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  padding: 0;
+  border: 0;
+  border-radius: 22px;
+  background: var(--ei-ink);
+  color: var(--ei-white);
+  box-shadow: 0 40px 90px -30px rgba(0, 0, 0, .8);
+  overflow: hidden;
+}
+.ei-uc-viewer::backdrop {
+  background: rgba(22, 25, 29, .78);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+.ei-uc-viewer[open] { animation: ei-uc-pop .45s var(--ei-ease-rise); }
+@keyframes ei-uc-pop {
+  from { opacity: 0; transform: translateY(16px) scale(.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+.ei-uc-viewer-figure { margin: 0; }
+.ei-uc-viewer-figure img {
+  display: block;
+  width: 100%;
+  max-height: calc(100vh - 7rem);
+  object-fit: contain;
+  background: #000;
+}
+.ei-uc-viewer-figure figcaption {
+  padding: 1rem 1.4rem;
+  border-top: 4px solid transparent;
+  border-image: linear-gradient(90deg, var(--ei-red), var(--ei-orange), var(--ei-amber)) 1;
+  font-family: var(--ei-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.ei-uc-viewer-close {
+  position: absolute;
+  top: .9rem;
+  right: .9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ei-white);
+  color: var(--ei-graphite);
+  cursor: pointer;
+  box-shadow: 0 10px 20px -10px rgba(0, 0, 0, .6);
+  transition: background var(--ei-dur-ui) var(--ei-ease-ui), color var(--ei-dur-ui) var(--ei-ease-ui);
+}
+.ei-uc-viewer-close svg { width: 20px; height: 20px; }
+.ei-uc-viewer-close:hover {
+  background: linear-gradient(135deg, var(--ei-crimson), var(--ei-red) 55%, var(--ei-ember));
+  color: var(--ei-white);
+}
+.ei-uc-viewer-close:focus-visible { outline: 3px solid var(--ei-amber); outline-offset: 2px; }
+
+
+/* ==========================================================================
+   Narrow
+   ========================================================================== */
+
+@media (max-width: 999.98px) {
+  .ei-uc-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: clamp(180px, 30vw, 240px);
+  }
+  /* Two columns: every third tile goes full width, the last one too. */
+  .ei-uc-cell:nth-child(5n + 1) { grid-column: auto; }
+  .ei-uc-cell:nth-child(3n + 1) { grid-column: 1 / -1; }
+  .ei-uc-cell:nth-child(17)     { grid-column: 1 / -1; }
+}
+
+@media (max-width: 599.98px) {
+  .ei-uc-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: 210px;
+  }
+  .ei-uc-name { font-size: .84rem; }
+}
